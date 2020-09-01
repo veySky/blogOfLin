@@ -7,15 +7,15 @@
   
   <title>Correct way to compare floats or doubles in Java | lin&#39;s blog home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Correct way to compare floats or doubles in JavaCorrectly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In comput">
+  <meta name="description" content="Correctly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using I">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Correct way to compare floats or doubles in Java">
 <meta property="og:url" content="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/index.html">
 <meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="Correct way to compare floats or doubles in JavaCorrectly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In comput">
+<meta property="og:description" content="Correctly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using I">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-09-01T06:35:22.000Z">
-<meta property="article:modified_time" content="2020-09-01T06:36:22.056Z">
+<meta property="article:modified_time" content="2020-09-01T06:38:13.235Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -88,7 +88,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Correct-way-to-compare-floats-or-doubles-in-Java"><a href="#Correct-way-to-compare-floats-or-doubles-in-Java" class="headerlink" title="Correct way to compare floats or doubles in Java"></a>Correct way to compare floats or doubles in Java</h1><p>Correctly <strong>compare float</strong> or <strong>compare double</strong> is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a> standard format. How the actual storage and conversion works, it is out of scope of this article.</p>
+        <p>Correctly <strong>compare float</strong> or <strong>compare double</strong> is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a> standard format. How the actual storage and conversion works, it is out of scope of this article.</p>
 <p>For now, just understand that during computations and conversions, <em>minor rounding errors</em> can be introduced in these numbers. That’s why it is not advisable to simply rely on the <em>equality operators (==)</em> to <strong>compare floating-point numbers</strong>.</p>
 <p>Let’s learn <strong>how to compare float values in Java</strong>.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Table of Contents</span><br><span class="line"></span><br><span class="line">1. Simple comparison [Not recommended]</span><br><span class="line">2. Threshold based comparison [Recommended]</span><br><span class="line">3. Compare with BigDecimal [Recommended]</span><br></pre></td></tr></table></figure>
@@ -142,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckejkwa5j0000dfn45l626jsd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckejkyquw0001gin4312ac2jc" class="article-share-link">Share</a>
       
       
     </footer>
