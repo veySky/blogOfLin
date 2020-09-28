@@ -66,6 +66,48 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-MySQL-主键自增，会出现跳键" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" class="article-date">
+  <time datetime="2020-09-28T08:49:38.000Z" itemprop="datePublished">2020-09-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/">MySQL 主键自增，会出现跳键</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://img-blog.csdnimg.cn/20190124110818112.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTI5NzMxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190124111024876.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTI5NzMxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这个表记录的是设备的心跳数据,记录设备第一次上传心跳的时间和最后一次上传数据的时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    我的sql:</span><br><span class="line">        insert into tb_ap_heart (ap_id, create_time, update_time)</span><br><span class="line">        values (#&#123;apId,jdbcType&#x3D;VARCHAR&#125;, #&#123;createTime,jdbcType&#x3D;TIMESTAMP&#125;,</span><br><span class="line">        #&#123;updateTime,jdbcType&#x3D;TIMESTAMP&#125;)</span><br><span class="line">        ON DUPLICATE KEY UPDATE </span><br><span class="line">        update_time&#x3D;values(update_time)</span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+
+<p>根据主键只修改更新时间</p>
+<p>通过查找资料发现on duplicate key update有一个特性就是每次是更新的情况下id也是会自增加1的，比如说现在id最大值的153889，然后进行了一次更新操作再进行一次插入操作时，id的值就变成了153891而不是153890。<br>再进行一次插入更新操作,id值就变成了153892<br>我是经过自己测试的,</p>
+<p>我自用的解决方法: 先查询 再更新有改变的数据</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckfmakqkm0004h6n4734pgq7i" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-值传递还是引用传递" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" class="article-date">
@@ -110,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckf4ruxae0003bfn42oo43xj3" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckfmakqko0006h6n4f707h87w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -156,7 +198,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckf4ruxad0002bfn4c5r44tt2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckfmakqki0001h6n4203v5uw8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li></ul>
@@ -222,7 +264,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckf4ruxab0001bfn4crx91mhs" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckfmakqkk0002h6n44f39gcsa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckf4ruxa50000bfn4hxqt6rs2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckfmakqkd0000h6n41izj0say" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +392,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckf4ruxah0005bfn4g6mv62ot" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckfmakqkn0005h6n40rb32crt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -405,6 +447,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/">MySQL 主键自增，会出现跳键</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/">值传递还是引用传递?</a>
           </li>
         
@@ -418,10 +464,6 @@
         
           <li>
             <a href="/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/">Correct way to compare floats or doubles in Java</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/">difference of Calendar day_of_year and day_of_month</a>
           </li>
         
       </ul>
