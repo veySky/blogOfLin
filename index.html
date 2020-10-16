@@ -66,6 +66,104 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ZooKeeper之zkCli-sh客户端命令使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time datetime="2020-10-16T13:04:46.000Z" itemprop="datePublished">2020-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/">ZooKeeper之zkCli.sh客户端命令使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>zkCli.sh的使用</p>
+<p>ZooKeeper服务器简历客户端</p>
+<p>./zkCli.sh -timeout 0 -r -server ip:port</p>
+<p>./zkCli.sh -timeout 5000 -server 192.9.200.242:2181</p>
+<p>-r ：即使ZooKeeper服务器集群一般以上的服务器当掉，也给客户端体统读服务</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103432626-517212033.png" alt="img"></p>
+<p>h  显示所有命令</p>
+<p><img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103510657-353732916.png" alt="img"></p>
+<p><img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103520657-1596875669.png" alt="img"></p>
+<p>ls path:查看某个节点下的所有子节点信息</p>
+<p>ls / :列出根节点下所有的子节点信息</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103633126-1652792339.png" alt="img"></p>
+<p>stat path :获取指定节点的状态信息</p>
+<p>状态信息分析：</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103641438-321625582.png" alt="img"></p>
+<p>czxid 创建该节点的事物ID</p>
+<p>ctime 创建该节点的时间</p>
+<p>mZxid 更新该节点的事物ID</p>
+<p>mtime 更新该节点的时间</p>
+<p>pZxid 操作当前节点的子节点列表的事物ID(这种操作包含增加子节点，删除子节点)</p>
+<p>cversion 当前节点的子节点版本号</p>
+<p>dataVersion 当前节点的数据版本号</p>
+<p>aclVersion 当前节点的acl权限版本号</p>
+<p>ephemeralowner 当前节点的如果是临时节点，该属性是临时节点的事物ID</p>
+<p>dataLength 当前节点的d的数据长度</p>
+<p>numchildren 当前节点的子节点个数</p>
+<p>get path 获取当前节点的数据内容</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103752407-284814014.png" alt="img"></p>
+<p>ls2 path :是ls 和 stat两个命令的结合</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103803282-687553261.png" alt="img"></p>
+<p>create [-s] [-e] path data acl</p>
+<p>-s 表示是顺序节点</p>
+<p>-e 标识是临时节点</p>
+<p>path 节点路径</p>
+<p>data 节点数据</p>
+<p>acl 节点权限</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103812954-1661161404.png" alt="img"></p>
+<p> 注：临时节点在客户端结束与服务器的会话后，自动消失</p>
+<p>quit  :退出客户端</p>
+<p>set path data [version] :修改当前节点的数据内容  如果指定版本，需要和当前节点的数据版本一致</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103938922-692019311.png" alt="img"></p>
+<p>delete path [version] 删除指定路径的节点 如果有子节点要先删除子节点</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104051735-851248099.png" alt="img"></p>
+<p>rmr path 删除当前路径节点及其所有子节点</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104105047-1158558352.png" alt="img"></p>
+<p> setquota -n|-b val path 设置节点配额（比如限制节点数据长度，限制节点中子节点个数）</p>
+<p>-n 是限制子节点个数 -b是限制节点数据长度</p>
+<p>超出配额后，ZooKeeper不会报错，而是在日志信息中记录</p>
+<p>tail zookeeper.out</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104113532-1061009424.png" alt="img"></p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104123329-1203686067.png" alt="img"></p>
+<p>listquota path 查看路径节点的配额信息</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104248672-1596926125.png" alt="img"></p>
+<p>delquota [-n|-b] path 删除节点路径的配额信息  </p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104300344-1454716102.png" alt="img"></p>
+<p>connect host:port 和 clost</p>
+<p>在当前连接中连接其他的ZooKeeper服务器和关闭服务器</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104309094-923966637.png" alt="img"></p>
+<p>history 和 redo cmdno :查看客户端这次会话所执行的所有命令 和 执行指定历史命令</p>
+<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104317360-1959917830.png" alt="img"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckgc9m7c60005syn4a34t84de" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-zookeeper-客户端Curator使用详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -297,7 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckgc9ewqe00097fn43nui0jma" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckgc9m7c9000asyn4holz8ar2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -430,7 +528,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckgc9ewqc00057fn455hz46pb" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckgc9m7c70006syn46ggzegst" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
@@ -474,7 +572,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckgc9ewqb00047fn45qqdgbtd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckgc9m7c50004syn4cx2q6d2e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -528,7 +626,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckgc9ewqf000a7fn4e6nx9u3q" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckgc9m7ca000bsyn48hz1epqa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -574,7 +672,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckgc9ewq700017fn4gzk8ci11" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckgc9m7c10001syn4dwydaaco" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li></ul>
@@ -640,7 +738,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckgc9ewq900027fn4dwv947ol" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckgc9m7c30002syn424aoe68r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -726,7 +824,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckgc9ewq200007fn4bzz83mjn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckgc9m7bx0000syn4eozh2y8w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -768,7 +866,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckgc9ewqd00067fn4bxf57bqe" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckgc9m7c80009syn4g01bf9w9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -791,7 +889,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
     </div>
   </div>
 
@@ -801,7 +899,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/mvn-skip-module/" style="font-size: 10px;">mvn, skip,module</a> <a href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" style="font-size: 10px;">zookeeper, docker, ZkCli.sh</a>
+      <a href="/blogOfLin/tags/mvn-skip-module/" style="font-size: 10px;">mvn, skip,module</a> <a href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" style="font-size: 10px;">zkCli.sh, 客户端, 命令, ZooKeeper</a> <a href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" style="font-size: 10px;">zookeeper, docker, ZkCli.sh</a>
     </div>
   </div>
 
@@ -823,6 +921,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/">ZooKeeper之zkCli.sh客户端命令使用</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">zookeeper 客户端Curator使用详解</a>
           </li>
         
@@ -836,10 +938,6 @@
         
           <li>
             <a href="/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/">值传递还是引用传递?</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/">Maven deploy时排除指定的某个module</a>
           </li>
         
       </ul>
