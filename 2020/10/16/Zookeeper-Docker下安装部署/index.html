@@ -16,25 +16,11 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110311103-1391656531.png">
 <meta property="og:image" content="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110633631-1450938810.png">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
 <meta property="og:image" content="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111223382-266770946.png">
 <meta property="og:image" content="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111608512-516451599.png">
 <meta property="og:image" content="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111735060-225718424.png">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
-<meta property="og:image" content="https://common.cnblogs.com/images/copycode.gif">
 <meta property="article:published_time" content="2020-10-16T12:27:46.000Z">
-<meta property="article:modified_time" content="2020-10-16T12:28:29.186Z">
+<meta property="article:modified_time" content="2020-11-04T05:59:26.755Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="zookeeper, docker, ZkCli.sh">
 <meta name="twitter:card" content="summary">
@@ -138,10 +124,10 @@
 <ul>
 <li><strong>命令详细说明：</strong></li>
 </ul>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-e TZ&#x3D;&quot;Asia&#x2F;Shanghai&quot; # 指定上海时区 </span><br><span class="line">-d # 表示在一直在后台运行容器</span><br><span class="line">-p 2181:2181 # 对端口进行映射，将本地2181端口映射到容器内部的2181端口</span><br><span class="line">--name # 设置创建的容器名称</span><br><span class="line">-v # 将本地目录(文件)挂载到容器指定目录；</span><br><span class="line">--restart always #始终重新启动zookeeper</span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+
+
 <ul>
 <li><strong>查看容器启动情况：</strong></li>
 </ul>
@@ -157,10 +143,8 @@
 <p>说明：<code>-server zookeeper</code>是启动<code>zkCli.sh</code>的参数</p>
 <p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111608512-516451599.png" alt="img"></p>
 <p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111735060-225718424.png" alt="img"></p>
-<h2 id="六、-其它命令"><a href="#六、-其它命令" class="headerlink" title="六、 其它命令"></a>六、 其它命令</h2><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看zookeeper容器实例进程信息</span><br><span class="line">docker top zookeeper</span><br><span class="line"></span><br><span class="line"># 停止zookeeper实例进程</span><br><span class="line">docker stop zookeeper</span><br><span class="line"></span><br><span class="line"># 启动zookeeper实例进程</span><br><span class="line">docker start zookeeper</span><br><span class="line"></span><br><span class="line"># 重启zookeeper实例进程</span><br><span class="line">docker restart zookeeper</span><br><span class="line"></span><br><span class="line"># 查看zookeeper进程日志</span><br><span class="line">docker logs -f zookeeper</span><br><span class="line"></span><br><span class="line"># 杀死zookeeper实例进程</span><br><span class="line">docker kill -s KILL zookeeper</span><br><span class="line"></span><br><span class="line"># 移除zookeeper实例</span><br><span class="line">docker rm -f -v zookeeper</span><br></pre></td></tr></table></figure>
+<h2 id="六、-其它命令"><a href="#六、-其它命令" class="headerlink" title="六、 其它命令"></a>六、 其它命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看zookeeper容器实例进程信息</span><br><span class="line">docker top zookeeper</span><br><span class="line"></span><br><span class="line"># 停止zookeeper实例进程</span><br><span class="line">docker stop zookeeper</span><br><span class="line"></span><br><span class="line"># 启动zookeeper实例进程</span><br><span class="line">docker start zookeeper</span><br><span class="line"></span><br><span class="line"># 重启zookeeper实例进程</span><br><span class="line">docker restart zookeeper</span><br><span class="line"></span><br><span class="line"># 查看zookeeper进程日志</span><br><span class="line">docker logs -f zookeeper</span><br><span class="line"></span><br><span class="line"># 杀死zookeeper实例进程</span><br><span class="line">docker kill -s KILL zookeeper</span><br><span class="line"></span><br><span class="line"># 移除zookeeper实例</span><br><span class="line">docker rm -f -v zookeeper</span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <h1 id="集群方式安装"><a href="#集群方式安装" class="headerlink" title="集群方式安装"></a>集群方式安装</h1><p>集群方式选择使用<code>docker-compose</code>来完成。</p>
 <h2 id="一、安装docker-compose"><a href="#一、安装docker-compose" class="headerlink" title="一、安装docker-compose"></a>一、安装docker-compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.22.0&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
 
@@ -169,10 +153,8 @@
 
 
 <h2 id="二、配置docker-compose"><a href="#二、配置docker-compose" class="headerlink" title="二、配置docker-compose"></a>二、配置docker-compose</h2><p>编写配置文件，并将其命名为：<code>docker-compose.yml</code>（<code>docker-compose</code>默认配置文件名）<br>配置文件内容：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">version: &#39;2&#39;</span><br><span class="line">services:</span><br><span class="line">    zoo1:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo1</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2181:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 1</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo2:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo2</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2182:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 2</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo3:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo3</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2183:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 3</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <p>此配置文件表示，Docker需要启动三个zookeeper实例，并将2181，2182，2183三个端口号映射到容器内的2181这个端口上。<br><code>ZOO_MY_ID</code>：表示zk服务的ID, 取值为1-255之间的整数，且必须唯一<br><code>ZOO_SERVERS</code>：表示zk集群的主机列表</p>
 <h2 id="三、启动zookeeper集群"><a href="#三、启动zookeeper集群" class="headerlink" title="三、启动zookeeper集群"></a>三、启动zookeeper集群</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
 
@@ -186,31 +168,32 @@
 <h2 id="四、查看zookeeper集群实例"><a href="#四、查看zookeeper集群实例" class="headerlink" title="四、查看zookeeper集群实例"></a>四、查看zookeeper集群实例</h2><ul>
 <li><strong>通过<code>docker ps</code>查看</strong></li>
 </ul>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <p>[root@izbp13xko46hud9vfr5s94z ~]# docker ps<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>e53b4c838001 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 0.0.0.0:2181-&gt;2181/tcp, 3888/tcp zoo1<br>19282fb6f9b4 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 3888/tcp, 0.0.0.0:2182-&gt;2181/tcp zoo2<br>099b926fa2d3 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 3888/tcp, 0.0.0.0:2183-&gt;2181/tcp zoo3</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <ul>
 <li><strong>通过<code>docker-compose ps</code>查看</strong></li>
 </ul>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker-compose ps </span><br><span class="line">Name              Command               State                     Ports                   </span><br><span class="line">------------------------------------------------------------------------------------------</span><br><span class="line">zoo1   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2181-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">zoo2   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2182-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">zoo3   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2183-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# </span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>注：这个命令需要在<code>docker-compose</code>配置文件下执行。 </p>
-<h2 id="五、管理docker-compose服务"><a href="#五、管理docker-compose服务" class="headerlink" title="五、管理docker-compose服务"></a>五、管理docker-compose服务</h2><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 停止docker-compose服务</span><br><span class="line">docker-compose stop</span><br><span class="line"></span><br><span class="line"># 启动docker-compose服务</span><br><span class="line">docker-compose start </span><br><span class="line"># 重启docker-compose服务</span><br><span class="line">docker-compose restart </span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+
+<p>注：这个命令需要在<code>docker-compose</code>配置文件下执行。 </p>
+<h2 id="五、管理docker-compose服务"><a href="#五、管理docker-compose服务" class="headerlink" title="五、管理docker-compose服务"></a>五、管理docker-compose服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 停止docker-compose服务</span><br><span class="line">docker-compose stop</span><br><span class="line"></span><br><span class="line"># 启动docker-compose服务</span><br><span class="line">docker-compose start </span><br><span class="line"># 重启docker-compose服务</span><br><span class="line">docker-compose restart </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
 <h2 id="六、查看zookeeper集群节点主从关系"><a href="#六、查看zookeeper集群节点主从关系" class="headerlink" title="六、查看zookeeper集群节点主从关系"></a>六、查看zookeeper集群节点主从关系</h2><p>使用<code>docker exec -it zoo1 /bin/bash</code>这个命令进入<code>zoo1</code>节点中，之后输入<code>./bin/zkServer.sh statu</code>来查看节点主从关系</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker exec -it zoo1 &#x2F;bin&#x2F;bash </span><br><span class="line">bash-4.4# .&#x2F;bin&#x2F;zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: &#x2F;conf&#x2F;zoo.cfg</span><br><span class="line">Mode: follower</span><br><span class="line">bash-4.4# </span><br></pre></td></tr></table></figure>
 
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckh2zjaoc0007wtn407nz12w6" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckh2zsgqb000agkn486a15avk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
