@@ -66,6 +66,93 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-深入理解Redis的scan命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" class="article-date">
+  <time datetime="2021-01-27T06:04:11.000Z" itemprop="datePublished">2021-01-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">深入理解Redis的scan命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="深入理解Redis的scan命令"><a href="#深入理解Redis的scan命令" class="headerlink" title="深入理解Redis的scan命令"></a>深入理解Redis的scan命令</h1><p>熟悉Redis的人都知道，它是单线程的。因此在使用一些时间复杂度为O(N)的命令时要非常谨慎。可能一不小心就会阻塞进程，导致Redis出现卡顿。</p>
+<p>有时，我们需要针对符合条件的一部分命令进行操作，比如删除以test_开头的key。那么怎么获取到这些key呢？在Redis2.8版本之前，我们可以使用keys命令按照正则匹配得到我们需要的key。但是这个命令有两个缺点：</p>
+<ol>
+<li>没有limit，我们只能一次性获取所有符合条件的key，如果结果有上百万条，那么等待你的就是“无穷无尽”的字符串输出。</li>
+<li>keys命令是遍历算法，时间复杂度是O(N)。如我们刚才所说，这个命令非常容易导致Redis服务卡顿。因此，我们要尽量避免在生产环境使用该命令。</li>
+</ol>
+<p>在满足需求和存在造成Redis卡顿之间究竟要如何选择呢？面对这个两难的抉择，Redis在2.8版本给我们提供了解决办法——scan命令。</p>
+<p>相比于keys命令，scan命令有两个比较明显的优势：</p>
+<ol>
+<li>scan命令的时间复杂度虽然也是O(N)，但它是分次进行的，不会阻塞线程。</li>
+<li>scan命令提供了limit参数，可以控制每次返回结果的最大条数。</li>
+</ol>
+<p>这两个优势就帮助我们解决了上面的难题，不过scan命令也并不是完美的，它返回的结果有可能重复，因此需要客户端去重。至于为什么会重复，相信你看完本文之后就会有答案了。</p>
+<p>关于scan命令的基本用法，可以参看<a target="_blank" rel="noopener" href="https://jackeyzhe.github.io/2018/09/22/Redis%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%9AKeys/">Redis命令详解：Keys</a>一文中关于SCAN命令的介绍。</p>
+<p>今天我们主要从底层的结构和源码的角度来讨论scan是如何工作的。</p>
+<h4 id="Redis的结构"><a href="#Redis的结构" class="headerlink" title="Redis的结构"></a>Redis的结构</h4><p>Redis使用了Hash表作为底层实现，原因不外乎高效且实现简单。说到Hash表，很多Java程序员第一反应就是HashMap。没错，Redis底层key的存储结构就是类似于HashMap那样数组+链表的结构。其中第一维的数组大小为2n(n&gt;=0)。每次扩容数组长度扩大一倍。</p>
+<p>scan命令就是对这个一维数组进行遍历。每次返回的游标值也都是这个数组的索引。limit参数表示遍历多少个数组的元素，将这些元素下挂接的符合条件的结果都返回。因为每个元素下挂接的链表大小不同，所以每次返回的结果数量也就不同。</p>
+<h4 id="SCAN的遍历顺序"><a href="#SCAN的遍历顺序" class="headerlink" title="SCAN的遍历顺序"></a>SCAN的遍历顺序</h4><p>关于scan命令的遍历顺序，我们可以用一个小栗子来具体看一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;db_number&quot;</span><br><span class="line">2) &quot;key1&quot;</span><br><span class="line">3) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 0 MATCH * COUNT 1</span><br><span class="line">1) &quot;2&quot;</span><br><span class="line">2) 1) &quot;db_number&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 2 MATCH * COUNT 1</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) 1) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 1 MATCH * COUNT 1</span><br><span class="line">1) &quot;3&quot;</span><br><span class="line">2) 1) &quot;key1&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 3 MATCH * COUNT 1</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>我们的Redis中有3个key，我们每次只遍历一个一维数组中的元素。如上所示，SCAN命令的遍历顺序是</p>
+<p>0-&gt;2-&gt;1-&gt;3</p>
+<p>这个顺序看起来有些奇怪。我们把它转换成二进制就好理解一些了。</p>
+<p>00-&gt;10-&gt;01-&gt;11</p>
+<p>我们发现每次这个序列是高位加1的。普通二进制的加法，是从右往左相加、进位。而这个序列是从左往右相加、进位的。这一点我们在redis的源码中也得到印证。</p>
+<p>在dict.c文件的dictScan函数中对游标进行了如下处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v &#x3D; rev(v);</span><br><span class="line">v++;</span><br><span class="line">v &#x3D; rev(v);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>意思是，将游标倒置，加一后，再倒置，也就是我们所说的“高位加1”的操作。</p>
+<p>这里大家可能会有疑问了，为什么要使用这样的顺序进行遍历，而不是用正常的0、1、2……这样的顺序呢，这是因为需要考虑遍历时发生字典扩容与缩容的情况（不得不佩服开发者考虑问题的全面性）。</p>
+<p>我们来看一下在SCAN遍历过程中，发生扩容时，遍历会如何进行。加入我们原始的数组有4个元素，也就是索引有两位，这时需要把它扩充成3位，并进行rehash。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/9/166596e4dac0695e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="rehash"></p>
+<p>原来挂接在xx下的所有元素被分配到0xx和1xx下。在上图中，当我们即将遍历10时，dict进行了rehash，这时，scan命令会从010开始遍历，而000和100（原00下挂接的元素）不会再被重复遍历。</p>
+<p>再来看看缩容的情况。假设dict从3位缩容到2位，当即将遍历110时，dict发生了缩容，这时scan会遍历10。这时010下挂接的元素会被重复遍历，但010之前的元素都不会被重复遍历了。所以，缩容时还是可能会有些重复元素出现的。</p>
+<h4 id="Redis的rehash"><a href="#Redis的rehash" class="headerlink" title="Redis的rehash"></a>Redis的rehash</h4><p>rehash是一个比较复杂的过程，为了不阻塞Redis的进程，它采用了一种渐进式的rehash的机制。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 字典 *&#x2F;</span><br><span class="line">typedef struct dict &#123;</span><br><span class="line">    &#x2F;&#x2F; 类型特定函数</span><br><span class="line">    dictType *type;</span><br><span class="line">    &#x2F;&#x2F; 私有数据</span><br><span class="line">    void *privdata;</span><br><span class="line">    &#x2F;&#x2F; 哈希表</span><br><span class="line">    dictht ht[2];</span><br><span class="line">    &#x2F;&#x2F; rehash 索引</span><br><span class="line">    &#x2F;&#x2F; 当 rehash 不在进行时，值为 -1</span><br><span class="line">    int rehashidx; &#x2F;* rehashing not in progress if rehashidx &#x3D;&#x3D; -1 *&#x2F;</span><br><span class="line">    &#x2F;&#x2F; 目前正在运行的安全迭代器的数量</span><br><span class="line">    int iterators; &#x2F;* number of iterators currently running *&#x2F;</span><br><span class="line">&#125; dict;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>在Redis的字典结构中，有两个hash表，一个新表，一个旧表。在rehash的过程中，redis将旧表中的元素逐步迁移到新表中，接下来我们看一下dict的rehash操作的源码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* Performs N steps of incremental rehashing. Returns 1 if there are still</span><br><span class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span><br><span class="line"> *</span><br><span class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</span><br><span class="line"> * than one key as we use chaining) from the old to the new hash table, however</span><br><span class="line"> * since part of the hash table may be composed of empty spaces, it is not</span><br><span class="line"> * guaranteed that this function will rehash even a single bucket, since it</span><br><span class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span><br><span class="line"> * work it does would be unbound and the function may block for a long time. *&#x2F;</span><br><span class="line">int dictRehash(dict *d, int n) &#123;</span><br><span class="line">    int empty_visits &#x3D; n*10; &#x2F;* Max number of empty buckets to visit. *&#x2F;</span><br><span class="line">    if (!dictIsRehashing(d)) return 0;</span><br><span class="line"></span><br><span class="line">    while(n-- &amp;&amp; d-&gt;ht[0].used !&#x3D; 0) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        &#x2F;* Note that rehashidx can&#39;t overflow as we are sure there are more</span><br><span class="line">         * elements because ht[0].used !&#x3D; 0 *&#x2F;</span><br><span class="line">        assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);</span><br><span class="line">        while(d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D;&#x3D; NULL) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            if (--empty_visits &#x3D;&#x3D; 0) return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        de &#x3D; d-&gt;ht[0].table[d-&gt;rehashidx];</span><br><span class="line">        &#x2F;* Move all the keys in this bucket from the old to the new hash HT *&#x2F;</span><br><span class="line">        while(de) &#123;</span><br><span class="line">            uint64_t h;</span><br><span class="line"></span><br><span class="line">            nextde &#x3D; de-&gt;next;</span><br><span class="line">            &#x2F;* Get the index in the new hash table *&#x2F;</span><br><span class="line">            h &#x3D; dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;</span><br><span class="line">            de-&gt;next &#x3D; d-&gt;ht[1].table[h];</span><br><span class="line">            d-&gt;ht[1].table[h] &#x3D; de;</span><br><span class="line">            d-&gt;ht[0].used--;</span><br><span class="line">            d-&gt;ht[1].used++;</span><br><span class="line">            de &#x3D; nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D; NULL;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* Check if we already rehashed the whole table... *&#x2F;</span><br><span class="line">    if (d-&gt;ht[0].used &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        zfree(d-&gt;ht[0].table);</span><br><span class="line">        d-&gt;ht[0] &#x3D; d-&gt;ht[1];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">        d-&gt;rehashidx &#x3D; -1;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* More to rehash... *&#x2F;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>通过注释我们就能了解到，rehash的过程是以bucket为基本单位进行迁移的。所谓的bucket其实就是我们前面所提到的一维数组的元素。每次迁移一个列表。下面来解释一下这段代码。</p>
+<ul>
+<li>首先判断一下是否在进行rehash，如果是，则继续进行；否则直接返回。</li>
+<li>接着就是分n步开始进行渐进式rehash。同时还判断是否还有剩余元素，以保证安全性。</li>
+<li>在进行rehash之前，首先判断要迁移的bucket是否越界。</li>
+<li>然后跳过空的bucket，这里有一个empty_visits变量，表示最大可访问的空bucket的数量，这一变量主要是为了保证不过多的阻塞Redis。</li>
+<li>接下来就是元素的迁移，将当前bucket的全部元素进行rehash，并且更新两张表中元素的数量。</li>
+<li>每次迁移完一个bucket，需要将旧表中的bucket指向NULL。</li>
+<li>最后判断一下是否全部迁移完成，如果是，则收回空间，重置rehash索引，否则告诉调用方，仍有数据未迁移。</li>
+</ul>
+<p>由于Redis使用的是渐进式rehash机制，因此，scan命令在需要同时扫描新表和旧表，将结果返回客户端。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckkf0yher000l00n4his74s40" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-MySQL时间戳和时间的获取-相互转换-格式化" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" class="article-date">
@@ -114,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="ckjxzdwzx000434n4bdyb0zjt" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="ckkf0yheg000400n4cy17e2pv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" rel="tag">mysql,unix_timestamp,from_unixtime,date_format</a></li></ul>
@@ -178,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="ckjxzdwzz000634n49rp8f4r9" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="ckkf0yhei000600n4d3jy97z1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -219,7 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="ckjxzdx04000e34n4bhhihduz" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="ckkf0yhej000900n459035bn5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -404,7 +491,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" data-id="ckjxzdx0a000n34n44zwqdjsi" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" data-id="ckkf0yheu000p00n450as18bn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,7 +537,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/" data-id="ckjxzdx0b000o34n4fqrd1ff0" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/" data-id="ckkf0yhet000o00n48q2f0te5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -497,7 +584,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/29/%E8%A7%A3%E5%86%B3%E6%97%A0%E6%B3%95%E5%88%A0%E9%99%A4%E7%8A%B6%E6%80%81%E4%B8%BADead%E7%9A%84%E5%AE%B9%E5%99%A8/" data-id="ckjxzdx0c000p34n47wmneql2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/29/%E8%A7%A3%E5%86%B3%E6%97%A0%E6%B3%95%E5%88%A0%E9%99%A4%E7%8A%B6%E6%80%81%E4%B8%BADead%E7%9A%84%E5%AE%B9%E5%99%A8/" data-id="ckkf0yhev000q00n497puehx6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -813,7 +900,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/29/mermaid-flowchart-%E6%95%99%E7%A8%8B/" data-id="ckjxzdx07000i34n48fom3f11" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/29/mermaid-flowchart-%E6%95%99%E7%A8%8B/" data-id="ckkf0yheo000g00n49kjm1dts" class="article-share-link">Share</a>
       
       
     </footer>
@@ -860,7 +947,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/20/sonar-install/" data-id="ckjxzdx08000j34n4eqpl0a1g" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/20/sonar-install/" data-id="ckkf0yheq000j00n49zmx97yf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -904,107 +991,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="ckjxzdx05000f34n4gtfy0b0z" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="ckkf0yheo000f00n49httcqmx" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-ZooKeeper之zkCli-sh客户端命令使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" class="article-date">
-  <time datetime="2020-10-16T13:04:46.000Z" itemprop="datePublished">2020-10-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/">ZooKeeper之zkCli.sh客户端命令使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>zkCli.sh的使用</p>
-<p>ZooKeeper服务器简历客户端</p>
-<p>./zkCli.sh -timeout 0 -r -server ip:port</p>
-<p>./zkCli.sh -timeout 5000 -server 192.9.200.242:2181</p>
-<p>-r ：即使ZooKeeper服务器集群一般以上的服务器当掉，也给客户端体统读服务</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103432626-517212033.png" alt="img"></p>
-<p>h  显示所有命令</p>
-<p><img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103510657-353732916.png" alt="img"></p>
-<p><img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103520657-1596875669.png" alt="img"></p>
-<p>ls path:查看某个节点下的所有子节点信息</p>
-<p>ls / :列出根节点下所有的子节点信息</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103633126-1652792339.png" alt="img"></p>
-<p>stat path :获取指定节点的状态信息</p>
-<p>状态信息分析：</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103641438-321625582.png" alt="img"></p>
-<p>czxid 创建该节点的事物ID</p>
-<p>ctime 创建该节点的时间</p>
-<p>mZxid 更新该节点的事物ID</p>
-<p>mtime 更新该节点的时间</p>
-<p>pZxid 操作当前节点的子节点列表的事物ID(这种操作包含增加子节点，删除子节点)</p>
-<p>cversion 当前节点的子节点版本号</p>
-<p>dataVersion 当前节点的数据版本号</p>
-<p>aclVersion 当前节点的acl权限版本号</p>
-<p>ephemeralowner 当前节点的如果是临时节点，该属性是临时节点的事物ID</p>
-<p>dataLength 当前节点的d的数据长度</p>
-<p>numchildren 当前节点的子节点个数</p>
-<p>get path 获取当前节点的数据内容</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103752407-284814014.png" alt="img"></p>
-<p>ls2 path :是ls 和 stat两个命令的结合</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103803282-687553261.png" alt="img"></p>
-<p>create [-s] [-e] path data acl</p>
-<p>-s 表示是顺序节点</p>
-<p>-e 标识是临时节点</p>
-<p>path 节点路径</p>
-<p>data 节点数据</p>
-<p>acl 节点权限</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103812954-1661161404.png" alt="img"></p>
-<p> 注：临时节点在客户端结束与服务器的会话后，自动消失</p>
-<p>quit  :退出客户端</p>
-<p>set path data [version] :修改当前节点的数据内容  如果指定版本，需要和当前节点的数据版本一致</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412103938922-692019311.png" alt="img"></p>
-<p>delete path [version] 删除指定路径的节点 如果有子节点要先删除子节点</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104051735-851248099.png" alt="img"></p>
-<p>rmr path 删除当前路径节点及其所有子节点</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104105047-1158558352.png" alt="img"></p>
-<p> setquota -n|-b val path 设置节点配额（比如限制节点数据长度，限制节点中子节点个数）</p>
-<p>-n 是限制子节点个数 -b是限制节点数据长度</p>
-<p>超出配额后，ZooKeeper不会报错，而是在日志信息中记录</p>
-<p>tail zookeeper.out</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104113532-1061009424.png" alt="img"></p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104123329-1203686067.png" alt="img"></p>
-<p>listquota path 查看路径节点的配额信息</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104248672-1596926125.png" alt="img"></p>
-<p>delquota [-n|-b] path 删除节点路径的配额信息  </p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104300344-1454716102.png" alt="img"></p>
-<p>connect host:port 和 clost</p>
-<p>在当前连接中连接其他的ZooKeeper服务器和关闭服务器</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104309094-923966637.png" alt="img"></p>
-<p>history 和 redo cmdno :查看客户端这次会话所执行的所有命令 和 执行指定历史命令</p>
-<p> <img src="https://images2015.cnblogs.com/blog/467583/201704/467583-20170412104317360-1959917830.png" alt="img"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckjxzdx00000934n4b34p4tmy" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li></ul>
-
     </footer>
   </div>
   
@@ -1062,6 +1051,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">深入理解Redis的scan命令</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/">MySQL时间戳和时间的获取/相互转换/格式化</a>
           </li>
         
@@ -1075,10 +1068,6 @@
         
           <li>
             <a href="/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">编程老司机带你玩转 CompletableFuture 异步编程</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/">电动车选购</a>
           </li>
         
       </ul>
