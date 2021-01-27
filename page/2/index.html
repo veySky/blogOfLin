@@ -66,6 +66,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-sonar-install" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/20/sonar-install/" class="article-date">
+  <time datetime="2020-10-20T12:57:37.000Z" itemprop="datePublished">2020-10-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/20/sonar-install/">sonar install</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SonarQube的LTS版本以6.7和7.9较为具有代表性，这篇文章整理了一下SonarQube LTS 6.7.1 + MySQL的环境搭建方式。</p>
+<h1 id="SonarQube-6-7-1"><a href="#SonarQube-6-7-1" class="headerlink" title="SonarQube 6.7.1"></a>SonarQube 6.7.1</h1><p>这里使用Alpine版本的SonarQube 6.7.1和MySQL 5.7.16进行环境搭建，docker-compose.yml如下所示</p>
+<h2 id="docker-compose-yml文件"><a href="#docker-compose-yml文件" class="headerlink" title="docker-compose.yml文件"></a>docker-compose.yml文件</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> <span class="string">cat</span> <span class="string">docker-compose.6.7.yml</span> </span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="comment"># database service: mysql</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/mysql:5.7.16</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/data/:/var/lib/mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/conf.d/:/etc/mysql/conf.d</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_ROOT_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_DATABASE=sonarqube</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  <span class="comment"># Security service: sonarqube</span></span><br><span class="line">  <span class="attr">sonarqube:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/sonarqube:6.7.1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/data/:/opt/sonarqube/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/log/:/opt/sonarqube/log</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/extensions/:/opt/sonarqube/extensions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/conf/:/opt/sonarqube/conf</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_USERNAME=root</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonarqube?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql:mysql</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> </span><br><span class="line"><span class="number">1234567891011121314151617181920212223242526272829303132333435363738</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml up -d</span><br><span class="line">Creating sonar_mysql_1 ... done</span><br><span class="line">Creating sonar_sonarqube_1 ... done</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">1234</span><br></pre></td></tr></table></figure>
+
+<h2 id="结果确认"><a href="#结果确认" class="headerlink" title="结果确认"></a>结果确认</h2><p>docker容器启动之后，可以使用docker-compose ps命令确认服务运行状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml ps</span><br><span class="line">      Name                    Command             State           Ports         </span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">sonar_mysql_1       docker-entrypoint.sh mysqld   Up      0.0.0.0:3306-&gt;3306&#x2F;tcp</span><br><span class="line">sonar_sonarqube_1   .&#x2F;bin&#x2F;run.sh                  Up      0.0.0.0:9000-&gt;9000&#x2F;tcp</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/2019102221475894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191022214809346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h1><p>使用示例可参看：<br><a target="_blank" rel="noopener" href="https://liumiaocn.blog.csdn.net/article/details/102670480">Angular应用中使用SonarQube进行质量扫描</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/20/sonar-install/" data-id="ckkf14dre000nj5n439dw6y1z" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-local-test-zookeeper" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/10/16/local-test-zookeeper/" class="article-date">
@@ -100,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="ckkf13h6d000fekn4446t03sk" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="ckkf14drc000hj5n43ndberno" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,7 +243,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckkf13h680009ekn42rx082sq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckkf14dr60009j5n4gqwh2rjb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li></ul>
@@ -439,7 +486,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckkf13h6i000mekn4grq44f39" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckkf14drg000qj5n42q4hh81m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -569,7 +616,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckkf13h6a000bekn45hd61ou8" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckkf14dr7000aj5n43dp48e1k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
@@ -613,7 +660,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckkf13h610002ekn4gb7ebxht" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckkf14dr40004j5n43jzy1gs2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -667,7 +714,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckkf13h6i000nekn46p2tgjz3" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckkf14drf000oj5n48uj9edgl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -713,7 +760,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckkf13h5z0001ekn4hvq4grp1" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckkf14dqz0001j5n40ztg2k1j" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li></ul>
@@ -779,7 +826,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckkf13h630004ekn4406c9q3c" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckkf14dr10002j5n4cdng3wj4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -865,49 +912,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckkf13h5s0000ekn456nw34t1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-difference-of-Calendar-day-of-year-and-day-of-month" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" class="article-date">
-  <time datetime="2020-08-31T09:13:38.000Z" itemprop="datePublished">2020-08-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/">difference of Calendar day_of_year and day_of_month</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>for adding it really makes no difference, but this</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Calendar c = Calendar.getInstance();</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_MONTH));</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_YEAR));</span><br></pre></td></tr></table></figure>
-
-<p>prints</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">28</span></span><br><span class="line"><span class="number">363</span></span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckkf13h69000aekn48qlk4sf9" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckkf14dqv0000j5n4bo2d0n9n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -921,7 +926,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/blogOfLin/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/blogOfLin/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><span class="page-number current">2</span><a class="page-number" href="/blogOfLin/page/3/">3</a><a class="extend next" rel="next" href="/blogOfLin/page/3/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -935,7 +940,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" rel="tag">mysql,unix_timestamp,from_unixtime,date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" rel="tag">mysql,unix_timestamp,from_unixtime,date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
     </div>
   </div>
 
@@ -945,7 +950,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/mvn-skip-module/" style="font-size: 10px;">mvn, skip,module</a> <a href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" style="font-size: 10px;">mysql,unix_timestamp,from_unixtime,date_format</a> <a href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" style="font-size: 10px;">zkCli.sh, 客户端, 命令, ZooKeeper</a> <a href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" style="font-size: 10px;">zookeeper, docker, ZkCli.sh</a>
+      <a href="/blogOfLin/tags/mvn-skip-module/" style="font-size: 10px;">mvn, skip,module</a> <a href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" style="font-size: 10px;">mysql,unix_timestamp,from_unixtime,date_format</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" style="font-size: 10px;">zkCli.sh, 客户端, 命令, ZooKeeper</a> <a href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" style="font-size: 10px;">zookeeper, docker, ZkCli.sh</a>
     </div>
   </div>
 
@@ -975,15 +980,15 @@
           </li>
         
           <li>
+            <a href="/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/">linux下mysql数据库备份与还原</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/">MySQL时间戳和时间的获取/相互转换/格式化</a>
           </li>
         
           <li>
             <a href="/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/">Spring @Autowired Map 和 List</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/">git reflog 查看历史提交记录</a>
           </li>
         
       </ul>
