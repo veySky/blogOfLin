@@ -5,20 +5,27 @@
   
 
   
-  <title>Maven deploy时排除指定的某个module | lin&#39;s blog home</title>
+  <title>idea 推荐插件 | lin&#39;s blog home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在某个module的pom.xml中添加如下配置 12345678&lt;plugin&gt;&lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;&lt;artifactId&gt;maven-deploy-plugin&lt;&#x2F;artifactId&gt;&lt;version&gt;2.8.2&lt;&#x2F;version&gt;&lt;co">
+  <meta name="description" content="推荐一款方便、实用的IDEA插件EasyApi 在我们开发http请求接口时，开发完成需要进行本地自测，在postman中一个一个输入接口地址，在输入请求参数，尤其是在请求参数较多的情况下，很费劲，尤其是post请求还需要json格式的数据，此时该插件的效果就体现出来了，可以将请求地址以及请求参数导出至postman ** EasyApi插件** 博主是基于mac下的IDEA开发的 1、安装插件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Maven deploy时排除指定的某个module">
-<meta property="og:url" content="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/index.html">
+<meta property="og:title" content="idea 推荐插件">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/index.html">
 <meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="在某个module的pom.xml中添加如下配置 12345678&lt;plugin&gt;&lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;&lt;artifactId&gt;maven-deploy-plugin&lt;&#x2F;artifactId&gt;&lt;version&gt;2.8.2&lt;&#x2F;version&gt;&lt;co">
+<meta property="og:description" content="推荐一款方便、实用的IDEA插件EasyApi 在我们开发http请求接口时，开发完成需要进行本地自测，在postman中一个一个输入接口地址，在输入请求参数，尤其是在请求参数较多的情况下，很费劲，尤其是post请求还需要json格式的数据，此时该插件的效果就体现出来了，可以将请求地址以及请求参数导出至postman ** EasyApi插件** 博主是基于mac下的IDEA开发的 1、安装插件">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-09-04T11:06:35.000Z">
-<meta property="article:modified_time" content="2020-09-04T11:08:48.479Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731104909115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731105119191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202007311052104.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731105315927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731105459337.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731105621675.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200731105918844.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-02-05T07:47:30.000Z">
+<meta property="article:modified_time" content="2021-02-05T07:48:40.601Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="mvn, skip,module">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200731104909115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70">
   
     <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
   
@@ -67,10 +74,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Maven-deploy时排除指定的某个module" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-idea-推荐插件" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" class="article-date">
-  <time datetime="2020-09-04T11:06:35.000Z" itemprop="datePublished">2020-09-04</time>
+    <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" class="article-date">
+  <time datetime="2021-02-05T07:47:30.000Z" itemprop="datePublished">2021-02-05</time>
 </a>
     
   </div>
@@ -81,7 +88,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Maven deploy时排除指定的某个module
+      idea 推荐插件
     </h1>
   
 
@@ -89,44 +96,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在某个module的pom.xml中添加如下配置</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-deploy-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">skip</span>&gt;</span>true<span class="tag">&lt;/<span class="name">skip</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>然后在项目根目录执行命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean deploy   -U</span><br></pre></td></tr></table></figure>
-
-
-
+        <p>推荐一款方便、实用的IDEA插件EasyApi</p>
+<p>在我们开发http请求接口时，开发完成需要进行本地自测，在postman中一个一个输入接口地址，在输入请求参数，尤其是在请求参数较多的情况下，很费劲，尤其是post请求还需要json格式的数据，此时该插件的效果就体现出来了，可以将请求地址以及请求参数导出至postman</p>
+<p>**</p>
+<h2 id="EasyApi插件"><a href="#EasyApi插件" class="headerlink" title="EasyApi插件"></a>EasyApi插件</h2><p>**</p>
+<p>博主是基于mac下的IDEA开发的</p>
+<p>1、安装插件<br><img src="https://img-blog.csdnimg.cn/20200731104909115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>具体安装方法就不在介绍了，安装后为了使插件生效，别忘了对IDEA进行重启哦</p>
+<p>2、然后进行导出，找到我们需要导出的Controller，选中后点击（control+回车）</p>
+<p><img src="https://img-blog.csdnimg.cn/20200731105119191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>执行后会发现出现以下错误，别慌这是配有配置token导致的<br><img src="https://img-blog.csdnimg.cn/202007311052104.png" alt="在这里插入图片描述"></p>
+<p>3、获取token，这里的token是登录postman软件的用户的token<br>链接:<a target="_blank" rel="noopener" href="https://web.postman.co/settings/me/api-keys">https://web.postman.co/settings/me/api-keys</a><br><img src="https://img-blog.csdnimg.cn/20200731105315927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>4、IDEA中添加对应token<br><img src="https://img-blog.csdnimg.cn/20200731105459337.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>然后在进行导出，在postman中查看就会发现响应的请求地址和参数均已导出</p>
+<p><img src="https://img-blog.csdnimg.cn/20200731105621675.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="RestfulToolkit插件"><a href="#RestfulToolkit插件" class="headerlink" title="RestfulToolkit插件"></a>RestfulToolkit插件</h2><p>快速搜索http请求接口路径的插件</p>
+<p>mac下快捷键（command+\）<br>效果图如下：<br><img src="https://img-blog.csdnimg.cn/20200731105918844.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li></li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckks0ml2f0001a9n4edige26d" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckks0ml2q000fa9n46mkmgg1t" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li></ul>
-
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          值传递还是引用传递?
-        
-      </div>
-    </a>
   
-  
-    <a href="/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Maven实用技巧</div>
+      <div class="article-nav-title">深入理解Redis的scan命令</div>
     </a>
   
 </nav>
