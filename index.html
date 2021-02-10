@@ -66,6 +66,156 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-pure-ftp安装和配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2021-02-10T07:26:55.000Z" itemprop="datePublished">2021-02-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">pure-ftp安装和配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.pureftpd.org/project/pure-ftpd/">Pure-FTPd </a>是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在<a target="_blank" rel="noopener" href="https://www.cco.xyz/archives/tag/centos">CentOS</a>中安装与使用Pure-FTPd。</p>
+<h2 id="1-安装Pure-FTPd"><a href="#1-安装Pure-FTPd" class="headerlink" title="1.安装Pure-FTPd"></a>1.安装Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install pure-ftpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-配置Pure-FTPd"><a href="#2-配置Pure-FTPd" class="headerlink" title="2.配置Pure-FTPd"></a>2.配置Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;pure-ftpd&#x2F;pure-ftpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>根据以下内容修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ChrootEveryone               yes</span><br><span class="line">BrokenClientsCompatibility   no</span><br><span class="line">MaxClientsNumber             50</span><br><span class="line">Daemonize                    yes</span><br><span class="line">MaxClientsPerIP              8</span><br><span class="line">VerboseLog                   no</span><br><span class="line">DisplayDotFiles              yes</span><br><span class="line">AnonymousOnly                no</span><br><span class="line">NoAnonymous                  no</span><br><span class="line">SyslogFacility               ftp</span><br><span class="line">DontResolve                  yes</span><br><span class="line">MaxIdleTime                  15</span><br><span class="line">PureDB                        &#x2F;etc&#x2F;pure-ftpd&#x2F;pureftpd.pdb</span><br><span class="line">PAMAuthentication             yes</span><br><span class="line">LimitRecursion               10000 8</span><br><span class="line">AnonymousCanCreateDirs       no</span><br><span class="line">MaxLoad                      4</span><br><span class="line">AntiWarez                    yes</span><br><span class="line">Umask                        133:022</span><br><span class="line">MinUID                      1000</span><br><span class="line">AllowUserFXP                 no</span><br><span class="line">AllowAnonymousFXP            no</span><br><span class="line">ProhibitDotFilesWrite        no</span><br><span class="line">ProhibitDotFilesRead         no</span><br><span class="line">AutoRename                   no</span><br><span class="line">AnonymousCantUpload         yes</span><br><span class="line">AltLog                     clf:&#x2F;var&#x2F;log&#x2F;pureftpd.log</span><br><span class="line">PIDFile                     &#x2F;var&#x2F;run&#x2F;pure-ftpd.pid</span><br><span class="line">MaxDiskUsage                   99</span><br><span class="line">CustomerProof                yes</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-新增系统用户"><a href="#3-新增系统用户" class="headerlink" title="3.新增系统用户"></a>3.新增系统用户</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd www</span><br><span class="line">useradd -g www www</span><br></pre></td></tr></table></figure>
+
+<p>创建FTP的根目录，并赋予权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mdkir -p &#x2F;data&#x2F;wwwroot</span><br><span class="line">chown www:www -R &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-虚拟用户管理"><a href="#4-虚拟用户管理" class="headerlink" title="4.虚拟用户管理"></a>4.虚拟用户管理</h2><h3 id="4-1-创建虚拟用户"><a href="#4-1-创建虚拟用户" class="headerlink" title="4.1 创建虚拟用户"></a>4.1 创建虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw useradd wwwuser -u www -g www -d &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
+
+<p>创建FTP用户<code>wwwuser</code>, 将该虚拟用户关联到系统用户的<code>www和www用户组</code>，指定FTP的根目录为<code>/data/wwwroot</code>，按下回车，输入密码即可创建。<br>创建完虚拟FTP用户后，需要重新生成用户数据库文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw mkdb</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-查看虚拟用户"><a href="#4-2-查看虚拟用户" class="headerlink" title="4.2 查看虚拟用户"></a>4.2 查看虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pure-pw list  # 查看用户列表</span><br><span class="line"></span><br><span class="line">pure-pw show wwwuser  # 查看wwwuser用户</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-修改虚拟用户信息"><a href="#4-2-修改虚拟用户信息" class="headerlink" title="4.2 修改虚拟用户信息"></a>4.2 修改虚拟用户信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pure-pw passwd wwwuser   #修改密码</span><br><span class="line">pure-pw usermod wwwuser -d &#x2F;data&#x2F;wwwroot1  # 修改根目录</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-删除虚拟用户"><a href="#4-4-删除虚拟用户" class="headerlink" title="4.4 删除虚拟用户"></a>4.4 删除虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw userdel wwwuser</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckkza1kwt000if3n48kjn4rzi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java-Optional-–-orElse-vs-orElseGet" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" class="article-date">
+  <time datetime="2021-02-05T09:39:39.000Z" itemprop="datePublished">2021-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/">Java Optional – orElse() vs orElseGet()</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h2><p>The API of <em>Optional</em> typically has two methods that can cause confusion: <em>orElse()</em> and <em>orElseGet()</em>.</p>
+<p>In this quick tutorial, we’ll look at the difference between those two and explore when to use each one.</p>
+<h2 id="2-Signatures"><a href="#2-Signatures" class="headerlink" title="2. Signatures"></a>2. Signatures</h2><p>Let’s first start with the basics by looking at their signatures:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElse</span><span class="params">(T other)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElseGet</span><span class="params">(Supplier&lt;? extends T&gt; other)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>Clearly, <em>orElse()</em> takes any parameter of a type <em>T</em> whereas <em>orElseGet()</em> accepts a functional interface of type <em>Supplier</em> that returns an object of type <em>T</em>.</p>
+<p>Now, based on their <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html#orElse-T-">Javadocs</a>:</p>
+<ul>
+<li><em>orElse()</em>: returns the value if present, otherwise return <em>other</em></li>
+<li><em>orElseGet():</em> returns the value if present, otherwise invoke <em>other</em> and return the result of its invocation</li>
+</ul>
+<h2 id="3-Differences"><a href="#3-Differences" class="headerlink" title="3. Differences"></a>3. Differences</h2><p>It’s easy to be a bit confused by this simplified definitions, so let’s dig a little deeper and look at some actual usage scenarios.</p>
+<h3 id="3-1-orElse"><a href="#3-1-orElse" class="headerlink" title="3.1. orElse()"></a>3.1. <em>orElse()</em></h3><p>Assuming we have our <a target="_blank" rel="noopener" href="https://www.baeldung.com/java-logging-intro">logger</a> configured properly, let’s start with writing a simple piece of code:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>)</span><br><span class="line">  .orElse(getRandomName());</span><br></pre></td></tr></table></figure>
+
+<p>Notice that <em>getRandomName()</em> is a method which returns a random <em>name</em> from a <em>List<String>*of *names:</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getRandomName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LOG.info(<span class="string">&quot;getRandomName() method - start&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    Random random = <span class="keyword">new</span> Random();</span><br><span class="line">    <span class="keyword">int</span> index = random.nextInt(<span class="number">5</span>);</span><br><span class="line">    </span><br><span class="line">    LOG.info(<span class="string">&quot;getRandomName() method - end&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> names.get(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>On executing our code, we’ll find below messages printed in the console:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getRandomName() method - start</span><br><span class="line">getRandomName() method - end</span><br></pre></td></tr></table></figure>
+
+<p>The variable <em>name</em> will hold <em>“baeldung”</em> at the end of the code execution.</p>
+<p>With it, we can easily infer that the <strong>parameter of *orElse()* is evaluated even when having a non-empty *Optional*.</strong></p>
+<h3 id="3-2-orElseGet"><a href="#3-2-orElseGet" class="headerlink" title="3.2. orElseGet()"></a>3.2. <em>orElseGet()</em></h3><p>Now, let’s try writing similar code using <em>orElseGet()</em>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>)</span><br><span class="line">  .orElseGet(() -&gt; getRandomName());</span><br></pre></td></tr></table></figure>
+
+<p>The above code will not invoke <em>getRandomName()</em> method.</p>
+<p><strong>Remember (from the Javadoc) that the S*upplier* method passed as an argument is only executed when *an Optional* value is not present.</strong></p>
+<p>Using <em>orElseGet()</em> for our case will, therefore, save us some time involved in computing a random <em>name</em>.</p>
+<h2 id="4-Measuring-Performance-Impact"><a href="#4-Measuring-Performance-Impact" class="headerlink" title="4. Measuring Performance Impact"></a>4. Measuring Performance Impact</h2><p>Now, to also understand the differences in performance, let’s use <a target="_blank" rel="noopener" href="https://www.baeldung.com/java-microbenchmark-harness">JMH</a> and see some actual numbers:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">orElseBenchmark</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElse(getRandomName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And <em>orElseGet()</em>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">orElseGetBenchmark</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElseGet(() -&gt; getRandomName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>While executing our benchmark methods, we get:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Benchmark           Mode  Cnt      Score       Error  Units</span><br><span class="line">orElseBenchmark     avgt   20  60934.425 ± 15115.599  ns/op</span><br><span class="line">orElseGetBenchmark  avgt   20      3.798 ±     0.030  ns/op</span><br></pre></td></tr></table></figure>
+
+<p>As we can see, the performance impact might be substantial even for such a simple use-case scenario.</p>
+<p>The numbers above might slightly vary, however, <strong><em>orElseGet()\</em> has clearly outperformed *orElse()* for our particular example.</strong></p>
+<p>Afterall, <em>orElse()</em> involves computation of <em>getRandomName()</em> method for each run.</p>
+<h2 id="5-What’s-Important"><a href="#5-What’s-Important" class="headerlink" title="5. What’s Important?"></a>5. What’s Important?</h2><p>Apart from the performance aspects, other worth-considering factors involve:</p>
+<ul>
+<li><p>What if the method would execute some additional logic? E.g. making some DB inserts or updates</p>
+</li>
+<li><p>Even when we assign an object to</p>
+</li>
+</ul>
+<p>  orElse() </p>
+<p>  parameter:</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElse(<span class="string">&quot;Other&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>  we’re still creating <em>“Other”</em> object for no reason</p>
+<p>And that’s why it is important for us to make a careful decision among <em>orElse()</em> and <em>orElseGet()</em> depending on our needs – <strong>by default, it makes more sense to use *orElseGet()* every time unless the default object is already constructed and accessible directly.</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckkza1kvz0000f3n4506yd6d7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-idea-推荐插件" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" class="article-date">
@@ -111,7 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckks0tbpu000fngn426pqdypm" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckkza1kwm000bf3n4ey1pfeoj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +348,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckks0tbq1000rngn41zedd063" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckkza1kxf000vf3n45rd81jx3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -230,15 +380,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-安装redis-cli"><a href="#1-安装redis-cli" class="headerlink" title="1.安装redis-cli"></a>1.安装redis-cli</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis命令安装 就可以获取redis-cli</span><br><span class="line">yum install redis</span><br></pre></td></tr></table></figure>
+        <blockquote>
+</blockquote>
+<h2 id="1-安装redis-cli"><a href="#1-安装redis-cli" class="headerlink" title="1.安装redis-cli"></a>1.安装redis-cli</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis命令安装 就可以获取redis-cli</span><br><span class="line">yum install redis</span><br></pre></td></tr></table></figure>
 
 
 
 <h2 id="2-dump-文件：rdb"><a href="#2-dump-文件：rdb" class="headerlink" title="2.dump 文件：rdb"></a>2.dump 文件：rdb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 需要使用从库防止影响线上服务</span><br><span class="line">redis-cli -h host -p port  -a password --rdb filename</span><br></pre></td></tr></table></figure>
 
 
-
-<h2 id="3-分析命令"><a href="#3-分析命令" class="headerlink" title="3.分析命令"></a>3.分析命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -283,8 +433,8 @@
 <h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a><strong>项目地址</strong></h2><ul>
 <li><a href="https://link.zhihu.com/?target=https://github.com/xueqiu/rdr">https://github.com/xueqiu/rdr</a></li>
 </ul>
-<h3 id="另外一种分析方式，用于内存较小的情况。"><a href="#另外一种分析方式，用于内存较小的情况。" class="headerlink" title="另外一种分析方式，用于内存较小的情况。"></a>另外一种分析方式，用于内存较小的情况。</h3><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>​    Redis是基于内存的KV数据库，内存作为存储介质，关注其内存的使用情况是一个重要指标，解析其内部的存储信息是给出优化方法和维护的最基本要求。解析内存有二种方法：第一个是通过scan遍历所有key，针对每个key进行分析（memory usage）；第二个是基于RDB文件进行所有key的分析（<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">redis-rdb-tools</a>）。本文将介绍如何使用<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具。</p>
-<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具包括了3个可执行文件：</p>
+<h1 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>​    Redis是基于内存的KV数据库，内存作为存储介质，关注其内存的使用情况是一个重要指标，解析其内部的存储信息是给出优化方法和维护的最基本要求。解析内存有二种方法：第一个是通过scan遍历所有key，针对每个key进行分析（memory usage）；第二个是基于RDB文件进行所有key的分析（<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">redis-rdb-tools</a>）。本文将介绍如何使用<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具。</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具包括了3个可执行文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rdb  -- 解析整个rdb文件</span><br><span class="line">redis-memory-for-key -- 解析server里的单个key</span><br><span class="line">redis-profiler --解析rdb文件成html格式</span><br></pre></td></tr></table></figure>
 
 <p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdb</a>是rdbtools工具包其中之一的工具，也是解析dump.rdb文件的工具：分析内存并将数据导出到JSON，Rdbtools是Redis的dump.rdb文件的解析器，解析器生成类似于xml。rdbtools提供了以下实用程序：</p>
@@ -432,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="ckks0tbqa000vngn4ab16a4sa" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="ckkza1ky2000xf3n45qs5h0bf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -479,7 +629,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" data-id="ckks0tbps000engn498c07k1q" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" data-id="ckkza1kwn000cf3n4dqs352fm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li></ul>
@@ -539,7 +689,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="ckks0tbpl0004ngn44wnsb2bp" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="ckkza1kwa0004f3n4ch3ccxgw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" rel="tag">mysql,unix_timestamp,from_unixtime,date_format</a></li></ul>
@@ -603,7 +753,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="ckks0tbpo0008ngn4btwcf2of" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="ckkza1kwq000ef3n4hbwp5ybk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -644,7 +794,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="ckks0tbpr000dngn4bc094dxd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="ckkza1kwk0008f3n4aulj30w7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -829,100 +979,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" data-id="ckks0tbq4000tngn47dnm4ule" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-电动车选购" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/" class="article-date">
-  <time datetime="2020-11-04T05:51:32.000Z" itemprop="datePublished">2020-11-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/">电动车选购</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="选购指标"><a href="#选购指标" class="headerlink" title="选购指标"></a>选购指标</h3><ul>
-<li>电机：好坏参考保修，无刷电机损耗小，寿命肯定更长。</li>
-<li>刹车：碟刹优于鼓刹 ，同样价格下，有碟刹的更安全。</li>
-<li>电池：锂电更轻，同样重量体积下，续航更久，充电更方便。</li>
-<li>轮胎：尽量选择真空防扎轮胎，能大幅减低破胎概率，这点很实用。</li>
-<li>工艺：如果线下购买，试驾测试下过隔离带的避震效果，如果是要散架的感觉那还是劝退吧。</li>
-<li>车架：焊接处越少越好，单管车架最稳定最安全。</li>
-</ul>
-<h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">小叮当高配款出厂名为  小叮当新国标版，</span><br><span class="line">小叮当锂电升级版出厂名为 小轻新时尚版。</span><br><span class="line">小王子锂电版PLUS出厂名为 可可PLUS版。</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/04/%E7%94%B5%E5%8A%A8%E8%BD%A6%E9%80%89%E8%B4%AD/" data-id="ckks0tbq3000sngn46mmlh9ph" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-解决无法删除状态为Dead的容器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/10/29/%E8%A7%A3%E5%86%B3%E6%97%A0%E6%B3%95%E5%88%A0%E9%99%A4%E7%8A%B6%E6%80%81%E4%B8%BADead%E7%9A%84%E5%AE%B9%E5%99%A8/" class="article-date">
-  <time datetime="2020-10-29T12:58:22.000Z" itemprop="datePublished">2020-10-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/10/29/%E8%A7%A3%E5%86%B3%E6%97%A0%E6%B3%95%E5%88%A0%E9%99%A4%E7%8A%B6%E6%80%81%E4%B8%BADead%E7%9A%84%E5%AE%B9%E5%99%A8/">解决无法删除状态为Dead的容器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>简介：</strong> docker 强制删除（rm -f）container时出现错误提示 [root@Ieat1 ~]# docker rm -f nginx Error response from daemon: Driver devicemapper failed t…</p>
-<p>docker 强制删除（rm -f）container时出现错误提示</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@Ieat1 ~]# docker rm -f nginx</span><br><span class="line">Error response from daemon: Driver devicemapper failed to remove root filesystem a838d837988a593de3e997748cc80b1540dd31697f66e93dad275fbeaa5b3278: Device is Busy</span><br></pre></td></tr></table></figure>
-
-<p>查看容器状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@Ieat1 ~]# docker ps -a|grep nginx</span><br><span class="line">a838d837988a        nginx                                                   &quot;nginx -g &#39;daemon ...&quot;   3 weeks ago         Dead </span><br></pre></td></tr></table></figure>
-
-<p>发现它是 status为dead的容器，实际上，吞掉这个错误就可以了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker stop nginx 1&gt;&#x2F;dev&#x2F;null 2&gt;&amp;1 | exit 0</span><br><span class="line">docker rm -f nginx 1&gt;&#x2F;dev&#x2F;null 2&gt;&amp;1 | exit 0</span><br></pre></td></tr></table></figure>
-
-<p>再次查看发现已经删除掉了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@Ieat1 ~]# docker ps -a|grep nginx</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/29/%E8%A7%A3%E5%86%B3%E6%97%A0%E6%B3%95%E5%88%A0%E9%99%A4%E7%8A%B6%E6%80%81%E4%B8%BADead%E7%9A%84%E5%AE%B9%E5%99%A8/" data-id="ckks0tbq5000ungn49wmydq1o" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" data-id="ckkza1kxi000wf3n43otoctoa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -982,6 +1039,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">pure-ftp安装和配置</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/">Java Optional – orElse() vs orElseGet()</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/">idea 推荐插件</a>
           </li>
         
@@ -991,14 +1056,6 @@
         
           <li>
             <a href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/">redis分析</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/">linux下mysql数据库备份与还原</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/">MySQL时间戳和时间的获取/相互转换/格式化</a>
           </li>
         
       </ul>
