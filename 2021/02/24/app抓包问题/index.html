@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>app抓包问题 | lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="还在为大厂app抓不到包而犯愁吗？抓不到请求的现象我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。 抓不到请求的原因大家都知道 http协议下层是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="app抓包问题">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="还在为大厂app抓不到包而犯愁吗？抓不到请求的现象我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。 抓不到请求的原因大家都知道 http协议下层是">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b864723b15224d3984fb06470f9be8e9~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22b61e3eef7a47c190f480d51b6afcb5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd0e64fe6d444b57a8bdabc0edec4606~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/147e0c1bbf2a4ab4ae1b1d6b5f36ac19~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2021-02-24T08:26:00.000Z">
+<meta property="article:modified_time" content="2021-02-24T08:26:21.498Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-app抓包问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-02-24T08:26:00.000Z" itemprop="datePublished">2021-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      app抓包问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="还在为大厂app抓不到包而犯愁吗？"><a href="#还在为大厂app抓不到包而犯愁吗？" class="headerlink" title="还在为大厂app抓不到包而犯愁吗？"></a>还在为大厂app抓不到包而犯愁吗？</h1><h2 id="抓不到请求的现象"><a href="#抓不到请求的现象" class="headerlink" title="抓不到请求的现象"></a>抓不到请求的现象</h2><p>我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。</p>
+<h2 id="抓不到请求的原因"><a href="#抓不到请求的原因" class="headerlink" title="抓不到请求的原因"></a>抓不到请求的原因</h2><p>大家都知道 http协议下层是tcp协议，tcp协议都是内置在操作系统里面的，我们最多只能使用tcp协议对外暴露的socket接口来进行编程， 我们是无法修改操作系统本身的tcp协议的实现的。</p>
+<p>但是http协议不同，http协议 都是各个开发者自己实现的， 换句话说 你要实现什么样的http客户端，这个客户端对http协议实现的好坏，实现了多少，支持哪些细节都是你自己决定的。 比如说android上 最有名的<strong>okhttp</strong> 就是一个http客户端的实现。</p>
+<p>既然是自己实现，那就有说法了，虽然你系统设置了代理，但是我完全可以不使用你的代理（或者说我压根就没实现http协议中 proxy的部分）。 这样自然就会像大厂中的某些app一样， 你虽然设置了代理 但是你还是无法抓包。</p>
+<p>因为人家http协议的客户端** 压根就没有使用你系统设置的 代理**。</p>
+<h2 id="看源码"><a href="#看源码" class="headerlink" title="看源码"></a>看源码</h2><p>想明白这个，我们再带着目的 去看源码 就很简单了。</p>
+<p>首先okhttp 是肯定有实现http代理的部分的，否则我们每天也不可能使用代理 愉快的进行抓包。 那么既然有大厂的app 抓不到，那么肯定是某些属性 动态设置了。</p>
+<p>注意看下面的代码：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>如果我这样设置了，你就会发现 你的app的接口 也会抓不到了。</p>
+<p>继续看源码： <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b864723b15224d3984fb06470f9be8e9~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>注释说的很明白，大概意思就是当你设置了这个属性以后，我们就不会使用系统代理了。 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22b61e3eef7a47c190f480d51b6afcb5~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>其实flutter也是有类似的功能，只不过okhttp 默认情况下是使用系统代理的，你要不想使用 你就必须写额外的代码，但是flutter是反过来的， flutter是默认就不使用系统代理，你要开启代理，必须在代码中进行设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">lass ProxyDio &#123;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理地址</span><br><span class="line">  static const _PROXY_IP_ADDRESS &#x3D; &quot;10.12.65.66&quot;;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理端口号</span><br><span class="line">  static const _PROXY_PORT_NUM &#x3D; &quot;5000&quot;;</span><br><span class="line"></span><br><span class="line">  static Dio getProxyDio() &#123;</span><br><span class="line">    var dio &#x3D; Dio();</span><br><span class="line">    final adapter &#x3D; dio.httpClientAdapter as DefaultHttpClientAdapter;</span><br><span class="line">    adapter.onHttpClientCreate &#x3D; (client) &#123;</span><br><span class="line">      &#x2F;&#x2F; 设置该客户端的代理为指定的 ip:端口</span><br><span class="line">      client.findProxy &#x3D; (uri) &#123;</span><br><span class="line">        &#x2F;&#x2F; localProxyIPAddress 和 localProxyPort 是在外部被忽略文件中定义, 方便各个开发者自行更改.</span><br><span class="line">        return &quot;PROXY &quot; + _PROXY_IP_ADDRESS + &quot;:&quot; + _PROXY_PORT_NUM;</span><br><span class="line">      &#125;;</span><br><span class="line">      &#x2F;&#x2F; 安卓机上面证书授权:</span><br><span class="line">      client.badCertificateCallback &#x3D; (cert, host, port) &#x3D;&gt; true;</span><br><span class="line">    &#125;;</span><br><span class="line">    return dio;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="特殊定制"><a href="#特殊定制" class="headerlink" title="特殊定制"></a>特殊定制</h2><p>了解到 事情的来龙去脉以后，我们还需要思考1个问题，为什么大厂的app 是有些接口抓不到，有些接口 就能抓到呢？ 这里其实有3个原因。</p>
+<p>第一： webview webview 使用的http协议 显然跟我们的okhttp是不一样的。而webview使用的 http协议栈 默认都是c代码的实现，我们很难干预，从测试的情况来看，这个http协议栈的实现 是会使用默认系统代理的。 我暂时没找到 关闭这个功能的api，如果有小伙伴实现了 可以告诉我</p>
+<p>第二：可以针对性的对某些敏感接口 使用no_proxy,而其余接口保持正常。</p>
+<p>实际上okhttp做的非常强大，对于代理的设置 他可以做到针对 接口地址不同 而 使用不一样的设置。</p>
+<p>比如这种写法 和上面的no_proxy 就是差不多效果的 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd0e64fe6d444b57a8bdabc0edec4606~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>再看看 <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/147e0c1bbf2a4ab4ae1b1d6b5f36ac19~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>第三： 即使你使用了全局的no_proxy 代理，但是通常 我们的app里面都不会只有一个okhttp的 client，因为还有其他第三方的库引进来，他们的client 如果没有使用 no_proxy 那他们的接口 还是可以被抓包软件抓到的。</p>
+<p>当然这个问题也是可以解决的，我们只要利用 字节码修改技术 直接修改 字节码即可。 这里就不多介绍了，有兴趣的可以自己实现。</p>
+<h2 id="使用了no-proxy-真的就抓不到了吗？"><a href="#使用了no-proxy-真的就抓不到了吗？" class="headerlink" title="使用了no_proxy 真的就抓不到了吗？"></a>使用了no_proxy 真的就抓不到了吗？</h2><p>当然不是，解决问题的方法就很多，最简单的就是使用drony这个软件，模拟一个vpn网络 即可。 原理很简单，让流量走到vpn里面， 然后vpn默认使用代理 即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cklj6bnol000cswn43neehi9g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">pure-ftp安装和配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn-skip-module/" rel="tag">mvn, skip,module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" rel="tag">mysql,unix_timestamp,from_unixtime,date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" rel="tag">zkCli.sh, 客户端, 命令, ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" rel="tag">zookeeper, docker, ZkCli.sh</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/blogOfLin/tags/mvn-skip-module/" style="font-size: 10px;">mvn, skip,module</a> <a href="/blogOfLin/tags/mysql-unix-timestamp-from-unixtime-date-format/" style="font-size: 10px;">mysql,unix_timestamp,from_unixtime,date_format</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/zkCli-sh-%E5%AE%A2%E6%88%B7%E7%AB%AF-%E5%91%BD%E4%BB%A4-ZooKeeper/" style="font-size: 10px;">zkCli.sh, 客户端, 命令, ZooKeeper</a> <a href="/blogOfLin/tags/zookeeper-docker-ZkCli-sh/" style="font-size: 10px;">zookeeper, docker, ZkCli.sh</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">pure-ftp安装和配置</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/">Java Optional – orElse() vs orElseGet()</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/">idea 推荐插件</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">深入理解Redis的scan命令</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
