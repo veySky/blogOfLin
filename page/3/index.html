@@ -66,6 +66,379 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-zookeeper-客户端Curator使用详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-10-16T12:59:15.000Z" itemprop="datePublished">2020-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">zookeeper 客户端Curator使用详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。Patrixck Hunt（Zookeeper）以一句“Guava is to Java that Curator to Zookeeper”给Curator予高度评价。<br><strong>引子和趣闻：</strong><br>Zookeeper名字的由来是比较有趣的，下面的片段摘抄自《从PAXOS到ZOOKEEPER分布式一致性原理与实践》一书：<br>Zookeeper最早起源于雅虎的研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型的系统需要依赖一个类似的系统进行分布式协调，但是这些系统往往存在分布式单点问题。所以雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架。在立项初期，考虑到很多项目都是用动物的名字来命名的(例如著名的Pig项目)，雅虎的工程师希望给这个项目也取一个动物的名字。时任研究院的首席科学家Raghu Ramakrishnan开玩笑说：再这样下去，我们这儿就变成动物园了。此话一出，大家纷纷表示就叫动物园管理员吧——因为各个以动物命名的分布式组件放在一起，雅虎的整个分布式系统看上去就像一个大型的动物园了，而Zookeeper正好用来进行分布式环境的协调——于是，Zookeeper的名字由此诞生了。</p>
+<p>Curator无疑是Zookeeper客户端中的瑞士军刀，它译作”馆长”或者’’管理者’’，不知道是不是开发小组有意而为之，笔者猜测有可能这样命名的原因是说明Curator就是Zookeeper的馆长(脑洞有点大：Curator就是动物园的园长)。<br>Curator包含了几个包：<br><strong>curator-framework：</strong>对zookeeper的底层api的一些封装<br><strong>curator-client：</strong>提供一些客户端的操作，例如重试策略等<br><strong>curator-recipes：</strong>封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式计数器、分布式Barrier等<br>Maven依赖(使用curator的版本：2.12.0，对应Zookeeper的版本为：3.4.x，<strong>如果跨版本会有兼容性问题，很有可能导致节点操作失败</strong>)：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Curator的基本Api"><a href="#Curator的基本Api" class="headerlink" title="Curator的基本Api"></a>Curator的基本Api</h1><h2 id="创建会话"><a href="#创建会话" class="headerlink" title="创建会话"></a>创建会话</h2><h3 id="1-使用静态工程方法创建客户端"><a href="#1-使用静态工程方法创建客户端" class="headerlink" title="1.使用静态工程方法创建客户端"></a>1.使用静态工程方法创建客户端</h3><p>一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">CuratorFramework client =</span><br><span class="line">CuratorFrameworkFactory.newClient(</span><br><span class="line">                        connectionInfo,</span><br><span class="line">                        <span class="number">5000</span>,</span><br><span class="line">                        <span class="number">3000</span>,</span><br><span class="line">                        retryPolicy);</span><br></pre></td></tr></table></figure>
+
+<p>newClient静态工厂方法包含四个主要参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">connectionString</td>
+<td align="center">服务器列表，格式host1:port1,host2:port2,…</td>
+</tr>
+<tr>
+<td align="left">retryPolicy</td>
+<td align="center">重试策略,内建有四种重试策略,也可以自行实现RetryPolicy接口</td>
+</tr>
+<tr>
+<td align="left">sessionTimeoutMs</td>
+<td align="center">会话超时时间，单位毫秒，默认60000ms</td>
+</tr>
+<tr>
+<td align="left">connectionTimeoutMs</td>
+<td align="center">连接创建超时时间，单位毫秒，默认60000ms</td>
+</tr>
+</tbody></table>
+<h3 id="2-使用Fluent风格的Api创建会话"><a href="#2-使用Fluent风格的Api创建会话" class="headerlink" title="2.使用Fluent风格的Api创建会话"></a>2.使用Fluent风格的Api创建会话</h3><p>核心参数变为流式设置，一个列子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">CuratorFramework client =</span><br><span class="line">CuratorFrameworkFactory.builder()</span><br><span class="line">        .connectString(connectionInfo)</span><br><span class="line">        .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .retryPolicy(retryPolicy)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-创建包含隔离命名空间的会话"><a href="#3-创建包含隔离命名空间的会话" class="headerlink" title="3.创建包含隔离命名空间的会话"></a>3.创建包含隔离命名空间的会话</h3><p>为了实现不同的Zookeeper业务之间的隔离，需要为每个业务分配一个独立的命名空间（<strong>NameSpace</strong>），即指定一个Zookeeper的根路径（官方术语：*<strong>为Zookeeper添加“Chroot”特性*</strong>）。例如（下面的例子）当客户端指定了独立命名空间为“/base”，那么该客户端对Zookeeper上的数据节点的操作都是基于该目录进行的。通过设置Chroot可以将客户端应用与Zookeeper服务端的一课子树相对应，在多个应用共用一个Zookeeper集群的场景下，这对于实现不同应用之间的相互隔离十分有意义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">        CuratorFramework client =</span><br><span class="line">        CuratorFrameworkFactory.builder()</span><br><span class="line">                .connectString(connectionInfo)</span><br><span class="line">                .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">                .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">                .retryPolicy(retryPolicy)</span><br><span class="line">                .namespace(<span class="string">&quot;base&quot;</span>)</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动客户端"><a href="#启动客户端" class="headerlink" title="启动客户端"></a>启动客户端</h2><p>当创建会话成功，得到client的实例然后可以直接调用其start( )方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.start();</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据节点操作"><a href="#数据节点操作" class="headerlink" title="数据节点操作"></a>数据节点操作</h2><h3 id="创建数据节点"><a href="#创建数据节点" class="headerlink" title="创建数据节点"></a>创建数据节点</h3><p><strong>Zookeeper的节点创建模式：</strong></p>
+<ul>
+<li>PERSISTENT：持久化</li>
+<li>PERSISTENT_SEQUENTIAL：持久化并且带序列号</li>
+<li>EPHEMERAL：临时</li>
+<li>EPHEMERAL_SEQUENTIAL：临时并且带序列号</li>
+</ul>
+<p>**创建一个节点，初始内容为空 **</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.create</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果没有设置节点属性，节点创建模式默认为持久化节点，内容默认为空</p>
+<p><strong>创建一个节点，附带初始化内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.create</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;,&quot;<span class="selector-tag">init</span>&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），内容为空</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.create</span>()<span class="selector-class">.withMode</span>(<span class="selector-tag">CreateMode</span><span class="selector-class">.EPHEMERAL</span>)<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.create</span>()<span class="selector-class">.withMode</span>(<span class="selector-tag">CreateMode</span><span class="selector-class">.EPHEMERAL</span>)<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;,&quot;<span class="selector-tag">init</span>&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容，并且自动递归创建父节点</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">client.create()</span><br><span class="line">      .creatingParentContainersIfNeeded()</span><br><span class="line">      .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">      .forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;init&quot;</span>.getBytes());</span><br></pre></td></tr></table></figure>
+
+<p>这个creatingParentContainersIfNeeded()接口非常有用，因为一般情况开发人员在创建一个子节点必须判断它的父节点是否存在，如果不存在直接创建会抛出NoNodeException，使用creatingParentContainersIfNeeded()之后Curator能够自动递归创建所有所需的父节点。</p>
+<h3 id="删除数据节点"><a href="#删除数据节点" class="headerlink" title="删除数据节点"></a>删除数据节点</h3><p><strong>删除一个节点</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.<span class="keyword">delete</span>().forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意，此方法只能删除<strong>叶子节点</strong>，否则会抛出异常。</p>
+<p><strong>删除一个节点，并且递归删除其所有的子节点</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.delete</span>()<span class="selector-class">.deletingChildrenIfNeeded</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除一个节点，强制指定版本进行删除</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.delete</span>()<span class="selector-class">.withVersion</span>(10086)<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除一个节点，强制保证删除</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.delete</span>()<span class="selector-class">.guaranteed</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>guaranteed()接口是一个保障措施，只要客户端会话有效，那么Curator会在后台持续进行删除操作，直到删除节点成功。</p>
+<p><strong>注意：</strong>上面的多个流式接口是可以自由组合的，例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.delete</span>()<span class="selector-class">.guaranteed</span>()<span class="selector-class">.deletingChildrenIfNeeded</span>()<span class="selector-class">.withVersion</span>(10086)<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取数据节点数据"><a href="#读取数据节点数据" class="headerlink" title="读取数据节点数据"></a>读取数据节点数据</h3><p><strong>读取一个节点的数据内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.getData</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意，此方法返的返回值是byte[ ];</p>
+<p><strong>读取一个节点的数据内容，同时获取到该节点的stat</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Stat <span class="built_in">stat</span> = new Stat();</span><br><span class="line">client.getData().storingStatIn(<span class="built_in">stat</span>).forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新数据节点数据"><a href="#更新数据节点数据" class="headerlink" title="更新数据节点数据"></a>更新数据节点数据</h3><p><strong>更新一个节点的数据内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.setData</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;,&quot;<span class="selector-tag">data</span>&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p>注意：该接口会返回一个Stat实例</p>
+<p><strong>更新一个节点的数据内容，强制指定版本进行更新</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.setData</span>()<span class="selector-class">.withVersion</span>(10086)<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;,&quot;<span class="selector-tag">data</span>&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查节点是否存在"><a href="#检查节点是否存在" class="headerlink" title="检查节点是否存在"></a>检查节点是否存在</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.checkExists</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：该方法返回一个Stat实例，用于检查ZNode是否存在的操作. 可以调用额外的方法(监控或者后台处理)并在最后调用forPath( )指定要操作的ZNode</p>
+<h3 id="获取某个节点的所有子节点路径"><a href="#获取某个节点的所有子节点路径" class="headerlink" title="获取某个节点的所有子节点路径"></a>获取某个节点的所有子节点路径</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">client</span><span class="selector-class">.getChildren</span>()<span class="selector-class">.forPath</span>(&quot;<span class="selector-tag">path</span>&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：该方法的返回值为List<String>,获得ZNode的子节点Path列表。 可以调用额外的方法(监控、后台处理或者获取状态watch, background or get stat) 并在最后调用forPath()指定要操作的父ZNode</p>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>CuratorFramework的实例包含inTransaction( )接口方法，调用此方法开启一个ZooKeeper事务. 可以复合create, setData, check, and/or delete 等操作然后调用commit()作为一个原子操作提交。一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">client.inTransaction().check().forPath(<span class="string">&quot;path&quot;</span>)</span><br><span class="line">      .and()</span><br><span class="line">      .create().withMode(CreateMode.EPHEMERAL).forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;data&quot;</span>.getBytes())</span><br><span class="line">      .and()</span><br><span class="line">      .setData().withVersion(<span class="number">10086</span>).forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;data2&quot;</span>.getBytes())</span><br><span class="line">      .and()</span><br><span class="line">      .commit();</span><br></pre></td></tr></table></figure>
+
+<h3 id="异步接口"><a href="#异步接口" class="headerlink" title="异步接口"></a>异步接口</h3><p>上面提到的创建、删除、更新、读取等方法都是同步的，Curator提供异步接口，引入了<strong>BackgroundCallback</strong>接口用于处理异步接口调用之后服务端返回的结果信息。<strong>BackgroundCallback</strong>接口中一个重要的回调值为CuratorEvent，里面包含事件类型、响应吗和节点的详细信息。</p>
+<p><strong>CuratorEventType</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">事件类型</th>
+<th align="center">对应CuratorFramework实例的方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CREATE</td>
+<td align="center">#create()</td>
+</tr>
+<tr>
+<td align="center">DELETE</td>
+<td align="center">#delete()</td>
+</tr>
+<tr>
+<td align="center">EXISTS</td>
+<td align="center">#checkExists()</td>
+</tr>
+<tr>
+<td align="center">GET_DATA</td>
+<td align="center">#getData()</td>
+</tr>
+<tr>
+<td align="center">SET_DATA</td>
+<td align="center">#setData()</td>
+</tr>
+<tr>
+<td align="center">CHILDREN</td>
+<td align="center">#getChildren()</td>
+</tr>
+<tr>
+<td align="center">SYNC</td>
+<td align="center">#sync(String,Object)</td>
+</tr>
+<tr>
+<td align="center">GET_ACL</td>
+<td align="center">#getACL()</td>
+</tr>
+<tr>
+<td align="center">SET_ACL</td>
+<td align="center">#setACL()</td>
+</tr>
+<tr>
+<td align="center">WATCHED</td>
+<td align="center">#Watcher(Watcher)</td>
+</tr>
+<tr>
+<td align="center">CLOSING</td>
+<td align="center">#close()</td>
+</tr>
+</tbody></table>
+<p><strong>响应码(#getResultCode())</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">响应码</th>
+<th align="center">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">OK，即调用成功</td>
+</tr>
+<tr>
+<td align="center">-4</td>
+<td align="center">ConnectionLoss，即客户端与服务端断开连接</td>
+</tr>
+<tr>
+<td align="center">-110</td>
+<td align="center">NodeExists，即节点已经存在</td>
+</tr>
+<tr>
+<td align="center">-112</td>
+<td align="center">SessionExpired，即会话过期</td>
+</tr>
+</tbody></table>
+<p>一个异步创建节点的例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Executor executor = Executors.newFixedThreadPool(<span class="number">2</span>);</span><br><span class="line">client.create()</span><br><span class="line">      .creatingParentsIfNeeded()</span><br><span class="line">      .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">      .inBackground((curatorFramework, curatorEvent) -&gt; &#123;      System.out.println(String.format(<span class="string">&quot;eventType:%s,resultCode:%s&quot;</span>,curatorEvent.getType(),curatorEvent.getResultCode()));</span><br><span class="line">      &#125;,executor)</span><br><span class="line">      .forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果#inBackground()方法不指定executor，那么会默认使用Curator的EventThread去进行异步处理。</p>
+<h2 id="Curator食谱-高级特性"><a href="#Curator食谱-高级特性" class="headerlink" title="Curator食谱(高级特性)"></a>Curator食谱(高级特性)</h2><p><strong>提醒：首先你必须添加curator-recipes依赖，下文仅仅对recipes一些特性的使用进行解释和举例，不打算进行源码级别的探讨</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重要提醒：强烈推荐使用ConnectionStateListener监控连接的状态，当连接状态为LOST，curator-recipes下的所有Api将会失效或者过期，尽管后面所有的例子都没有使用到ConnectionStateListener。</strong></p>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>Zookeeper原生支持通过注册Watcher来进行事件监听，但是开发者需要反复注册(Watcher只能单次注册单次使用)。Cache是Curator中对事件监听的包装，可以看作是对事件监听的本地缓存视图，能够自动为开发者处理反复注册监听。Curator提供了三种Watcher(Cache)来监听结点的变化。</p>
+<h4 id="Path-Cache"><a href="#Path-Cache" class="headerlink" title="Path Cache"></a>Path Cache</h4><p>Path Cache用来监控一个ZNode的子节点. 当一个子节点增加， 更新，删除时， Path Cache会改变它的状态， 会包含最新的子节点， 子节点的数据和状态，而状态的更变将通过PathChildrenCacheListener通知。</p>
+<p>实际使用时会涉及到四个类：</p>
+<ul>
+<li>PathChildrenCache</li>
+<li>PathChildrenCacheEvent</li>
+<li>PathChildrenCacheListener</li>
+<li>ChildData</li>
+</ul>
+<p>通过下面的构造函数创建Path Cache:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PathChildrenCache</span><span class="params">(CuratorFramework client, String path, <span class="keyword">boolean</span> cacheData)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>想使用cache，必须调用它的<code>start</code>方法，使用完后调用<code>close</code>方法。 可以设置StartMode来实现启动的模式</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckmctu5oz00185qn4dfvs298i" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Zookeeper-Docker下安装部署" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="article-date">
+  <time datetime="2020-10-16T12:27:46.000Z" itemprop="datePublished">2020-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">Zookeeper  Docker下安装部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="单节点安装"><a href="#单节点安装" class="headerlink" title="单节点安装"></a>单节点安装</h1><h2 id="一、-环境说明"><a href="#一、-环境说明" class="headerlink" title="一、 环境说明"></a>一、 环境说明</h2><ul>
+<li>docker: 18.09.9-ce</li>
+<li>zookeeper: 3.5.6</li>
+</ul>
+<h2 id="二、-拉取-zookeeper-镜像"><a href="#二、-拉取-zookeeper-镜像" class="headerlink" title="二、 拉取 zookeeper 镜像"></a>二、 拉取 zookeeper 镜像</h2><ul>
+<li><strong>拉取镜像</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>默认是摘取最新版本 <strong>zookeeper:latest</strong>。</p>
+<ul>
+<li><strong>查看当前镜像</strong></li>
+</ul>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110311103-1391656531.png" alt="img"></p>
+<h2 id="三、-准备工作"><a href="#三、-准备工作" class="headerlink" title="三、 准备工作"></a>三、 准备工作</h2><p>将它部署在 /usr/local/zookeeper 目录下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local &amp;&amp; mkdir zookeeper &amp;&amp; cd zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>创建data目录，用于挂载容器中的数据目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir data</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110633631-1450938810.png" alt="img"></p>
+<h2 id="四、-正式部署"><a href="#四、-正式部署" class="headerlink" title="四、 正式部署"></a>四、 正式部署</h2><ul>
+<li><strong>部署命令：</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -e TZ&#x3D;&quot;Asia&#x2F;Shanghai&quot; -p 2181:2181 -v $PWD&#x2F;data:&#x2F;data --name zookeeper --restart always zookeeper</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>命令详细说明：</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-e TZ&#x3D;&quot;Asia&#x2F;Shanghai&quot; # 指定上海时区 </span><br><span class="line">-d # 表示在一直在后台运行容器</span><br><span class="line">-p 2181:2181 # 对端口进行映射，将本地2181端口映射到容器内部的2181端口</span><br><span class="line">--name # 设置创建的容器名称</span><br><span class="line">-v # 将本地目录(文件)挂载到容器指定目录；</span><br><span class="line">--restart always #始终重新启动zookeeper</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>查看容器启动情况：</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111223382-266770946.png" alt="img"></p>
+<p>注：状态（STATUS）为Up，说明容器已经启动成功。</p>
+<h2 id="五、-测试"><a href="#五、-测试" class="headerlink" title="五、 测试"></a>五、 测试</h2><ul>
+<li><strong>使用zk命令行客户端连接zk</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --rm --link zookeeper:zookeeper zookeeper zkCli.sh -server zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>说明：<code>-server zookeeper</code>是启动<code>zkCli.sh</code>的参数</p>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111608512-516451599.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111735060-225718424.png" alt="img"></p>
+<h2 id="六、-其它命令"><a href="#六、-其它命令" class="headerlink" title="六、 其它命令"></a>六、 其它命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看zookeeper容器实例进程信息</span><br><span class="line">docker top zookeeper</span><br><span class="line"></span><br><span class="line"># 停止zookeeper实例进程</span><br><span class="line">docker stop zookeeper</span><br><span class="line"></span><br><span class="line"># 启动zookeeper实例进程</span><br><span class="line">docker start zookeeper</span><br><span class="line"></span><br><span class="line"># 重启zookeeper实例进程</span><br><span class="line">docker restart zookeeper</span><br><span class="line"></span><br><span class="line"># 查看zookeeper进程日志</span><br><span class="line">docker logs -f zookeeper</span><br><span class="line"></span><br><span class="line"># 杀死zookeeper实例进程</span><br><span class="line">docker kill -s KILL zookeeper</span><br><span class="line"></span><br><span class="line"># 移除zookeeper实例</span><br><span class="line">docker rm -f -v zookeeper</span><br></pre></td></tr></table></figure>
+
+<h1 id="集群方式安装"><a href="#集群方式安装" class="headerlink" title="集群方式安装"></a>集群方式安装</h1><p>集群方式选择使用<code>docker-compose</code>来完成。</p>
+<h2 id="一、安装docker-compose"><a href="#一、安装docker-compose" class="headerlink" title="一、安装docker-compose"></a>一、安装docker-compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.22.0&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="二、配置docker-compose"><a href="#二、配置docker-compose" class="headerlink" title="二、配置docker-compose"></a>二、配置docker-compose</h2><p>编写配置文件，并将其命名为：<code>docker-compose.yml</code>（<code>docker-compose</code>默认配置文件名）<br>配置文件内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">version: &#39;2&#39;</span><br><span class="line">services:</span><br><span class="line">    zoo1:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo1</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2181:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 1</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo2:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo2</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2182:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 2</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo3:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo3</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2183:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 3</span><br><span class="line">            ZOO_SERVERS: server.1&#x3D;zoo1:2888:3888 server.2&#x3D;zoo2:2888:3888 server.3&#x3D;zoo3:2888:3888</span><br></pre></td></tr></table></figure>
+
+<p>此配置文件表示，Docker需要启动三个zookeeper实例，并将2181，2182，2183三个端口号映射到容器内的2181这个端口上。<br><code>ZOO_MY_ID</code>：表示zk服务的ID, 取值为1-255之间的整数，且必须唯一<br><code>ZOO_SERVERS</code>：表示zk集群的主机列表</p>
+<h2 id="三、启动zookeeper集群"><a href="#三、启动zookeeper集群" class="headerlink" title="三、启动zookeeper集群"></a>三、启动zookeeper集群</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>该命令执行需要在<code>docker-compose</code>配置文件的目录下执行，结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker-compose up -d </span><br><span class="line">Starting zoo1 ... done</span><br><span class="line">Starting zoo2 ... done</span><br><span class="line">Starting zoo3 ... done</span><br><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="四、查看zookeeper集群实例"><a href="#四、查看zookeeper集群实例" class="headerlink" title="四、查看zookeeper集群实例"></a>四、查看zookeeper集群实例</h2><ul>
+<li><strong>通过<code>docker ps</code>查看</strong></li>
+</ul>
+<p>[root@izbp13xko46hud9vfr5s94z ~]# docker ps<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>e53b4c838001 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 0.0.0.0:2181-&gt;2181/tcp, 3888/tcp zoo1<br>19282fb6f9b4 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 3888/tcp, 0.0.0.0:2182-&gt;2181/tcp zoo2<br>099b926fa2d3 zookeeper “/docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888/tcp, 3888/tcp, 0.0.0.0:2183-&gt;2181/tcp zoo3</p>
+<ul>
+<li><strong>通过<code>docker-compose ps</code>查看</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker-compose ps </span><br><span class="line">Name              Command               State                     Ports                   </span><br><span class="line">------------------------------------------------------------------------------------------</span><br><span class="line">zoo1   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2181-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">zoo2   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2182-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">zoo3   &#x2F;docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2183-&gt;2181&#x2F;tcp, 2888&#x2F;tcp, 3888&#x2F;tcp</span><br><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p>注：这个命令需要在<code>docker-compose</code>配置文件下执行。 </p>
+<h2 id="五、管理docker-compose服务"><a href="#五、管理docker-compose服务" class="headerlink" title="五、管理docker-compose服务"></a>五、管理docker-compose服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 停止docker-compose服务</span><br><span class="line">docker-compose stop</span><br><span class="line"></span><br><span class="line"># 启动docker-compose服务</span><br><span class="line">docker-compose start </span><br><span class="line"># 重启docker-compose服务</span><br><span class="line">docker-compose restart </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="六、查看zookeeper集群节点主从关系"><a href="#六、查看zookeeper集群节点主从关系" class="headerlink" title="六、查看zookeeper集群节点主从关系"></a>六、查看zookeeper集群节点主从关系</h2><p>使用<code>docker exec -it zoo1 /bin/bash</code>这个命令进入<code>zoo1</code>节点中，之后输入<code>./bin/zkServer.sh statu</code>来查看节点主从关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker exec -it zoo1 &#x2F;bin&#x2F;bash </span><br><span class="line">bash-4.4# .&#x2F;bin&#x2F;zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: &#x2F;conf&#x2F;zoo.cfg</span><br><span class="line">Mode: follower</span><br><span class="line">bash-4.4# </span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckmctu5oj000i5qn46q3n52vn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-MySQL-主键自增，会出现跳键" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" class="article-date">
@@ -98,7 +471,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="cklt2n0ve0004d8n4h40eggl8" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckmctu5ob00075qn48hgz8bdr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,7 +525,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="cklt2n0w10018d8n483mu5exz" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckmctu5p3001c5qn40i2eabl0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +571,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="cklt2n0vh0007d8n43vft8a05" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckmctu5oa00065qn46z8yf0y0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li></ul>
@@ -264,7 +637,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="cklt2n0vj0008d8n40lnv92xq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckmctu5oc00085qn4gdej2wlp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +723,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="cklt2n0va0001d8n4fnqz2smq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckmctu5o600035qn4azh037fu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -392,7 +765,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="cklt2n0vo000hd8n410185j5x" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckmctu5om000p5qn47j5z8o2m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -417,7 +790,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li></ul>
     </div>
   </div>
 
@@ -427,7 +800,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -437,7 +810,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 10px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a>
+      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -459,6 +832,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/">Slf4j日志框架的使用及Logback、Log4j2的整合和性能对比</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/">了解Docker容器退出代码</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/">线程池使用番外-分析RejectedExecutionException异常</a>
           </li>
         
@@ -468,14 +849,6 @@
         
           <li>
             <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">pure-ftp安装和配置</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/">Java Optional – orElse() vs orElseGet()</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/">idea 推荐插件</a>
           </li>
         
       </ul>
