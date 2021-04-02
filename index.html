@@ -66,6 +66,201 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-让你彻底理解Synchronized" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" class="article-date">
+  <time datetime="2021-04-02T12:15:53.000Z" itemprop="datePublished">2021-04-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/">让你彻底理解Synchronized</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-synchronized简介"><a href="#1-synchronized简介" class="headerlink" title="1. synchronized简介"></a>1. synchronized简介</h1><p>在学习知识前，我们先来看一个现象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> SynchronizedDemo());</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;result: &quot;</span> + count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++)</span><br><span class="line">            count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启了10个线程，每个线程都累加了1000000次，如果结果正确的话自然而然总数就应该是10 * 1000000 = 10000000。可就运行多次结果都不是这个数，而且每次运行结果都不一样。这是为什么了？有什么解决方案了？这就是我们今天要聊的事情。</p>
+<p>在上一篇博文中我们已经了解了<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d52fea0d6ba5">java内存模型</a>的一些知识，并且已经知道出现线程安全的主要来源于JMM的设计，主要集中在主内存和线程的工作内存而导致的<strong>内存可见性问题</strong>，以及<strong>重排序导致的问题</strong>，进一步知道了<strong>happens-before规则</strong>。线程运行时拥有自己的栈空间，会在自己的栈空间运行，如果多线程间没有共享的数据也就是说多线程间并没有协作完成一件事情，那么，多线程就不能发挥优势，不能带来巨大的价值。那么共享数据的线程安全问题怎样处理？很自然而然的想法就是每一个线程依次去读写这个共享变量，这样就不会有任何数据安全的问题，因为每个线程所操作的都是当前最新的版本数据。那么，在java关键字synchronized就具有使每个线程依次排队操作共享变量的功能。很显然，这种同步机制效率很低，但synchronized是其他并发容器实现的基础，对它的理解也会大大提升对并发编程的感觉，从功利的角度来说，这也是面试高频的考点。好了，下面，就来具体说说这个关键字。</p>
+<h1 id="2-synchronized实现原理"><a href="#2-synchronized实现原理" class="headerlink" title="2. synchronized实现原理"></a>2. synchronized实现原理</h1><p>在java代码中使用synchronized可是使用在代码块和方法中，根据Synchronized用的位置可以有这些使用场景：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-08f16aeac7e0977d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/993/format/webp" alt="img"></p>
+<p>Synchronized的使用场景</p>
+<p> 如图，synchronized可以用在<strong>方法</strong>上也可以使用在<strong>代码块</strong>中，其中方法是实例方法和静态方法分别锁的是该类的实例对象和该类的对象。而使用在代码块中也可以分为三种，具体的可以看上面的表格。这里的需要注意的是：<strong>如果锁的是类对象的话，尽管new多个实例对象，但他们仍然是属于同一个类依然会被锁住，即线程之间保证同步关系</strong>。</p>
+<p>现在我们已经知道了怎样synchronized了，看起来很简单，拥有了这个关键字就真的可以在并发编程中得心应手了吗？爱学的你，就真的不想知道synchronized底层是怎样实现了吗？</p>
+<h2 id="2-1-对象锁（monitor）机制"><a href="#2-1-对象锁（monitor）机制" class="headerlink" title="2.1 对象锁（monitor）机制"></a>2.1 对象锁（monitor）机制</h2><p>现在我们来看看synchronized的具体底层实现。先写一个简单的demo:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (SynchronizedDemo.class) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        method();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中有一个同步代码块，锁住的是类对象，并且还有一个同步静态方法，锁住的依然是该类的类对象。编译之后，切换到SynchronizedDemo.class的同级目录之后，然后用<strong>javap -v SynchronizedDemo.class</strong>查看字节码文件：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-10e9e5d556d5214d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/778/format/webp" alt="img"></p>
+<p>SynchronizedDemo.class</p>
+<p> 如图，上面用黄色高亮的部分就是需要注意的部分了，这也是添Synchronized关键字之后独有的。执行同步代码块后首先要先执行<strong>monitorenter</strong>指令，退出的时候<strong>monitorexit</strong>指令。通过分析之后可以看出，使用Synchronized进行同步，其关键就是必须要对对象的监视器monitor进行获取，当线程获取monitor后才能继续往下执行，否则就只能等待。而这个获取的过程是<strong>互斥</strong>的，即同一时刻只有一个线程能够获取到monitor。上面的demo中在执行完同步代码块之后紧接着再会去执行一个静态同步方法，而这个方法锁的对象依然就这个类对象，那么这个正在执行的线程还需要获取该锁吗？答案是不必的，从上图中就可以看出来，执行静态同步方法的时候就只有一条monitorexit指令，并没有monitorenter获取锁的指令。这就是<strong>锁的重入性</strong>，即在同一锁程中，线程不需要再次获取同一把锁。Synchronized先天具有重入性。<strong>每个对象拥有一个计数器，当线程获取该对象锁后，计数器就会加一，释放锁后就会将计数器减一</strong>。</p>
+<p>任意一个对象都拥有自己的监视器，当这个对象由同步块或者这个对象的同步方法调用时，执行方法的线程必须先获取该对象的监视器才能进入同步块和同步方法，如果没有获取到监视器的线程将会被阻塞在同步块和同步方法的入口处，进入到BLOCKED状态（关于线程的状态可以看<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f65ea68a4a7f">这篇文章</a>）</p>
+<p>下图表现了对象，对象监视器，同步队列以及执行线程状态之间的关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-58bf5739c7c49c05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/993/format/webp" alt="img"></p>
+<p>对象，对象监视器，同步队列和线程状态的关系</p>
+<p>该图可以看出，任意线程对Object的访问，首先要获得Object的监视器，如果获取失败，该线程就进入同步状态，线程状态变为BLOCKED，当Object的监视器占有者释放后，在同步队列中得线程就会有机会重新获取该监视器。</p>
+<h2 id="2-2-synchronized的happens-before关系"><a href="#2-2-synchronized的happens-before关系" class="headerlink" title="2.2 synchronized的happens-before关系"></a>2.2 synchronized的happens-before关系</h2><p>在上一篇文章中讨论过<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d52fea0d6ba5">happens-before</a>规则，抱着学以致用的原则我们现在来看一看Synchronized的happens-before规则，即监视器锁规则：对同一个监视器的解锁，happens-before于对该监视器的加锁。继续来看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MonitorDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;     <span class="comment">// 1</span></span><br><span class="line">        a++;                                <span class="comment">// 2</span></span><br><span class="line">    &#125;                                       <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;    <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">int</span> i = a;                         <span class="comment">// 5</span></span><br><span class="line">    &#125;                                      <span class="comment">// 6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该代码的happens-before关系如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-d025c6be230f72a2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/650/format/webp" alt="img"></p>
+<p>Synchronized的happens-before关系</p>
+<p> 在图中每一个箭头连接的两个节点就代表之间的happens-before关系，黑色的是通过程序顺序规则推导出来，红色的为监视器锁规则推导而出：<strong>线程A释放锁happens-before线程B加锁</strong>，蓝色的则是通过程序顺序规则和监视器锁规则推测出来happens-befor关系，通过传递性规则进一步推导的happens-before关系。现在我们来重点关注2 happens-before 5，通过这个关系我们可以得出什么？</p>
+<p>根据happens-before的定义中的一条:如果A happens-before B，则A的执行结果对B可见，并且A的执行顺序先于B。线程A先对共享变量A进行加一，由2 happens-before 5关系可知线程A的执行结果对线程B可见即线程B所读取到的a的值为1。</p>
+<h2 id="2-3-锁获取和锁释放的内存语义"><a href="#2-3-锁获取和锁释放的内存语义" class="headerlink" title="2.3 锁获取和锁释放的内存语义"></a>2.3 锁获取和锁释放的内存语义</h2><p>在上一篇文章提到过JMM核心为两个部分：happens-before规则以及内存抽象模型。我们分析完Synchronized的happens-before关系后，还是不太完整的，我们接下来看看基于java内存抽象模型的Synchronized的内存语义。</p>
+<p>废话不多说依旧先上图。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-8faace4c9e651d6e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/557/format/webp" alt="img"></p>
+<p>线程A写共享变量</p>
+<p>从上图可以看出，线程A会首先先从主内存中读取共享变量a=0的值然后将该变量拷贝到自己的本地内存，进行加一操作后，再将该值刷新到主内存，整个过程即为线程A 加锁–&gt;执行临界区代码–&gt;释放锁相对应的内存语义。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-540462b1425e38d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/564/format/webp" alt="img"></p>
+<p>线程B读共享变量</p>
+<p>线程B获取锁的时候同样会从主内存中共享变量a的值，这个时候就是最新的值1,然后将该值拷贝到线程B的工作内存中去，释放锁的时候同样会重写到主内存中。</p>
+<p>从整体上来看，线程A的执行结果（a=1）对线程B是可见的，实现原理为：释放锁的时候会将值刷新到主内存中，其他线程获取锁时会强制从主内存中获取最新的值。另外也验证了2 happens-before 5，2的执行结果对5是可见的。</p>
+<p>从横向来看，这就像线程A通过主内存中的共享变量和线程B进行通信，A 告诉 B 我们俩的共享数据现在为1啦，这种线程间的通信机制正好吻合java的内存模型正好是共享内存的并发模型结构。</p>
+<h1 id="3-synchronized优化"><a href="#3-synchronized优化" class="headerlink" title="3. synchronized优化"></a>3. synchronized优化</h1><p>通过上面的讨论现在我们对Synchronized应该有所印象了，它最大的特征就是在同一时刻只有一个线程能够获得对象的监视器（monitor），从而进入到同步代码块或者同步方法之中，即表现为<strong>互斥性（排它性）</strong>。这种方式肯定效率低下，每次只能通过一个线程，既然每次只能通过一个，这种形式不能改变的话，那么我们能不能让每次通过的速度变快一点了。打个比方，去收银台付款，之前的方式是，大家都去排队，然后去纸币付款收银员找零，有的时候付款的时候在包里拿出钱包再去拿出钱，这个过程是比较耗时的，然后，支付宝解放了大家去钱包找钱的过程，现在只需要扫描下就可以完成付款了，也省去了收银员跟你找零的时间的了。同样是需要排队，但整个付款的时间大大缩短，是不是整体的效率变高速率变快了？这种优化方式同样可以引申到锁优化上，缩短获取锁的时间，伟大的科学家们也是这样做的，令人钦佩，毕竟java是这么优秀的语言（微笑脸）。</p>
+<p>在聊到锁的优化也就是锁的几种状态前，有两个知识点需要先关注：（1）CAS操作 （2）Java对象头，这是理解下面知识的前提条件。</p>
+<h2 id="3-1-CAS操作"><a href="#3-1-CAS操作" class="headerlink" title="3.1 CAS操作"></a>3.1 CAS操作</h2><h3 id="3-1-1-什么是CAS"><a href="#3-1-1-什么是CAS" class="headerlink" title="3.1.1 什么是CAS?"></a>3.1.1 什么是CAS?</h3><p>使用锁时，线程获取锁是一种<strong>悲观锁策略</strong>，即假设每一次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时也会阻塞其他线程获取该锁。而CAS操作（又称为无锁操作）是一种<strong>乐观锁策略</strong>，它假设所有线程访问共享资源的时候不会出现冲突，既然不会出现冲突自然而然就不会阻塞其他线程的操作。因此，线程就不会出现阻塞停顿的状态。那么，如果出现冲突了怎么办？无锁操作是使用**CAS(compare and swap)**又叫做比较交换来鉴别线程是否出现冲突，出现冲突就重试当前操作直到没有冲突为止。</p>
+<h3 id="3-1-2-CAS的操作过程"><a href="#3-1-2-CAS的操作过程" class="headerlink" title="3.1.2 CAS的操作过程"></a>3.1.2 CAS的操作过程</h3><p>CAS比较交换的过程可以通俗的理解为CAS(V,O,N)，包含三个值分别为：<strong>V 内存地址存放的实际值；O 预期的值（旧值）；N 更新的新值</strong>。当V和O相同时，也就是说旧值和内存中实际的值相同表明该值没有被其他线程更改过，即该旧值O就是目前来说最新的值了，自然而然可以将新值N赋值给V。反之，V和O不相同，表明该值已经被其他线程改过了则该旧值O不是最新版本的值了，所以不能将新值N赋给V，返回V即可。当多个线程使用CAS操作一个变量是，只有一个线程会成功，并成功更新，其余会失败。失败的线程会重新尝试，当然也可以选择挂起线程</p>
+<p>CAS的实现需要硬件指令集的支撑，在JDK1.5后虚拟机才可以使用处理器提供的<strong>CMPXCHG</strong>指令实现。</p>
+<blockquote>
+<p>Synchronized VS CAS</p>
+</blockquote>
+<p>元老级的Synchronized(未优化前)最主要的问题是：在存在线程竞争的情况下会出现线程阻塞和唤醒锁带来的性能问题，因为这是一种互斥同步（阻塞同步）。而CAS并不是武断的间线程挂起，当CAS操作失败后会进行一定的尝试，而非进行耗时的挂起唤醒的操作，因此也叫做非阻塞同步。这是两者主要的区别。</p>
+<h3 id="3-1-3-CAS的应用场景"><a href="#3-1-3-CAS的应用场景" class="headerlink" title="3.1.3 CAS的应用场景"></a>3.1.3 CAS的应用场景</h3><p>在J.U.C包中利用CAS实现类有很多，可以说是支撑起整个concurrency包的实现，在Lock实现中会有CAS改变state变量，在atomic包中的实现类也几乎都是用CAS实现，关于这些具体的实现场景在之后会详细聊聊，现在有个印象就好了（微笑脸）。</p>
+<h3 id="3-1-4-CAS的问题"><a href="#3-1-4-CAS的问题" class="headerlink" title="3.1.4 CAS的问题"></a>3.1.4 CAS的问题</h3><p><strong>1. ABA问题</strong><br> 因为CAS会检查旧值有没有变化，这里存在这样一个有意思的问题。比如一个旧值A变为了成B，然后再变成A，刚好在做CAS时检查发现旧值并没有变化依然为A，但是实际上的确发生了变化。解决方案可以沿袭数据库中常用的乐观锁方式，添加一个版本号可以解决。原来的变化路径A-&gt;B-&gt;A就变成了1A-&gt;2B-&gt;3C。java这么优秀的语言，当然在java 1.5后的atomic包中提供了AtomicStampedReference来解决ABA问题，解决思路就是这样的。</p>
+<p><strong>2. 自旋时间过长</strong></p>
+<p>使用CAS时非阻塞同步，也就是说不会将线程挂起，会自旋（无非就是一个死循环）进行下一次尝试，如果这里自旋时间过长对性能是很大的消耗。如果JVM能支持处理器提供的pause指令，那么在效率上会有一定的提升。</p>
+<p><strong>3. 只能保证一个共享变量的原子操作</strong></p>
+<p>当对一个共享变量执行操作时CAS能保证其原子性，如果对多个共享变量进行操作,CAS就不能保证其原子性。有一个解决方案是利用对象整合多个共享变量，即一个类中的成员变量就是这几个共享变量。然后将这个对象做CAS操作就可以保证其原子性。atomic中提供了AtomicReference来保证引用对象之间的原子性。</p>
+<h2 id="3-2-Java对象头"><a href="#3-2-Java对象头" class="headerlink" title="3.2 Java对象头"></a>3.2 Java对象头</h2><p>在同步的时候是获取对象的monitor,即获取到对象的锁。那么对象的锁怎么理解？无非就是类似对对象的一个标志，那么这个标志就是存放在Java对象的对象头。Java对象头里的Mark Word里默认的存放的对象的Hashcode,分代年龄和锁标记位。32为JVM Mark Word默认存储结构为（注:java对象头以及下面的锁状态变化摘自《java并发编程的艺术》一书，该书我认为写的足够好，就没在自己组织语言班门弄斧了）：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-668194c20734e01f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1016/format/webp" alt="img"></p>
+<p>Mark Word存储结构</p>
+<p>如图在Mark Word会默认存放hasdcode，年龄值以及锁标志位等信息。</p>
+<p>Java SE 1.6中，锁一共有4种状态，级别从低到高依次是：<strong>无锁状态、偏向锁状态、轻量级锁状态和重量级锁状态</strong>，这几个状态会随着竞争情况逐渐升级。<strong>锁可以升级但不能降级</strong>，意味着偏向锁升级成轻量级锁后不能降级成偏向锁。这种锁升级却不能降级的策略，目的是为了提高获得锁和释放锁的效率。对象的MarkWord变化为下图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-4556662630b15159.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1010/format/webp" alt="img"></p>
+<p>Mark Word状态变化</p>
+<h2 id="3-2-偏向锁"><a href="#3-2-偏向锁" class="headerlink" title="3.2 偏向锁"></a>3.2 偏向锁</h2><p>HotSpot的作者经过研究发现，大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得，为了让线程获得锁的代价更低而引入了偏向锁。</p>
+<blockquote>
+<p><strong>偏向锁的获取</strong></p>
+</blockquote>
+<p>当一个线程访问同步块并获取锁时，会在<strong>对象头</strong>和<strong>栈帧中的锁记录</strong>里存储锁偏向的线程ID，以后该线程在进入和退出同步块时不需要进行CAS操作来加锁和解锁，只需简单地测试一下对象头的Mark Word里是否存储着指向当前线程的偏向锁。如果测试成功，表示线程已经获得了锁。如果测试失败，则需要再测试一下Mark Word中偏向锁的标识是否设置成1（表示当前是偏向锁）：如果没有设置，则使用CAS竞争锁；如果设置了，则尝试使用CAS将对象头的偏向锁指向当前线程</p>
+<blockquote>
+<p><strong>偏向锁的撤销</strong></p>
+</blockquote>
+<p>偏向锁使用了一种<strong>等到竞争出现才释放锁</strong>的机制，所以当其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-5b183494bd1e145d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/567/format/webp" alt="img"></p>
+<p>偏向锁撤销流程</p>
+<p> 如图，偏向锁的撤销，需要等待<strong>全局安全点</strong>（在这个时间点上没有正在执行的字节码）。它会首先暂停拥有偏向锁的线程，然后检查持有偏向锁的线程是否活着，如果线程不处于活动状态，则将对象头设置成无锁状态；如果线程仍然活着，拥有偏向锁的栈会被执行，遍历偏向对象的锁记录，栈中的锁记录和对象头的Mark Word<strong>要么</strong>重新偏向于其他线程，<strong>要么</strong>恢复到无锁或者标记对象不适合作为偏向锁，最后唤醒暂停的线程。</p>
+<p>下图线程1展示了偏向锁获取的过程，线程2展示了偏向锁撤销的过程。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-0b954fa67e8721c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/791/format/webp" alt="img"></p>
+<p>偏向锁获取和撤销流程</p>
+<blockquote>
+<p><strong>如何关闭偏向锁</strong></p>
+</blockquote>
+<p>偏向锁在Java 6和Java 7里是默认启用的，但是它在应用程序启动几秒钟之后才激活，如有必要可以使用JVM参数来关闭延迟：**-XX:BiasedLockingStartupDelay=0<strong>。如果你确定应用程序里所有的锁通常情况下处于竞争状态，可以通过JVM参数关闭偏向锁：</strong>-XX:-UseBiasedLocking=false**，那么程序默认会进入轻量级锁状态</p>
+<h2 id="3-3-轻量级锁"><a href="#3-3-轻量级锁" class="headerlink" title="3.3 轻量级锁"></a>3.3 轻量级锁</h2><blockquote>
+<p><strong>加锁</strong></p>
+</blockquote>
+<p>线程在执行同步块之前，JVM会先在当前线程的栈桢中<strong>创建用于存储锁记录的空间</strong>，并将对象头中的Mark Word复制到锁记录中，官方称为<strong>Displaced Mark Word</strong>。然后线程尝试使用CAS<strong>将对象头中的Mark Word替换为指向锁记录的指针</strong>。如果成功，当前线程获得锁，如果失败，表示其他线程竞争锁，当前线程便尝试使用自旋来获取锁</p>
+<blockquote>
+<p><strong>解锁</strong></p>
+</blockquote>
+<p>轻量级解锁时，会使用原子的CAS操作将Displaced Mark Word替换回到对象头，如果成功，则表示没有竞争发生。如果失败，表示当前锁存在竞争，锁就会膨胀成重量级锁。下图是两个线程同时争夺锁，导致锁膨胀的流程图。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-0c92d94dad8bdc27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/794/format/webp" alt="img"></p>
+<p>轻量级锁加锁解锁以及锁膨胀</p>
+<p>因为自旋会消耗CPU，为了避免无用的自旋（比如获得锁的线程被阻塞住了），一旦锁升级成重量级锁，就不会再恢复到轻量级锁状态。当锁处于这个状态下，其他线程试图获取锁时，都会被阻塞住，当持有锁的线程释放锁之后会唤醒这些线程，被唤醒的线程就会进行新一轮的夺锁之争。</p>
+<h2 id="3-5-各种锁的比较"><a href="#3-5-各种锁的比较" class="headerlink" title="3.5 各种锁的比较"></a>3.5 各种锁的比较</h2><p><img src="https://upload-images.jianshu.io/upload_images/2615789-56647501fd77289f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1014/format/webp" alt="img"></p>
+<p>各种锁的对比</p>
+<h1 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4. 一个例子"></a>4. 一个例子</h1><p>经过上面的理解，我们现在应该知道了该怎样解决了。更正后的代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> SynchronizedDemo());</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;result: &quot;</span> + count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (SynchronizedDemo.class) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++)</span><br><span class="line">                count++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启十个线程，每个线程在原值上累加1000000次，最终正确的结果为10X1000000=10000000，这里能够计算出正确的结果是因为在做累加操作时使用了同步代码块，这样就能保证每个线程所获得共享变量的值都是当前最新的值，如果不使用同步的话，就可能会出现A线程累加后，而B线程做累加操作有可能是使用原来的就值，即“脏值”。这样，就导致最终的计算结果不是正确的。而使用Syncnized就可能保证内存可见性，保证每个线程都是操作的最新值。这里只是一个示例性的demo，聪明的你，还有其他办法吗？</p>
+<blockquote>
+<p>参考文献</p>
+</blockquote>
+<p>《java并发编程的艺术》</p>
+<p>作者：你听___<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d53bf830fa09">https://www.jianshu.com/p/d53bf830fa09</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="ckn09v35y001wp3n42ap9ha2l" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用性能分析工具定位Spring-Boot启动慢问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-04-02T11:03:53.000Z" itemprop="datePublished">2021-04-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/">使用性能分析工具定位Spring Boot启动慢问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>背景<br>项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。</p>
+<p>性能分析<br>VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）<br>《在windows上面启动》<a target="_blank" rel="noopener" href="https://software.intel.com/en-us/get-started-with-vtune-windows-os">https://software.intel.com/en-us/get-started-with-vtune-windows-os</a><br>《分析Java程序》<a target="_blank" rel="noopener" href="https://software.intel.com/zh-cn/vtune-help-java-code-analysis">https://software.intel.com/zh-cn/vtune-help-java-code-analysis</a><br>为了能够在VTune分析Java项目，首先创建一个启动脚本启动项目，然后在VTune创建一个性能分析项目开启性能监控。<br>start.bat脚本如下，很简单。</p>
+<p> java -jar myboot.jar<br>1</p>
+<p>项目启动后结束性能监控，VTune会自动分析监控结果，在Bottom-up Tab页可以看到哪些方法花费了大量CPU时间。<br>其中Spring的一个matches方法就占用了50秒。</p>
+<p>org.springframework.boot.bind.DefaultPropertyNamePatternsMatcher.matches<br>1</p>
+<p>性能瓶颈<br>查阅DefaultPropertyNamePatternsMatcher.matches源码及资料，matches的作用是根据我们在ConfigurationProperties中设置的prefix的值获取对应的匹配项。<br>由于分库分表后有多个主库与从库，Properties配置了大量不同的数据源。解析这些数据源配置耗费了大量时间，再加上解析后初始化数据源对象。</p>
+<p>spring.datasource.url=jdbc:mysql://127.0.0.1:3310/test<br>spring.datasource.username=root<br>spring.datasource.password=123456<br>1<br>2<br>3<br>    @Bean(name = “masterDataSource”)<br>    @ConfigurationProperties(prefix = “spring.datasource”)<br>    public DataSource masterDataSource() {<br>        return DataSourceBuilder.create().type(dataSourceType).build();<br>    }<br>1<br>2<br>3<br>4<br>5<br>根据Spring官方github，matches在匹配prefix值的过程中确实性能欠佳，尤其是prefix越短所花费的匹配时间越长。<br>详见：spring boot startup performance issue when large properties file</p>
+<p>改善<br>matches性能问题在Spring Boot 2中已经得到改善，但项目升Spring Boot 2遥遥无期。<br>既然瓶颈在过多的prefix，首先可以减少prefix配置但治标不治本。最终解决方法为本地调试绕过Spring matches方法，改用测试插件去初始化数据源，将项目启动时间从400秒压缩为100秒左右。<br>————————————————<br>版权声明：本文为CSDN博主「tom3mao」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/j16421881/article/details/105444700">https://blog.csdn.net/j16421881/article/details/105444700</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="ckn09v35p001ep3n4a96c2x8i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Spring-项目打不同环境的-jar-包原理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" class="article-date">
@@ -114,7 +309,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="ckmeu4a12000gm3n40jxnfpxi" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="ckn09v34l000gp3n493ve9vlj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li></ul>
@@ -189,7 +384,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="ckmeu4a0z000bm3n47c61de9g" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="ckn09v34g000bp3n457bjcq4w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li></ul>
@@ -306,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="ckmeu4a1j001dm3n45h2j70ww" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="ckn09v35o001dp3n44x9ndjq9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
@@ -411,7 +606,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="ckmeu4a1n001km3n4fpinb1p5" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="ckn09v35u001np3n4brvfh05z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
@@ -473,7 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="ckmeu4a16000nm3n42lrn2er0" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="ckn09v350000np3n4ftco8rdp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -533,7 +728,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckmeu4a1g0014m3n44qnkgv7p" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckn09v35h0014p3n4bf2363aw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +822,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckmeu4a0q0003m3n43x8g4yhu" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckn09v33w0003p3n49il8c0du" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li></ul>
@@ -684,328 +879,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckmeu4a1b000vm3n4ak1gh0e9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-深入理解Redis的scan命令" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" class="article-date">
-  <time datetime="2021-01-27T06:04:11.000Z" itemprop="datePublished">2021-01-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">深入理解Redis的scan命令</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="深入理解Redis的scan命令"><a href="#深入理解Redis的scan命令" class="headerlink" title="深入理解Redis的scan命令"></a>深入理解Redis的scan命令</h1><p>熟悉Redis的人都知道，它是单线程的。因此在使用一些时间复杂度为O(N)的命令时要非常谨慎。可能一不小心就会阻塞进程，导致Redis出现卡顿。</p>
-<p>有时，我们需要针对符合条件的一部分命令进行操作，比如删除以test_开头的key。那么怎么获取到这些key呢？在Redis2.8版本之前，我们可以使用keys命令按照正则匹配得到我们需要的key。但是这个命令有两个缺点：</p>
-<ol>
-<li>没有limit，我们只能一次性获取所有符合条件的key，如果结果有上百万条，那么等待你的就是“无穷无尽”的字符串输出。</li>
-<li>keys命令是遍历算法，时间复杂度是O(N)。如我们刚才所说，这个命令非常容易导致Redis服务卡顿。因此，我们要尽量避免在生产环境使用该命令。</li>
-</ol>
-<p>在满足需求和存在造成Redis卡顿之间究竟要如何选择呢？面对这个两难的抉择，Redis在2.8版本给我们提供了解决办法——scan命令。</p>
-<p>相比于keys命令，scan命令有两个比较明显的优势：</p>
-<ol>
-<li>scan命令的时间复杂度虽然也是O(N)，但它是分次进行的，不会阻塞线程。</li>
-<li>scan命令提供了limit参数，可以控制每次返回结果的最大条数。</li>
-</ol>
-<p>这两个优势就帮助我们解决了上面的难题，不过scan命令也并不是完美的，它返回的结果有可能重复，因此需要客户端去重。至于为什么会重复，相信你看完本文之后就会有答案了。</p>
-<p>关于scan命令的基本用法，可以参看<a target="_blank" rel="noopener" href="https://jackeyzhe.github.io/2018/09/22/Redis%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%9AKeys/">Redis命令详解：Keys</a>一文中关于SCAN命令的介绍。</p>
-<p>今天我们主要从底层的结构和源码的角度来讨论scan是如何工作的。</p>
-<h4 id="Redis的结构"><a href="#Redis的结构" class="headerlink" title="Redis的结构"></a>Redis的结构</h4><p>Redis使用了Hash表作为底层实现，原因不外乎高效且实现简单。说到Hash表，很多Java程序员第一反应就是HashMap。没错，Redis底层key的存储结构就是类似于HashMap那样数组+链表的结构。其中第一维的数组大小为2n(n&gt;=0)。每次扩容数组长度扩大一倍。</p>
-<p>scan命令就是对这个一维数组进行遍历。每次返回的游标值也都是这个数组的索引。limit参数表示遍历多少个数组的元素，将这些元素下挂接的符合条件的结果都返回。因为每个元素下挂接的链表大小不同，所以每次返回的结果数量也就不同。</p>
-<h4 id="SCAN的遍历顺序"><a href="#SCAN的遍历顺序" class="headerlink" title="SCAN的遍历顺序"></a>SCAN的遍历顺序</h4><p>关于scan命令的遍历顺序，我们可以用一个小栗子来具体看一下。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;db_number&quot;</span><br><span class="line">2) &quot;key1&quot;</span><br><span class="line">3) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 0 MATCH * COUNT 1</span><br><span class="line">1) &quot;2&quot;</span><br><span class="line">2) 1) &quot;db_number&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 2 MATCH * COUNT 1</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) 1) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 1 MATCH * COUNT 1</span><br><span class="line">1) &quot;3&quot;</span><br><span class="line">2) 1) &quot;key1&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 3 MATCH * COUNT 1</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>我们的Redis中有3个key，我们每次只遍历一个一维数组中的元素。如上所示，SCAN命令的遍历顺序是</p>
-<p>0-&gt;2-&gt;1-&gt;3</p>
-<p>这个顺序看起来有些奇怪。我们把它转换成二进制就好理解一些了。</p>
-<p>00-&gt;10-&gt;01-&gt;11</p>
-<p>我们发现每次这个序列是高位加1的。普通二进制的加法，是从右往左相加、进位。而这个序列是从左往右相加、进位的。这一点我们在redis的源码中也得到印证。</p>
-<p>在dict.c文件的dictScan函数中对游标进行了如下处理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v &#x3D; rev(v);</span><br><span class="line">v++;</span><br><span class="line">v &#x3D; rev(v);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>意思是，将游标倒置，加一后，再倒置，也就是我们所说的“高位加1”的操作。</p>
-<p>这里大家可能会有疑问了，为什么要使用这样的顺序进行遍历，而不是用正常的0、1、2……这样的顺序呢，这是因为需要考虑遍历时发生字典扩容与缩容的情况（不得不佩服开发者考虑问题的全面性）。</p>
-<p>我们来看一下在SCAN遍历过程中，发生扩容时，遍历会如何进行。加入我们原始的数组有4个元素，也就是索引有两位，这时需要把它扩充成3位，并进行rehash。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/10/9/166596e4dac0695e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="rehash"></p>
-<p>原来挂接在xx下的所有元素被分配到0xx和1xx下。在上图中，当我们即将遍历10时，dict进行了rehash，这时，scan命令会从010开始遍历，而000和100（原00下挂接的元素）不会再被重复遍历。</p>
-<p>再来看看缩容的情况。假设dict从3位缩容到2位，当即将遍历110时，dict发生了缩容，这时scan会遍历10。这时010下挂接的元素会被重复遍历，但010之前的元素都不会被重复遍历了。所以，缩容时还是可能会有些重复元素出现的。</p>
-<h4 id="Redis的rehash"><a href="#Redis的rehash" class="headerlink" title="Redis的rehash"></a>Redis的rehash</h4><p>rehash是一个比较复杂的过程，为了不阻塞Redis的进程，它采用了一种渐进式的rehash的机制。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 字典 *&#x2F;</span><br><span class="line">typedef struct dict &#123;</span><br><span class="line">    &#x2F;&#x2F; 类型特定函数</span><br><span class="line">    dictType *type;</span><br><span class="line">    &#x2F;&#x2F; 私有数据</span><br><span class="line">    void *privdata;</span><br><span class="line">    &#x2F;&#x2F; 哈希表</span><br><span class="line">    dictht ht[2];</span><br><span class="line">    &#x2F;&#x2F; rehash 索引</span><br><span class="line">    &#x2F;&#x2F; 当 rehash 不在进行时，值为 -1</span><br><span class="line">    int rehashidx; &#x2F;* rehashing not in progress if rehashidx &#x3D;&#x3D; -1 *&#x2F;</span><br><span class="line">    &#x2F;&#x2F; 目前正在运行的安全迭代器的数量</span><br><span class="line">    int iterators; &#x2F;* number of iterators currently running *&#x2F;</span><br><span class="line">&#125; dict;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>在Redis的字典结构中，有两个hash表，一个新表，一个旧表。在rehash的过程中，redis将旧表中的元素逐步迁移到新表中，接下来我们看一下dict的rehash操作的源码。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* Performs N steps of incremental rehashing. Returns 1 if there are still</span><br><span class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span><br><span class="line"> *</span><br><span class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</span><br><span class="line"> * than one key as we use chaining) from the old to the new hash table, however</span><br><span class="line"> * since part of the hash table may be composed of empty spaces, it is not</span><br><span class="line"> * guaranteed that this function will rehash even a single bucket, since it</span><br><span class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span><br><span class="line"> * work it does would be unbound and the function may block for a long time. *&#x2F;</span><br><span class="line">int dictRehash(dict *d, int n) &#123;</span><br><span class="line">    int empty_visits &#x3D; n*10; &#x2F;* Max number of empty buckets to visit. *&#x2F;</span><br><span class="line">    if (!dictIsRehashing(d)) return 0;</span><br><span class="line"></span><br><span class="line">    while(n-- &amp;&amp; d-&gt;ht[0].used !&#x3D; 0) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        &#x2F;* Note that rehashidx can&#39;t overflow as we are sure there are more</span><br><span class="line">         * elements because ht[0].used !&#x3D; 0 *&#x2F;</span><br><span class="line">        assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);</span><br><span class="line">        while(d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D;&#x3D; NULL) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            if (--empty_visits &#x3D;&#x3D; 0) return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        de &#x3D; d-&gt;ht[0].table[d-&gt;rehashidx];</span><br><span class="line">        &#x2F;* Move all the keys in this bucket from the old to the new hash HT *&#x2F;</span><br><span class="line">        while(de) &#123;</span><br><span class="line">            uint64_t h;</span><br><span class="line"></span><br><span class="line">            nextde &#x3D; de-&gt;next;</span><br><span class="line">            &#x2F;* Get the index in the new hash table *&#x2F;</span><br><span class="line">            h &#x3D; dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;</span><br><span class="line">            de-&gt;next &#x3D; d-&gt;ht[1].table[h];</span><br><span class="line">            d-&gt;ht[1].table[h] &#x3D; de;</span><br><span class="line">            d-&gt;ht[0].used--;</span><br><span class="line">            d-&gt;ht[1].used++;</span><br><span class="line">            de &#x3D; nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D; NULL;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* Check if we already rehashed the whole table... *&#x2F;</span><br><span class="line">    if (d-&gt;ht[0].used &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        zfree(d-&gt;ht[0].table);</span><br><span class="line">        d-&gt;ht[0] &#x3D; d-&gt;ht[1];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">        d-&gt;rehashidx &#x3D; -1;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* More to rehash... *&#x2F;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>通过注释我们就能了解到，rehash的过程是以bucket为基本单位进行迁移的。所谓的bucket其实就是我们前面所提到的一维数组的元素。每次迁移一个列表。下面来解释一下这段代码。</p>
-<ul>
-<li>首先判断一下是否在进行rehash，如果是，则继续进行；否则直接返回。</li>
-<li>接着就是分n步开始进行渐进式rehash。同时还判断是否还有剩余元素，以保证安全性。</li>
-<li>在进行rehash之前，首先判断要迁移的bucket是否越界。</li>
-<li>然后跳过空的bucket，这里有一个empty_visits变量，表示最大可访问的空bucket的数量，这一变量主要是为了保证不过多的阻塞Redis。</li>
-<li>接下来就是元素的迁移，将当前bucket的全部元素进行rehash，并且更新两张表中元素的数量。</li>
-<li>每次迁移完一个bucket，需要将旧表中的bucket指向NULL。</li>
-<li>最后判断一下是否全部迁移完成，如果是，则收回空间，重置rehash索引，否则告诉调用方，仍有数据未迁移。</li>
-</ul>
-<p>由于Redis使用的是渐进式rehash机制，因此，scan命令在需要同时扫描新表和旧表，将结果返回客户端。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckmeu4a1l001hm3n4b3iwebl4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-redis分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" class="article-date">
-  <time datetime="2021-01-20T03:48:19.000Z" itemprop="datePublished">2021-01-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/">redis分析</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-</blockquote>
-<h2 id="1-安装redis-cli"><a href="#1-安装redis-cli" class="headerlink" title="1.安装redis-cli"></a>1.安装redis-cli</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis命令安装 就可以获取redis-cli</span><br><span class="line">yum install redis</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-dump-文件：rdb"><a href="#2-dump-文件：rdb" class="headerlink" title="2.dump 文件：rdb"></a>2.dump 文件：rdb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 需要使用从库防止影响线上服务</span><br><span class="line">redis-cli -h host -p port  -a password --rdb filename</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="RDR-简介"><a href="#RDR-简介" class="headerlink" title="RDR 简介"></a><strong>RDR 简介</strong></h2><p><code>RDR</code> 是解析 <code>redis rdbfile</code> 工具。与<code>redis-rdb-tools</code>相比，RDR 是由golang 实现的，速度更快（5GB rdbfile 在我的PC上大约需要2分钟）。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><strong>例子</strong></h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr show -p 8080 *.rdb</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://pic4.zhimg.com/80/v2-e42dabaaa2cf15a65779da6539161583_1440w.jpg" alt="img"></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr keys example.rdb</span><br><span class="line"></span><br><span class="line">portfolio:stock_follower_count:ZH314136</span><br><span class="line">portfolio:stock_follower_count:ZH654106</span><br><span class="line">portfolio:stock_follower:ZH617824</span><br><span class="line">portfolio:stock_follower_count:ZH001019</span><br><span class="line">portfolio:stock_follower_count:ZH346349</span><br><span class="line">portfolio:stock_follower_count:ZH951803</span><br><span class="line">portfolio:stock_follower:ZH924804</span><br><span class="line">portfolio:stock_follower_count:INS104806</span><br></pre></td></tr></table></figure>
-
-<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a><strong>优势</strong></h2><ul>
-<li>分析 Redis 内存中那个 Key 值占用的内存最多</li>
-<li>分析出 Redis 内存中那一类开头的 Key 占用最多，有利于内存优化</li>
-<li>Redis Key 值以 Dashboard 展示，这样更直观</li>
-</ul>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a><strong>安装</strong></h2><ul>
-<li>Linux amd64</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-linux -O /usr/<span class="built_in">local</span>/bin/rdr </span><br><span class="line">$ chmod +x /usr/<span class="built_in">local</span>/bin/rdr</span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li>MacOS</li>
-</ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-darwin -o /usr/local/bin/rdr </span><br><span class="line">$ chmod +x /usr/local/bin/rdr</span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li>Windows</li>
-</ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 浏览器下载下面链接，在点击运行 </span><br><span class="line">https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-windows.exe</span><br></pre></td></tr></table></figure>
-
-<h2 id="RDR-参数解释"><a href="#RDR-参数解释" class="headerlink" title="RDR 参数解释"></a><strong>RDR 参数解释</strong></h2><ul>
-<li>show 网页显示 rdbfile 的统计信息</li>
-<li>keys 从 rdbfile 获取所有 key</li>
-<li>help 帮助</li>
-<li>–version 显示版本信息</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">分析多个 Redis rdb</span><br><span class="line">$ rdr keys FILE1 [FILE2] [FILE3]...</span><br></pre></td></tr></table></figure>
-
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a><strong>项目地址</strong></h2><ul>
-<li><a href="https://link.zhihu.com/?target=https://github.com/xueqiu/rdr">https://github.com/xueqiu/rdr</a></li>
-</ul>
-<h1 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>​    Redis是基于内存的KV数据库，内存作为存储介质，关注其内存的使用情况是一个重要指标，解析其内部的存储信息是给出优化方法和维护的最基本要求。解析内存有二种方法：第一个是通过scan遍历所有key，针对每个key进行分析（memory usage）；第二个是基于RDB文件进行所有key的分析（<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">redis-rdb-tools</a>）。本文将介绍如何使用<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具。</p>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具包括了3个可执行文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rdb  -- 解析整个rdb文件</span><br><span class="line">redis-memory-for-key -- 解析server里的单个key</span><br><span class="line">redis-profiler --解析rdb文件成html格式</span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdb</a>是rdbtools工具包其中之一的工具，也是解析dump.rdb文件的工具：分析内存并将数据导出到JSON，Rdbtools是Redis的dump.rdb文件的解析器，解析器生成类似于xml。rdbtools提供了以下实用程序：</p>
-<ol>
-<li>生成所有数据库和键中数据的内存报告</li>
-<li>将转储文件转换为JSON</li>
-<li>使用标准差异工具比较两个转储文件</li>
-</ol>
-<h2 id="安装-rdbtools"><a href="#安装-rdbtools" class="headerlink" title="安装 rdbtools"></a>安装 rdbtools</h2><h3 id="前提条件："><a href="#前提条件：" class="headerlink" title="前提条件："></a>前提条件：</h3><ol>
-<li><p>安装 python-lzf ：加快解析速度</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install python-lzf</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装redis-py：可选，仅在运行测试用例时需要</p>
-</li>
-</ol>
-<h3 id="PyPI安装（推荐）"><a href="#PyPI安装（推荐）" class="headerlink" title="PyPI安装（推荐）"></a>PyPI安装（推荐）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install rdbtools python-lzf</span><br></pre></td></tr></table></figure>
-
-<h3 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;sripathikrishnan&#x2F;redis-rdb-tools</span><br><span class="line">cd redis-rdb-tools</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
-
-<h2 id="命令行用法示例"><a href="#命令行用法示例" class="headerlink" title="命令行用法示例"></a>命令行用法示例</h2><h3 id="help："><a href="#help：" class="headerlink" title="help："></a>help：</h3><p>**1，rdb –help：解析整个rdb文件<br>**</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">usage: rdb [options] &#x2F;path&#x2F;to&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Example : rdb --command json -k &quot;user.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">-- 要处理的dump文件</span><br><span class="line">  dump_file             RDB Dump file to process       </span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit  </span><br><span class="line">-- 要处理的命令，-c后的有效参数为：json, diff,justkeys, justkeyvals, memory，protocol </span><br><span class="line">  -c CMD, --command CMD</span><br><span class="line">                        Command to execute. Valid commands are json, diff,</span><br><span class="line">                        justkeys, justkeyvals, memory and protocol  </span><br><span class="line">-- 输出文件       </span><br><span class="line">  -f FILE, --file FILE  Output file</span><br><span class="line">-- 数据库号，可以提供多个数据库。如果未指定，则包括所有数据库。</span><br><span class="line">  -n DBS, --db DBS      Database Number. Multiple databases can be provided.</span><br><span class="line">                        If not specified, all databases will be included.</span><br><span class="line">-- 要导出的key。这可以是一个正则表达式</span><br><span class="line">  -k KEYS, --key KEYS   Keys to export. This can be a regular expression</span><br><span class="line">-- key不导出。这可以是一个正则表达式</span><br><span class="line">  -o NOT_KEYS, --not-key NOT_KEYS</span><br><span class="line">                        Keys Not to export. This can be a regular expression</span><br><span class="line">-- 解析的数据类型。可能的值为string，hash，set，sortedset，list。可以输入多种类型提供。如果未指定，则为所有数据类型</span><br><span class="line">  -t TYPES, --type TYPES</span><br><span class="line">                        Data types to include. Possible values are string,</span><br><span class="line">                        hash, set, sortedset, list. Multiple typees can be</span><br><span class="line">                        provided. If not specified, all data types will be</span><br><span class="line">                        returned</span><br><span class="line">--  将key的内存输出限制为大于或等此值（以字节为单位）</span><br><span class="line">  -b BYTES, --bytes BYTES</span><br><span class="line">                        Limit memory output to keys greater to or equal to</span><br><span class="line">                        this value (in bytes)</span><br><span class="line">--  将内存按大小输出前N个key                       </span><br><span class="line">  -l LARGEST, --largest LARGEST</span><br><span class="line">                        Limit memory output to only the top N keys (by size)</span><br><span class="line">-- 将字符串转义为编码：raw（默认），print，utf8或base64。</span><br><span class="line">  -e &#123;raw,print,utf8,base64&#125;, --escape &#123;raw,print,utf8,base64&#125;</span><br><span class="line">                        Escape strings to encoding: raw (default), print,</span><br><span class="line">                        utf8, or base64.</span><br><span class="line">-- 使用command protocol参数，从所有键中删除到期的key                       </span><br><span class="line">  -x, --no-expire       With protocol command, remove expiry from all keys</span><br><span class="line">-- 使用command protocol参数，将N秒添加到key的到期时间</span><br><span class="line">  -a N, --amend-expire N</span><br><span class="line">                        With protocol command, add N seconds to key expiry</span><br><span class="line">                        time</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p><strong>2，redis-memory-for-key –help：– 解析server里指定的单个key</strong></p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-memory-for-key [options] redis-key</span><br><span class="line">Examples :</span><br><span class="line">redis-memory-for-key user:13423</span><br><span class="line">redis-memory-for-key -s localhost -p 6379 user:13423</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 服务地址，默认127.0.0.1</span><br><span class="line">  -s HOST, --server&#x3D;HOST</span><br><span class="line">                        Redis Server hostname. Defaults to 127.0.0.1</span><br><span class="line">-- 服务端口，默认6379                        </span><br><span class="line">  -p PORT, --port&#x3D;PORT  Redis Server port. Defaults to 6379</span><br><span class="line">--服务密码</span><br><span class="line">  -a PASSWORD, --password&#x3D;PASSWORD</span><br><span class="line">                        Password to use when connecting to the server</span><br><span class="line">-- 数据库号，默认0</span><br><span class="line">  -d DB, --db&#x3D;DB        Database number, defaults to 0 </span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>**3，redis-profiler –help：<br>**</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-profiler [options] &#x2F;path&#x2F;to&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Example 1 : redis-profiler -k &quot;user.*&quot; -k &quot;friends.*&quot; -f memoryreport.html &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line">Example 2 : redis-profiler &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 输出</span><br><span class="line">  -f FILE, --file&#x3D;FILE  Output file</span><br><span class="line">-- 组合在一起的键。 多个正则表达式</span><br><span class="line">  -k KEYS, --key&#x3D;KEYS   Keys that should be grouped together. Multiple regexes</span><br><span class="line">                        can be provided</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>每次运行以上工具时都需要指定一个命令，以指示对解析的RDB数据应执行的操作。 操作有：</p>
-<h3 id="转储的JSON："><a href="#转储的JSON：" class="headerlink" title="转储的JSON："></a>转储的JSON：</h3><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;user003&quot;:&#123;&quot;fname&quot;:&quot;Ron&quot;,&quot;sname&quot;:&quot;Bumquist&quot;&#125;,</span><br><span class="line">&quot;lizards&quot;:[&quot;Bush anole&quot;,&quot;Jackson&#39;s chameleon&quot;,&quot;Komodo dragon&quot;,&quot;Ground agama&quot;,&quot;Bearded dragon&quot;],</span><br><span class="line">&quot;user001&quot;:&#123;&quot;fname&quot;:&quot;Raoul&quot;,&quot;sname&quot;:&quot;Duke&quot;&#125;,</span><br><span class="line">&quot;user002&quot;:&#123;&quot;fname&quot;:&quot;Gonzo&quot;,&quot;sname&quot;:&quot;Dr&quot;&#125;,</span><br><span class="line">&quot;user_list&quot;:[&quot;user003&quot;,&quot;user002&quot;,&quot;user001&quot;]&#125;,&#123;</span><br><span class="line">&quot;baloon&quot;:&#123;&quot;helium&quot;:&quot;birthdays&quot;,&quot;medical&quot;:&quot;angioplasty&quot;,&quot;weather&quot;:&quot;meteorology&quot;&#125;,</span><br><span class="line">&quot;armadillo&quot;:[&quot;chacoan naked-tailed&quot;,&quot;giant&quot;,&quot;Andean hairy&quot;,&quot;nine-banded&quot;,&quot;pink fairy&quot;],</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<h3 id="过滤解析："><a href="#过滤解析：" class="headerlink" title="过滤解析："></a>过滤解析：</h3><p>正则表达式匹配key，并且仅打印键和值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command justkeyvals --key &quot;user.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">user003 fname Ron,sname Bumquist,</span><br><span class="line">user001 fname Raoul,sname Duke,</span><br><span class="line">user002 fname Gonzo,sname Dr,</span><br><span class="line">user_list user003,user002,user001</span><br></pre></td></tr></table></figure>
-
-<p>仅处理数据库2中hash类型的a开头的key：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json --db 2 --type hash --key &quot;a.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;&#125;,&#123;</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
-
-<h3 id="dump文件转换为JSON："><a href="#dump文件转换为JSON：" class="headerlink" title="dump文件转换为JSON："></a>dump文件转换为JSON：</h3><p>输出是UTF-8编码的JSON。 默认情况下，回调尝试使用UTF-8解析RDB数据，并使用\U表示符转义非’ASCII可打印’字符，或使用\x转义非UTF-8可解析的字节。 尝试对RDB数据进行解码可能会导致二进制数据错误，可以通过使用–escape raw选项来避免这种情况。 另一种选择是使用-e base64进行二进制数据的Base64编码。 </p>
-<p>解析dump文件并在标准输出上打印JSON： </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00e4ttre sent \u00e4n aldrig&quot;,&quot;Bra karl reder sig sj\u00e4lv&quot;,&quot;Man ska inte k\u00f6pa grisen i s\u00e4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\\xFE\u0000\u00e2\\xF2&quot;&#125;]</span><br></pre></td></tr></table></figure>
-
-<p>将dump文件解析为原始字节，并在标准输出上打印JSON：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb --escape raw</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00c3\u00a4ttre sent \u00c3\u00a4n aldrig&quot;,&quot;Bra karl reder sig sj\u00c3\u00a4lv&quot;,&quot;Man ska inte k\u00c3\u00b6pa grisen i s\u00c3\u00a4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\u00fe\u0000\u00c3\u00a2\u00f2&quot;&#125;]</span><br></pre></td></tr></table></figure>
-
-<h3 id="生成内存报告："><a href="#生成内存报告：" class="headerlink" title="生成内存报告："></a>生成内存报告：</h3><p>使用-c memory 运行会生成CSV报告，其中包含该键使用的近似内存。 –bytes C 和 –largest N 可用于将输出限制为大于C字节的键或N个最大键。</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c memory &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb --bytes 128 -f memory.csv</span><br><span class="line">&gt; cat memory.csv</span><br><span class="line"></span><br><span class="line">database,type,key,size_in_bytes,encoding,num_elements,len_largest_element</span><br><span class="line">0,list,lizards,241,quicklist,5,19</span><br><span class="line">0,list,user_list,190,quicklist,3,7</span><br><span class="line">2,hash,baloon,138,ziplist,3,11</span><br><span class="line">2,list,armadillo,231,quicklist,5,20</span><br><span class="line">2,hash,aroma,129,ziplist,3,11</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>生成的CSV具有以下列：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">database：数据库编号</span><br><span class="line">type：数据类型</span><br><span class="line">key：键</span><br><span class="line">size_in_bytes：使用的内存：包括键，值和任何其他开销</span><br><span class="line">encoding：RDB编码类型</span><br><span class="line">num_elements：key中的value的个数</span><br><span class="line">len_largest_element：key中的value的长度</span><br><span class="line">expiry：过期值</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>注意：内存使用情况是近似的。 通常，实际使用的内存将略高于报告的内存。可以按键或数据库编号或数据类型过滤报告。内存报告应有助于检测由应用程序逻辑引起的内存泄漏。 它还将帮助优化Redis的内存使用。</p>
-<h3 id="查找单键使用的内存："><a href="#查找单键使用的内存：" class="headerlink" title="查找单键使用的内存："></a>查找单键使用的内存：</h3><p>查找特定键使用的内存（运行整个内存报告非常耗时），使用redis-memory-for-key：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; redis-memory-for-key person:1</span><br><span class="line"></span><br><span class="line">&gt; redis-memory-for-key -s localhost -p 6379 -a mypassword person:1</span><br><span class="line"></span><br><span class="line">Key             person:1</span><br><span class="line">Bytes                111</span><br><span class="line">Type                hash</span><br><span class="line">Encoding            ziplist</span><br><span class="line">Number of Elements        2</span><br><span class="line">Length of Largest Element    8</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<h3 id="比较RDB文件："><a href="#比较RDB文件：" class="headerlink" title="比较RDB文件："></a>比较RDB文件：</h3><p>使用–command diff选项，并将输出通过管道传递到标准sort：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command diff &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump1.rdb | sort &gt; dump1.txt</span><br><span class="line">&gt; rdb --command diff &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump2.rdb | sort &gt; dump2.txt</span><br></pre></td></tr></table></figure>
-
-<p>运行差异程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; kdiff3 dump1.txt dump2.txt</span><br></pre></td></tr></table></figure>
-
-<p>要限制文件的大小，可以使用–key选项过滤键</p>
-<h3 id="使用Redis协议："><a href="#使用Redis协议：" class="headerlink" title="使用Redis协议："></a>使用Redis协议：</h3><p>使用<a target="_blank" rel="noopener" href="https://redis.io/topics/protocol">protocol</a>命令将RDB文件转换为redis协议流：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c protocol &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">*4</span><br><span class="line">$4</span><br><span class="line">HSET</span><br><span class="line">$9</span><br><span class="line">users:123</span><br><span class="line">$9</span><br><span class="line">firstname</span><br><span class="line">$8</span><br><span class="line">Sripathi</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>可以将输出通过管道传输到netcat并重新导入数据的子集。如果要将数据在两个Redis实例上共享，则可以使用–key标志选择数据的子集，然后将输出传递给正在运行的Redis实例并加载该数据。 当输出打印协议时，–escape选项可以避免出现不可打印/控制字符。</p>
-<p>默认情况下，如果过期时间在rdb文件中存在，则会删除过去所有过期的键。 如果不需要此行为，则使用-x/–no-expire选项将忽略所有关键的到期命令。使用-a/–amend-expire选项设置将来的到期时间，该选项会为已设置为到期的每个密钥的到期时间增加整数秒，不会更改尚未设置有效期的key。</p>
-<h3 id="使用解析器（Python）："><a href="#使用解析器（Python）：" class="headerlink" title="使用解析器（Python）："></a>使用解析器（Python）：</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code </p>
-<h2 id="测试说明"><a href="#测试说明" class="headerlink" title="测试说明"></a>测试说明</h2><h3 id="一、rdb：根据要求分析这个RDB文件"><a href="#一、rdb：根据要求分析这个RDB文件" class="headerlink" title="一、rdb：根据要求分析这个RDB文件"></a>一、rdb：根据要求分析这个RDB文件</h3><ol>
-<li><p><strong>按json格式导出rdb：</strong></p>
-<p>rdb –command <strong>json</strong> dump.rdb </p>
-<p>**<br>**</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出rdb中的keys：</strong>rdb -c <strong>justkeys</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出rdb中的values</strong>：rdb -c <strong>justkeyvals</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p>导出rdb中keys的内存分析：</p>
-<p>rdb -c <strong>memory</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>按RESP协议导出RDB内容：</strong></p>
-<p>rdb -c <strong>protocol</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>分析RDB结果导出到文件：</strong></p>
-<p>rdb -c <strong>memory</strong> dump.rdb <strong>-f</strong> ttt.csv</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定数据库的keys：</strong></p>
-<p>rdb -c justkeyvals dump.rdb <strong>-n</strong> **0<br>**</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出\</strong>**匹配（正则）的**<em>\</em>keys：<strong>rdb –command justkeyvals *<em>–key “.\</em>set*“</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>不导出匹配（正则）的keys：</strong>rdb –command justkeyvals <strong>–not-key</strong> <strong>“.*set*“</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定类型的keys：</strong></p>
-<p>rdb –command json <strong>–type</strong> <strong>hash</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p>导出大于指定字节的keys：</p>
-<p>rdb –command <strong>memory</strong> <strong>–bytes 128</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出内存字节排名前3个keys：</strong>rdb –command <strong>memory</strong> <strong>–largest 3</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定编码转义：</strong>rdb –command justkeyvals <strong>–escape raw</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出keys（过期keys除外）</strong>：rdb –command memory <strong>–no-expire</strong> dump.rdb </p>
-</li>
-<li><p><strong>导出keys（给过期keys添加时间）：</strong>rdb –command memory <strong>–amend-expire 100</strong> dump.rdb </p>
-</li>
-</ol>
-<p>以上操作参数可以相互叠加使用，按照实际要求进行组合。并且可以导出成csv文件，导入到数据库里进行聚合统计和监控。</p>
-<h3 id="二、redis-memory-for-key：查看指定key的内存"><a href="#二、redis-memory-for-key：查看指定key的内存" class="headerlink" title="二、redis-memory-for-key：查看指定key的内存"></a>二、redis-memory-for-key：查看指定key的内存</h3><p><strong>查看指定key的内存分析情况：</strong>redis-memory-for-key <strong>–server</strong>=192.168.163.134 <strong>–port</strong>=8379 <strong>f</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-<h3 id="三、redis-profiler：RDB分析生成html"><a href="#三、redis-profiler：RDB分析生成html" class="headerlink" title="三、redis-profiler：RDB分析生成html"></a>三、redis-profiler：RDB分析生成html</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-<p>分析后的效果图（一部分）如：</p>
-<p><img src="https://img2020.cnblogs.com/blog/163084/202007/163084-20200711003724347-1828918463.png" alt="img"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过本文对于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>说明，能够更好的解析RDB其内部的存储信息，从而方便给出优化和维护的建议，关于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>更多的说明可以看官网。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="ckmeu4a1h0017m3n45jmgeu2z" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckn09v357000vp3n49ws9ae4i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1019,7 +893,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/blogOfLin/page/2/">2</a><a class="page-number" href="/blogOfLin/page/3/">3</a><a class="extend next" rel="next" href="/blogOfLin/page/2/">Next &amp;raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/blogOfLin/page/2/">2</a><a class="page-number" href="/blogOfLin/page/3/">3</a><a class="page-number" href="/blogOfLin/page/4/">4</a><a class="extend next" rel="next" href="/blogOfLin/page/2/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -1040,7 +914,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -1050,7 +924,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -1059,7 +933,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -1072,6 +946,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/">让你彻底理解Synchronized</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/">使用性能分析工具定位Spring Boot启动慢问题</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/">Spring 项目打不同环境的 jar 包原理</a>
           </li>
         
@@ -1081,14 +963,6 @@
         
           <li>
             <a href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/">了解Docker容器退出代码</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/">线程池使用番外-分析RejectedExecutionException异常</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
           </li>
         
       </ul>

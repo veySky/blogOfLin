@@ -66,6 +66,97 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-sonar-install" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/20/sonar-install/" class="article-date">
+  <time datetime="2020-10-20T12:57:37.000Z" itemprop="datePublished">2020-10-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/20/sonar-install/">sonar install</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SonarQube的LTS版本以6.7和7.9较为具有代表性，这篇文章整理了一下SonarQube LTS 6.7.1 + MySQL的环境搭建方式。</p>
+<h1 id="SonarQube-6-7-1"><a href="#SonarQube-6-7-1" class="headerlink" title="SonarQube 6.7.1"></a>SonarQube 6.7.1</h1><p>这里使用Alpine版本的SonarQube 6.7.1和MySQL 5.7.16进行环境搭建，docker-compose.yml如下所示</p>
+<h2 id="docker-compose-yml文件"><a href="#docker-compose-yml文件" class="headerlink" title="docker-compose.yml文件"></a>docker-compose.yml文件</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> <span class="string">cat</span> <span class="string">docker-compose.6.7.yml</span> </span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="comment"># database service: mysql</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/mysql:5.7.16</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/data/:/var/lib/mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/conf.d/:/etc/mysql/conf.d</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_ROOT_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_DATABASE=sonarqube</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  <span class="comment"># Security service: sonarqube</span></span><br><span class="line">  <span class="attr">sonarqube:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/sonarqube:6.7.1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/data/:/opt/sonarqube/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/log/:/opt/sonarqube/log</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/extensions/:/opt/sonarqube/extensions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/conf/:/opt/sonarqube/conf</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_USERNAME=root</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonarqube?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql:mysql</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> </span><br><span class="line"><span class="number">1234567891011121314151617181920212223242526272829303132333435363738</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml up -d</span><br><span class="line">Creating sonar_mysql_1 ... done</span><br><span class="line">Creating sonar_sonarqube_1 ... done</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">1234</span><br></pre></td></tr></table></figure>
+
+<h2 id="结果确认"><a href="#结果确认" class="headerlink" title="结果确认"></a>结果确认</h2><p>docker容器启动之后，可以使用docker-compose ps命令确认服务运行状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml ps</span><br><span class="line">      Name                    Command             State           Ports         </span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">sonar_mysql_1       docker-entrypoint.sh mysqld   Up      0.0.0.0:3306-&gt;3306&#x2F;tcp</span><br><span class="line">sonar_sonarqube_1   .&#x2F;bin&#x2F;run.sh                  Up      0.0.0.0:9000-&gt;9000&#x2F;tcp</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/2019102221475894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191022214809346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h1><p>使用示例可参看：<br><a target="_blank" rel="noopener" href="https://liumiaocn.blog.csdn.net/article/details/102670480">Angular应用中使用SonarQube进行质量扫描</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/20/sonar-install/" data-id="ckn09v35l001ap3n4d6rbhf2c" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-local-test-zookeeper" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/16/local-test-zookeeper/" class="article-date">
+  <time datetime="2020-10-16T13:52:55.000Z" itemprop="datePublished">2020-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/16/local-test-zookeeper/">local test zookeeper</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>$ pwd<br>/root/workspace/apache-zookeeper-3.6.2-bin/bin</p>
+<p>$ /bin/bash ./zkCli.sh -timeout 5000 -server  10.4.154.137:2181</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#docker 启动服务命令</span><br><span class="line">docker run -d -e TZ&#x3D;&quot;Asia&#x2F;Shanghai&quot; -p 8080:2181 -v $PWD&#x2F;data:&#x2F;data --name zookeeper --restart always zookeeper</span><br><span class="line">#docker client 启动 zookeeper 测试    </span><br><span class="line">docker run -it --rm --link zookeeper:zookeeper zookeeper zkCli.sh -server zookeeper</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="ckn09v35c0010p3n4ci3vb5wb" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ZooKeeper之zkCli-sh客户端命令使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -156,7 +247,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckmeu4a13000hm3n45sj7hyxe" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="ckn09v34o000hp3n46xtyaq60" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li></ul>
@@ -399,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckmeu4a1j001cm3n40s7d2rmc" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="ckn09v35n001cp3n42bgx5a4o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -529,7 +620,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckmeu4a15000km3n48kdf5hk0" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="ckn09v34s000kp3n4fdp9c6vb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li></ul>
@@ -573,7 +664,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckmeu4a0x0008m3n41w9k8onn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="ckn09v34d0008p3n45k7id4m9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +718,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckmeu4a1k001em3n43ysl4aky" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="ckn09v35q001hp3n4detphn5i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +764,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckmeu4a0s0004m3n4htxd99cc" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="ckn09v33z0004p3n4cmpuaazj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li></ul>
@@ -739,7 +830,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckmeu4a0w0007m3n4fsaqa4sd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="ckn09v34c0007p3n4aiyrey4e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -825,49 +916,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckmeu4a0l0001m3n42y33h7qs" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-difference-of-Calendar-day-of-year-and-day-of-month" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" class="article-date">
-  <time datetime="2020-08-31T09:13:38.000Z" itemprop="datePublished">2020-08-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/">difference of Calendar day_of_year and day_of_month</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>for adding it really makes no difference, but this</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Calendar c = Calendar.getInstance();</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_MONTH));</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_YEAR));</span><br></pre></td></tr></table></figure>
-
-<p>prints</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">28</span></span><br><span class="line"><span class="number">363</span></span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="ckmeu4a17000rm3n4gdrb9zn1" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="ckn09v33l0001p3n485av892v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -881,7 +930,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><a class="extend next" rel="next" href="/blogOfLin/page/4/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -902,7 +951,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -912,7 +961,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+      <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 10px;">git</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -921,7 +970,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -934,6 +983,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/">让你彻底理解Synchronized</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/">使用性能分析工具定位Spring Boot启动慢问题</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/">Spring 项目打不同环境的 jar 包原理</a>
           </li>
         
@@ -943,14 +1000,6 @@
         
           <li>
             <a href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/">了解Docker容器退出代码</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/">线程池使用番外-分析RejectedExecutionException异常</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
           </li>
         
       </ul>
