@@ -5,22 +5,22 @@
   
 
   
-  <title>Java Optional – orElse() vs orElseGet() | lin&#39;s blog home</title>
+  <title>循环缓冲区（RingBuffer） | lin&#39;s blog home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1. IntroductionThe API of Optional typically has two methods that can cause confusion: orElse() and orElseGet(). In this quick tutorial, we’ll look at the difference between those two and explore when">
+  <meta name="description" content="一、简介1、循环缓冲区的实现原理环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java Optional – orElse() vs orElseGet()">
-<meta property="og:url" content="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/index.html">
+<meta property="og:title" content="循环缓冲区（RingBuffer）">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/index.html">
 <meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="1. IntroductionThe API of Optional typically has two methods that can cause confusion: orElse() and orElseGet(). In this quick tutorial, we’ll look at the difference between those two and explore when">
+<meta property="og:description" content="一、简介1、循环缓冲区的实现原理环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2021-02-05T09:39:39.000Z">
-<meta property="article:modified_time" content="2021-02-26T09:09:39.550Z">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp">
+<meta property="article:published_time" content="2021-04-06T10:43:14.000Z">
+<meta property="article:modified_time" content="2021-04-06T10:44:38.593Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="Optional">
-<meta property="article:tag" content="orElse">
-<meta property="article:tag" content="orElseGet">
+<meta property="article:tag" content="RingBuffer">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp">
   
     <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
   
@@ -69,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Java-Optional-–-orElse-vs-orElseGet" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-循环缓冲区（RingBuffer）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" class="article-date">
-  <time datetime="2021-02-05T09:39:39.000Z" itemprop="datePublished">2021-02-05</time>
+    <a href="/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" class="article-date">
+  <time datetime="2021-04-06T10:43:14.000Z" itemprop="datePublished">2021-04-06</time>
 </a>
     
   <div class="article-category">
@@ -87,7 +87,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Java Optional – orElse() vs orElseGet()
+      循环缓冲区（RingBuffer）
     </h1>
   
 
@@ -95,68 +95,39 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h2><p>The API of <em>Optional</em> typically has two methods that can cause confusion: <em>orElse()</em> and <em>orElseGet()</em>.</p>
-<p>In this quick tutorial, we’ll look at the difference between those two and explore when to use each one.</p>
-<h2 id="2-Signatures"><a href="#2-Signatures" class="headerlink" title="2. Signatures"></a>2. Signatures</h2><p>Let’s first start with the basics by looking at their signatures:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElse</span><span class="params">(T other)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElseGet</span><span class="params">(Supplier&lt;? extends T&gt; other)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>Clearly, <em>orElse()</em> takes any parameter of a type <em>T</em> whereas <em>orElseGet()</em> accepts a functional interface of type <em>Supplier</em> that returns an object of type <em>T</em>.</p>
-<p>Now, based on their <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html#orElse-T-">Javadocs</a>:</p>
-<ul>
-<li><em>orElse()</em>: returns the value if present, otherwise return <em>other</em></li>
-<li><em>orElseGet():</em> returns the value if present, otherwise invoke <em>other</em> and return the result of its invocation</li>
-</ul>
-<h2 id="3-Differences"><a href="#3-Differences" class="headerlink" title="3. Differences"></a>3. Differences</h2><p>It’s easy to be a bit confused by this simplified definitions, so let’s dig a little deeper and look at some actual usage scenarios.</p>
-<h3 id="3-1-orElse"><a href="#3-1-orElse" class="headerlink" title="3.1. orElse()"></a>3.1. <em>orElse()</em></h3><p>Assuming we have our <a target="_blank" rel="noopener" href="https://www.baeldung.com/java-logging-intro">logger</a> configured properly, let’s start with writing a simple piece of code:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>)</span><br><span class="line">  .orElse(getRandomName());</span><br></pre></td></tr></table></figure>
-
-<p>Notice that <em>getRandomName()</em> is a method which returns a random <em>name</em> from a <em>List<String>*of *names:</em></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getRandomName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LOG.info(<span class="string">&quot;getRandomName() method - start&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    Random random = <span class="keyword">new</span> Random();</span><br><span class="line">    <span class="keyword">int</span> index = random.nextInt(<span class="number">5</span>);</span><br><span class="line">    </span><br><span class="line">    LOG.info(<span class="string">&quot;getRandomName() method - end&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> names.get(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>On executing our code, we’ll find below messages printed in the console:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getRandomName() method - start</span><br><span class="line">getRandomName() method - end</span><br></pre></td></tr></table></figure>
-
-<p>The variable <em>name</em> will hold <em>“baeldung”</em> at the end of the code execution.</p>
-<p>With it, we can easily infer that the <strong>parameter of *orElse()* is evaluated even when having a non-empty *Optional*.</strong></p>
-<h3 id="3-2-orElseGet"><a href="#3-2-orElseGet" class="headerlink" title="3.2. orElseGet()"></a>3.2. <em>orElseGet()</em></h3><p>Now, let’s try writing similar code using <em>orElseGet()</em>:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>)</span><br><span class="line">  .orElseGet(() -&gt; getRandomName());</span><br></pre></td></tr></table></figure>
-
-<p>The above code will not invoke <em>getRandomName()</em> method.</p>
-<p><strong>Remember (from the Javadoc) that the S*upplier* method passed as an argument is only executed when *an Optional* value is not present.</strong></p>
-<p>Using <em>orElseGet()</em> for our case will, therefore, save us some time involved in computing a random <em>name</em>.</p>
-<h2 id="4-Measuring-Performance-Impact"><a href="#4-Measuring-Performance-Impact" class="headerlink" title="4. Measuring Performance Impact"></a>4. Measuring Performance Impact</h2><p>Now, to also understand the differences in performance, let’s use <a target="_blank" rel="noopener" href="https://www.baeldung.com/java-microbenchmark-harness">JMH</a> and see some actual numbers:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">orElseBenchmark</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElse(getRandomName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>And <em>orElseGet()</em>:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Benchmark</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">orElseGetBenchmark</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElseGet(() -&gt; getRandomName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>While executing our benchmark methods, we get:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Benchmark           Mode  Cnt      Score       Error  Units</span><br><span class="line">orElseBenchmark     avgt   20  60934.425 ± 15115.599  ns/op</span><br><span class="line">orElseGetBenchmark  avgt   20      3.798 ±     0.030  ns/op</span><br></pre></td></tr></table></figure>
-
-<p>As we can see, the performance impact might be substantial even for such a simple use-case scenario.</p>
-<p>The numbers above might slightly vary, however, <strong><em>orElseGet()\</em> has clearly outperformed *orElse()* for our particular example.</strong></p>
-<p>Afterall, <em>orElse()</em> involves computation of <em>getRandomName()</em> method for each run.</p>
-<h2 id="5-What’s-Important"><a href="#5-What’s-Important" class="headerlink" title="5. What’s Important?"></a>5. What’s Important?</h2><p>Apart from the performance aspects, other worth-considering factors involve:</p>
-<ul>
-<li><p>What if the method would execute some additional logic? E.g. making some DB inserts or updates</p>
-</li>
-<li><p>Even when we assign an object to</p>
-</li>
-</ul>
-<p>  orElse() </p>
-<p>  parameter:</p>
-  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.of(<span class="string">&quot;baeldung&quot;</span>).orElse(<span class="string">&quot;Other&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>  we’re still creating <em>“Other”</em> object for no reason</p>
-<p>And that’s why it is important for us to make a careful decision among <em>orElse()</em> and <em>orElseGet()</em> depending on our needs – <strong>by default, it makes more sense to use *orElseGet()* every time unless the default object is already constructed and accessible directly.</strong></p>
+        <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><h2 id="1、循环缓冲区的实现原理"><a href="#1、循环缓冲区的实现原理" class="headerlink" title="1、循环缓冲区的实现原理"></a>1、循环缓冲区的实现原理</h2><p>环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须添加互斥保护机制来确保多个用户互斥访问环形缓冲区。</p>
+<h2 id="2、概念"><a href="#2、概念" class="headerlink" title="2、概念"></a>2、概念</h2><p>关于循环缓冲区（Ring Buffer）的概念，其实来自于Linux内核（Maybe），是为解决某些特殊情况下的竞争问题提供了一种免锁的方法。这种特殊的情况就是当生产者和消费者都只有一个，而在其它情况下使用它也是必须要加锁的。对应在Linux内核中有对它的定义：</p>
+<p>struct kfifo { </p>
+<p>​     unsigned char *buffer; </p>
+<p>​     unsigned int size; </p>
+<p>​     unsigned int in; </p>
+<p>​     unsigned int out; </p>
+<p>​     spinlock_t *lock; </p>
+<p>}; </p>
+<p>其中buffer指向存放数据的缓冲区，size是缓冲区的大小，in是写指针下标，out是读指针下标，lock是加到struct kfifo上的自旋锁（上面说不加锁不是这里的锁），防止多个进程并发访问此数据结构。当in==out时，说明缓冲区为空；当(in-out)==size时，说明缓冲区已满。 </p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp" alt="img"></p>
+<p> 注：我们保有对应的读写指针，当第一批数据（蓝色）完成，第二批数据（红色）会根据当前的写指针位置继续我们的数据操作，当达到最大的Buffer_Size时，会重新回到Buffer的开始端。</p>
+<p>我们更多要说的是Ring Buffer关于在我们在日志处理方面的一个应用，我们知道对于Program来说日志记录提供了故障前应用程序状态的详细信息，在一段时间的运行过程中，会将不断地产生大量的跟踪数据，以及调试信息并持续地将其写入到磁盘上的文本文件中。多亿进行有效的日志记录，需要使用大量的磁盘空间，并且在多线程环境中，所需的磁盘空间会成倍地增加。常规的日志处理来说存在一些问题，比如硬盘空间的可用性，以及在对一个文件写入数据时磁盘 I/O 的速度较慢。持续地对磁盘进行写入操作可能会极大地降低程序的性能，导致其运行速度缓慢。通常，可以通过使用日志轮换策略来解决空间问题，将日志保存在几个文件中，当这些文件大小达到某个预定义的字节数时，对它们进行截断和覆盖。</p>
+<p>  所以要克服空间问题并实现磁盘 I/O 的最小化，某些程序可以将它们的跟踪数据记录在内存中，仅当请求时才转储这些数据。这个循环的、内存中的缓冲区称为循环缓冲区。它可以将相关的数据保存在内存中，而不是每次都将其写入到磁盘上的文件中。在需要的时候（比如当用户请求将内存数据转储到文件中时、程序检测到一个错误时，或者由于非法的操作或者接收到的信号而引起程序崩溃时）可以将内存中的数据转储到磁盘。循环缓冲区日志记录由一个固定大小的内存缓冲区构成，进程使用这个内存缓冲区进行日志记录。</p>
+<p>  当然现在我们面对的大多是多线程的协同工作，对于日志记录来说，倘若采取传统的加锁机制访问我们的存储文件，这些线程将在获得和释放锁上花费了大部分的时间，所以采取循环缓冲区会是一个不错的办法。通过使得每个线程将数据写入到它自己的内存块，就可以完全避免同步问题。当收到来自用户的转储数据的请求时，每个线程获得一个锁，并将其转储到中心位置。或者分配一个很大的全局内存块，并将其划分为较小的槽位，其中每个槽位都可由一个线程用来进行日志记录。每个线程只能够读写它自己的槽位，而不是整个缓冲区。当每个线程第一次尝试写入数据时，它会尝试寻找一个空的内存槽位，并将其标记为忙碌。当线程获得了一个特定的槽位时，可以将跟踪槽位使用情况的位图中相应的位设置为1，当该线程退出时，重新将这个位设置为 0。在这里需要同时需要维护当前使用的槽位编号的全局列表，以及正在使用它的线程的线程信息。</p>
+<p>  但是这里需要注意的是当一个线程已经死亡，却没有释放相应的槽位，并在垃圾收集器释放该槽位之前，再次使用了这个线程 ID 并为其分配一个新的槽位。对于新的线程来说，检查全局列表并且重用相同的槽位（如果以前的实例使用了它的话），这是非常重要的。因为垃圾收集器线程和写入者线程可能同时尝试修改全局列表，所以同样也需要使用某种锁定机制。</p>
+<p>二、Ring Buffer的优点</p>
+<p>  我们使用 Ring Buffer 这种数据结构，是因为它给我们提供了可靠的消息传递特性。这个理由就足够了，不过它还有一些其他的优点。</p>
+<p>首先，Ring Buffer 比链表要快，因为它是数组，而且有一个容易预测的访问模式。这很不错，对 CPU 高速缓存友好 （CPU-cache-friendly）－数据可以在硬件层面预加载到高速缓存，因此 CPU 不需要经常回到主内存 RAM 里去寻找 Ring Buffer 的下一条数据。</p>
+<p>第二点，Ring Buffer 是一个数组，你可以预先分配内存，并保持数组元素永远有效。这意味着内存垃圾收集（GC）在这种情况下几乎什么也不用做。此外，也不像链表那样每增加一条数据都要创建对象－当这些数据从链表里删除时，这些对象都要被清理掉。</p>
+<p>参考网址：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/sim_szm/article/details/17011545">https://blog.csdn.net/sim_szm/article/details/17011545</a></p>
+<p>图片说明：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/u011046042/article/details/51853535">环形缓冲区的应用ringbuffer - CSDN博客</a></p>
+<p>作者：萧修<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8499d9603544">https://www.jianshu.com/p/8499d9603544</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckn5wbehu0003e5n4fy167iqj" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="ckn5wbeip001ie5n49jp44xvw" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
 
     </footer>
   </div>
@@ -164,19 +135,10 @@
     
 <nav id="article-nav">
   
-    <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          pure-ftp安装和配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">idea 推荐插件</div>
+      <div class="article-nav-title">让你彻底理解Synchronized</div>
     </a>
   
 </nav>
