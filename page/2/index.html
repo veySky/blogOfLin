@@ -66,6 +66,379 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-kafka集群监控之kafka-manager部署-ProdServerStart" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" class="article-date">
+  <time datetime="2021-04-27T06:47:17.000Z" itemprop="datePublished">2021-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Kafka/">Kafka</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/">kafka集群监控之kafka-manager部署(ProdServerStart)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>一.\</strong>kafka manager简介****</p>
+<p><strong>1&gt;.什么是Kafka Manager</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">KafkaManager是一个用于管理Kafka的web工具，由yahoo开发并开源。</span><br><span class="line"></span><br><span class="line">雅虎官网GitHub项目：https:&#x2F;&#x2F;github.com&#x2F;yahoo&#x2F;kafka-manager。需要安装jdk1.8版本。</span><br><span class="line"></span><br><span class="line">我们可以参考官方的文档进行编译和简单配置即可使用。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184455823-506984235.png" alt="img"></p>
+<p><strong>2&gt;.kafka manager支持功能</strong></p>
+<p>![复制代码](<a target="_blank" rel="noopener" href="https://common.cnblogs.com/images/copycode.gif">https://common.cnblogs.com/images/copycode.gif</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">　　其提供了如下管理和监控能力：</span><br><span class="line">　　　　管理多集群</span><br><span class="line">　　　　查看集群状态（topics,consumers,offsets,brokers等）</span><br><span class="line">　　　　执行倾向副本选举</span><br><span class="line">　　　　生成分区重分布计划（自动和手动）</span><br><span class="line">　　　　执行分区重分布</span><br><span class="line">　　　　多topic批量生成分区重分布计划，执行分区重分布</span><br><span class="line">　　　　使用指定参数创建topic</span><br><span class="line">　　　　删除topic（需要集群参数开启）</span><br><span class="line">　　　　现有topic增加分区</span><br><span class="line">　　　　通过JMX获取broker层面和topic层面指标</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184636385-1156560940.png" alt="img"></p>
+<p><strong>二.部署kafka manager</strong></p>
+<p><strong>1&gt;.**</strong>下载kafka-manager**</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+<p><strong>2&gt;.解压kafka-manager</strong></p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#x79;&#x69;&#x6e;&#122;&#104;&#x65;&#x6e;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#111;&#x72;&#x67;&#x2e;&#99;&#x6e;">&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#x79;&#x69;&#x6e;&#122;&#104;&#x65;&#x6e;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#111;&#x72;&#x67;&#x2e;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#x68;&#x65;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#x6f;&#114;&#x67;&#x2e;&#x63;&#110;">&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#x68;&#x65;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#x6f;&#114;&#x67;&#x2e;&#x63;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>4&gt;.修改kafka的配置文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep kafka-manager.zkhosts &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">kafka-manager.zkhosts&#x3D;&quot;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01&quot;</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep port &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">http.port&#x3D;8888</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>5&gt;.每个kafka broker都需要开启JMX（想要看到kafka集群的读取河写入速度就必须开启JMX,），需要编辑kafka启动脚本</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node106.yinzhengjie.org.cn ~]# vi &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node107.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     1.3MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node108.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     2.0MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>6&gt;.启动kafka-manager（kafka和zookeeper也需要启动起来哟~尤其是zookeeper必须是得运行的）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# nohup &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;bin&#x2F;kafka-manager -java-home &#x2F;home&#x2F;softwares&#x2F;jdk1.8.0_201 -Dconfig.file&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf &gt;&gt; &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log 2&gt;&amp;1 &amp;</span><br><span class="line">[1] 3753</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# jps</span><br><span class="line">3826 Jps</span><br><span class="line">3753 ProdServerStart</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br><span class="line"></span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# tail -100f &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.library.path&#x3D;&#x2F;usr&#x2F;java&#x2F;packages&#x2F;lib&#x2F;amd64:&#x2F;usr&#x2F;lib64:&#x2F;lib64:&#x2F;lib:&#x2F;usr&#x2F;lib</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.io.tmpdir&#x3D;&#x2F;tmp</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.compiler&#x3D;&lt;NA&gt;</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.name&#x3D;Linux</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.arch&#x3D;amd64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.version&#x3D;3.10.0-957.el7.x86_64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.name&#x3D;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.home&#x3D;&#x2F;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.dir&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[info] o.a.z.ZooKeeper - Initiating client connection, connectString&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01 sessionTimeout&#x3D;60000 watcher&#x3D;org.apache.curator.ConnectionState@65e0186a</span><br><span class="line">[info] o.a.z.ClientCnxn - Opening socket connection to server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">[info] o.a.z.ClientCnxn - Socket connection established to node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, initiating session</span><br><span class="line">[info] o.a.z.ClientCnxn - Session establishment complete on server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, sessionid &#x3D; 0x6a00001622cf0000, negotiated timeout &#x3D; 40000</span><br><span class="line">[info] k.m.a.KafkaManagerActor - zk&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01</span><br><span class="line">[info] k.m.a.KafkaManagerActor - baseZkPath&#x3D;&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager&#x2F;delete-cluster</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting kafka manager path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Scheduling updater for 10 seconds</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] play.api.Play - Application started (Prod)</span><br><span class="line">[info] p.c.s.NettyServer - Listening for HTTP on &#x2F;0.0.0.0:8888　　　　　　#说明我们的kafka_manager服务端口已经监听啦，我们可以直接去访问啦</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">^C</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7&gt;.登陆webUI查看相应的信息，如果出现以下界面说明你部署成功啦！</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222634167-980310777.png" alt="img"></p>
+<p><strong>三.**</strong>WEB端配置kafka-manager**</p>
+<p><strong>1&gt;.点击添加集群</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222751230-306893281.png" alt="img"></p>
+<p><strong>2&gt;.配置集群（集群名称不支持中文，只支持ASSCI编码）</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223615520-1365827720.png" alt="img"></p>
+<p> <strong>3&gt;.其他参数保持默认，点击保存即可</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223813438-381974165.png" alt="img"></p>
+<p> <strong>4&gt;.配置成功</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224012573-8104355.png" alt="img"></p>
+<p><strong>5&gt;.点击”yinzhengjie-kafka”</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224155959-1238933143.png" alt="img"></strong></p>
+<p><strong>6&gt;.查看自定义的集群信息</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224454334-2089082832.png" alt="img"></strong></p>
+<p><strong>7&gt;.\</strong>查看broker信息****</p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225800565-1207963224.png" alt="img"></strong></p>
+<p><strong>8&gt;.\</strong>查看topic信息****</p>
+<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225909158-1472664287.png" alt="img">**</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">以上输出信息关键参数说如下：</span><br><span class="line">Operations列表参数说明：</span><br><span class="line">Generate Partition Assignments:</span><br><span class="line">　　对多个topic来进行分区重分布计划的生成，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Run Partition Assignments:</span><br><span class="line">　　对多个topic分区执行重分布计划，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Add Partitions：</span><br><span class="line">　　对多个topic来进行添加分区操作，生成环境并不建议大家这样搞，避免误操作。</span><br><span class="line"></span><br><span class="line">Topics列表参数说明：</span><br><span class="line">Topic:</span><br><span class="line">    表示topic名称。</span><br><span class="line">    __consumer_offsets是kafka内置保存consumer offset的topic.</span><br><span class="line"></span><br><span class="line">Partitions:</span><br><span class="line">    topic对应的分区数</span><br><span class="line"></span><br><span class="line">Brokers:</span><br><span class="line">    topic对应的broker数</span><br><span class="line"></span><br><span class="line">Brokers Spread%:</span><br><span class="line">    指broker的分布比例，计算公式:用topic的分区分布的broker数&#x2F;总的broker数量。</span><br><span class="line"></span><br><span class="line">Brokers Skew %:</span><br><span class="line">    Brokers的偏斜比例，计算公式:(Broker最多的分区数&#x2F;Brokers最少的分区数) -1</span><br><span class="line">    </span><br><span class="line">Brokers Leader Skew%:</span><br><span class="line">    Brokers的leader偏斜比例，计算公式:(Broker最多的leader分区数&#x2F;Brokers最少leader的分区数) -1</span><br><span class="line">    </span><br><span class="line">Replicas:</span><br><span class="line">    副本因子，即副本数。</span><br><span class="line"></span><br><span class="line">Under Replicated %:</span><br><span class="line">    副本不足的比例，计算公式:副本不足的分区数&#x2F;总分区数</span><br><span class="line"></span><br><span class="line">Producer Message&#x2F;Sec:</span><br><span class="line">    每秒产生的消息数量。</span><br><span class="line"></span><br><span class="line">Summed Recent Offsets:</span><br><span class="line">    当前总计的消费偏移量。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>\</em>9&gt;.创建topic**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230336053-574631330.png" alt="img"></p>
+<p><strong><em>\</em>10&gt;.topic创建完成**</strong></p>
+<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230422197-928459022.png" alt="img">**</strong></p>
+<p><strong><em>\</em>11&gt;.topic操作**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713233502120-1813806895.png" alt="img"></p>
+<p><strong><em>\</em>12&gt;.点击”Reassign Partitions”,查看分区重分布的进度**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234331026-440696449.png" alt="img"></p>
+<p><strong><em>\</em>13&gt;.点击”Preferred Replica Election”可以执行倾向副本选举，一般我们在配置文件配置好了就不需要在这里手动触发啦！**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234528486-1009939226.png" alt="img"></p>
+<p><strong><em>\</em>14&gt;.查看消费者组信息**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235320245-629365248.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Consumer:</span><br><span class="line">    表示的是消费者组。</span><br><span class="line"></span><br><span class="line">Type:</span><br><span class="line">    ZK表示offset信息保存在zookeeper中。</span><br><span class="line">    KF表示offset信息保存在kafka中。</span><br><span class="line"></span><br><span class="line">Topic it consumes from:</span><br><span class="line">    已经消费的分区的coverage:</span><br><span class="line">        消费的覆盖率。</span><br><span class="line">    已经消费的lag:</span><br><span class="line">        消费的延迟大小。有可能会看到负值，</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>\</em>15&gt;.查看已经消费者的详细信息**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235429468-198969850.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Partition    </span><br><span class="line">    分区编号。</span><br><span class="line">    </span><br><span class="line">LogSize    </span><br><span class="line">    分区大小</span><br><span class="line">    </span><br><span class="line">Consumer Offset    </span><br><span class="line">    消费的偏移量。</span><br><span class="line">    </span><br><span class="line">Lag    </span><br><span class="line">    延迟大小，改值可能是负数。</span><br><span class="line"></span><br><span class="line">Consumer Instance Owner</span><br><span class="line">    消费者实例拥有者。</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="cktb2i55x001pwnn44am3bufj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-开发中常见的redis异常总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2021-04-27T01:52:38.000Z" itemprop="datePublished">2021-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/">开发中常见的redis异常总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用redis也有端时间了，现在讲开发中遇到的几个常见异常总结如下：</p>
+<h2 id="一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。"><a href="#一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。" class="headerlink" title="一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。"></a>一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool</p>
+<p>at redis.clients.util.Pool.getResource(Pool.java:22)</p>
+<p>分析：</p>
+<p>redis.clients.util.Pool.getResource会从JedisPool实例池中返回一个可用的redis连接。分析源码可知JedisPool extends redis.clients.util.Pool .而Pool是通过</p>
+<p>commons-pool开源工具包中的org.apache.commons.pool2.impl.GenericObjectPool来实现对Jedis实例的管理的。所以我们分析一下GenericObjectPool或许能找到答案。</p>
+<p>其中三个重要个几个属性是：</p>
+<p><strong>MaxActive</strong>: 最大连接数。</p>
+<p><strong>MaxIdle</strong>: 最大空闲数。</p>
+<p><strong>MaxWait</strong>: 最大等待时间，单位毫秒（million seconds）。</p>
+<p>当连接池中无可用连接时会会进行等待maxWait时间，若超出泽抛Could not get a resource from the pool异常。</p>
+<p>所以应根据程序实际情况合理设置这三个参数的值，尽量避免这个异常。</p>
+<h2 id="二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。"><a href="#二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。" class="headerlink" title="二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。"></a>二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out</p>
+<p>at redis.clients.jedis.Protocol.process(Protocol.java:79)</p>
+<p>at redis.clients.jedis.Protocol.read(Protocol.java:131)</p>
+<p>at redis.clients.jedis.Connection.getIntegerReply(Connection.java:188)</p>
+<p>at redis.clients.jedis.Jedis.sismember(Jedis.java:1266)</p>
+<p>分析：</p>
+<p>Redis是对内存进行操作，速度应该都在毫秒级，这是我们通常的认识，</p>
+<p>那么Redis操作怎么会出现几秒的超时时间？</p>
+<p>我们还是先分析一下Jedis的源代码吧，以sadd操作为例：</p>
+<p><em>public Long sadd(final String key, final String… members) {</em></p>
+<p><em>checkIsInMulti();</em></p>
+<p><em>client.sadd(key, members);</em></p>
+<p><em>return client.getIntegerReply();</em></p>
+<p><em>}</em></p>
+<p>client是redis.clients.jedis.Client.java的实例，继承关系如下：</p>
+<p>public class Client extends BinaryClient implements Commands；</p>
+<p>public class BinaryClient extends Connection；</p>
+<p>Connection包装了对Redis server的socket操作，命令写操作通过socket.getOutputStream()输出流将命令信息发送到redis server，当写完命令后要通过socket.getInputStream()的到的输入流将</p>
+<p>命令执行结果返回，这中间必然会有一个命令执行到结果返回的延时时间，这就是一个Jedis调用redis命令操作所用的时间。</p>
+<p>需要说明的是，Redis server是单线程执行所有连接发送过来的命令的，也就是说不管并发中有多少个client在发送命令，redis-server端是单线程处理的，并按照默认的FIFO方式处理请求，</p>
+<p>这个可在redis.conf配置文件中配置。关于redis server的详细运行机制参见：<a target="_blank" rel="noopener" href="http://redis.io/documentation">http://redis.io/documentation</a></p>
+<p>所以client.sadd(key, members);调用完后只是将命令信息发送到了redis server端，具体有没有执行要看redis server的负载情况。然后，通过client.getIntegerReply();等待（time out)返回结果。</p>
+<p>Connection初始化socket时有多种选择，其中设置socket time out 的方法如下：</p>
+<p>public void rollbackTimeout() {</p>
+<p>​      try {</p>
+<p>​       socket.setSoTimeout(timeout);</p>
+<p>​       socket.setKeepAlive(false);</p>
+<p>​      } catch (SocketException ex) {</p>
+<p>​       throw new JedisException(ex);</p>
+<p>​      }</p>
+<p>​    }</p>
+<p>由redis.clients.jedis.Protocol.DEFAULT_TIMEOUT = 2000 我们知道默认的超时时间是2秒，这个时间相对于redis操作内存毫秒级的速度来说已经很长，那我们为什么还会遇到</p>
+<p>ava.net.SocketTimeoutException: Read timed out异常呢？redis操作内存虽然平均毫秒级的，但当数据量很大时未必都如此快速。在我的开发过程中就遇到过一个集合到了</p>
+<p>千万级数据量，一次操作超时时间在秒级是很正常的，而且机器性能很好的情况下已经如此。</p>
+<p>所以在初始化JedisPool时应该根据实际</p>
+<p>情况通过redis.clients.jedis.JedisPoolConfig合理设置连接池参数，通过edisPool构造方法，合理设置socket读取输入InputStream的超时时间。</p>
+<p>pool = new JedisPool(config, host, port, 100000);</p>
+<p>注意第四个参数time out，设置成我们能容忍的超时时间，单位是毫秒。</p>
+<p>设置第四个参数后，问题基本解决。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="cktb2i56b002pwnn42fwmcl6d" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-idea多Module出现依赖循环问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-04-25T12:02:40.000Z" itemprop="datePublished">2021-04-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">idea多Module出现依赖循环问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>idea循环依赖aAnnotation processing is not supported for module cycles. </p>
+<ol>
+<li>错误现象<br>Error:java: Annotation processing is not supported for module cycles. Please ensure that all modules from cycle [book-rpc,book-api] are excluded from annotation processing  </li>
+</ol>
+<p>通过Analyze-&gt;Analyze Module Dependencies…发现是循环依赖。  </p>
+<p> 2.解决办法<br>先是找到这个依赖，删掉相关的（右击第一个module选中open module setting–&gt;Dependencies） </p>
+<p>然后在book-api中的pom.xml找到第二个这个依赖，删掉，重新import Changes need to be imported </p>
+<p>如果仅仅删除module中的Dependencies中的相关依赖，有可能没有解决根本性的问题，所以要看一下pom.xml中是否已经存在了相关依赖</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="cktb2i55r001bwnn4avwk4gvb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-理解-Kafka-消费者属性的-enable-auto-commit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" class="article-date">
+  <time datetime="2021-04-21T09:01:34.000Z" itemprop="datePublished">2021-04-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/">理解 Kafka 消费者属性的 enable.auto.commit</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理解一下Kafka的读的自动提交功能。</p>
+<p>找到了一篇专门介绍这个功能的文章，选择主要的内容进行一下翻译和做笔记。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property"><a href="#Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property" class="headerlink" title="Understanding the ‘enable.auto.commit’ Kafka Consumer property"></a>Understanding the ‘enable.auto.commit’ Kafka Consumer property</h2><p><img src="https://img-blog.csdnimg.cn/20190731195532220.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<blockquote>
+<p>Kafka Consumers read messages from a Kafka topic, its not a hard concept to get your head around. But behind the scenes there’s a lot more going on than meets the eye.</p>
+<p>Say we’re consuming messages from a Topic and our Consumer crashes. Once we realise that the world isn’t ending, we recover from the crash and we start consuming again. We start receiving messages exactly where we left off from, its kinda neat.</p>
+<p>假设我们正在从一个 Topic 中消费消息，这个时候我们的这个消费者（客户端）宕机了。我们意识到这不是世界的末日，我们可以从宕机中恢复，重新开始消费。我们可以从我们上一次离开的地方重新接收消息，这非常灵巧。</p>
+<p>There’s two reasons as to why this happens. One is something referred to as the “Offset” and the other is a couple of default Consumer values.</p>
+<p>发生这样的事情是因为两个原因。一个是一个叫 “Offset” 的东西，另外一个是一些 Consumer 的默认的值。</p>
+<p>So whats an Offset?</p>
+<p>The Offset is a piece of metadata, an integer value that continually increases for each message that is received in a partition. Each message will have a unique Offset value in a partition.</p>
+<p>Offset 是一块元数据，一个整数，会针对每一个 partition 上接收到的消息而持续增长。每一个消息在一个 partition 上将会有唯一的一个Offset。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190731200310945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>I use Keys in some of my projects, some of them I don’t ;)</p>
+<p>So as you can see here, each message has a unique Offset, and that Offset represents the position of that message in that particular partition.</p>
+</blockquote>
+<p>上面介绍了一下Kafka的offset是什么，offset是记录每条消息在partition里面的位置的。</p>
+<blockquote>
+<p>When a Consumer reads the messages from the Partition it lets Kafka know the Offset of the last consumed message. This Offset is stored in a Topic named <strong>_consumer_offsets</strong>, in doing this a consumer can stop and restart without forgetting which messages it has consumed.</p>
+</blockquote>
+<p>这里讲，offset会被存在一个叫做<strong>_consumer_offsets</strong>的主题中，这样来帮助消费者记录处理到哪里了。</p>
+<blockquote>
+<p>When we create our Consumers, they have a set of default properties which we can override or we can just leave the default values in effect.</p>
+<p>There are two properties that are driving this behaviour.</p>
+<p>有两个属性需要关注。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">auto.commit.interval.ms</span><br></pre></td></tr></table></figure>
+
+<p>The first property <strong>enable.auto.commit</strong> has a default value of <strong>true</strong> and the second property <strong>auto.commit.interval.ms</strong> has a default value of <strong>5000</strong>. These values are correct for Blizzards node-rdkafka client and the Java KafkaConsumer client but other libraries may differ.</p>
+</blockquote>
+<p><strong>enable.auto.commit</strong> 的默认值是 true；就是默认采用自动提交的机制。</p>
+<p><strong>auto.commit.interval.ms</strong> 的默认值是 5000，单位是毫秒。</p>
+<blockquote>
+<p>So by default every 5 seconds a Consumer is going to commit its Offset to Kafka or every time data is fetched from the specified Topic it will commit the latest Offset.</p>
+<p>这样，默认5秒钟，一个 Consumer 将会提交它的 Offset 给 Kafka，或者每一次数据从指定的 Topic 取回时，将会提交最后一次的 Offset。</p>
+<p>Now in some scenarios this is the ideal behaviour but on other scenarios its not.</p>
+<p>这样，在某些场景下，这是理想的表现，但是在其他场景下，并不是。</p>
+<p>Say our Consumer is processing a message with an Offset of 100 and whilst processing it the Consumer fetches some more data, the Offset is commit and then the Consumer crashes. Upon coming back up it will start consuming messages from the most recent committed Offset, but how can we safely say that we haven’t lost messages and the Offset of the new message isn’t later then the one of the message been processed?</p>
+<p>这么说，我们的 Consumer 正在消费一个 Offset 是100的消息，同时这个 Consumer 取回了一些数据，这个 Offset 提交了，然后 Consumer 崩溃了。在我们回来的时候，我们会重新从最新提交的 Offset 去进行消息的消费，但是我们如何能安全地说，我们没有丢失消息，并且这个新消息的 Offset 不会比刚刚被处理的那个消息靠后呢？</p>
+<p>What we can do is commit the Offset of messages manually after processing them. This give us full control over when we consider a message dealt with, processed and ready to let Kafka know that.</p>
+<p>解决这个问题的方案就是我们手动地提交这个 Offset，在处理完这些消息之后。这给与了我们完全的控制，什么时候去处理一个消息，什么时候去让 Kafka 知道这个。</p>
+<p>Firstly we have to change the value of the <strong>enable.auto.commit</strong> property.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit: false</span><br></pre></td></tr></table></figure>
+
+<p>When we change this property the <strong>auto.commit.interval.ms</strong> value isnt taken into consideration.</p>
+<p>So now we can commit our Offset manually after the processing has taken place and if the Consumer crashes whilst processing a message it will start consuming from that same Offset, no messages lost.</p>
+<p>我们把这个参数设置为 false ，就会由我们自己手动地来处理这个事情。</p>
+<p>Both the clients mentioned earlier in this article have methods exposed to commit the Offset.</p>
+<p>For further reading on the clients check out the links below.</p>
+</blockquote>
+<p>如果 <strong>enable.auto.commit</strong> 设置成 false，那么 <strong>auto.commit.interval.ms</strong> 也就不被再考虑了<strong>。</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blizzard.github.io/node-rdkafka/current/KafkaConsumer.html"><strong>JSDoc: Class: KafkaConsumer</strong><br><em>KafkaConsumer class for reading messages from Kafka This is the main entry point for reading data from Kafka. You…</em>blizzard.github.io</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html"><strong>KafkaConsumer (kafka 0.10.2.1 API)</strong><br><em>To avoid this, we will manually commit the offsets only after the corresponding records have been inserted into the…</em>kafka.apache.org</a></p>
+<p>If anyone wants any more information on Kafka or Consumers get in touch on Twitter.</p>
+<p>Cheers,</p>
+<p>Danny</p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/danieljameskay">https://twitter.com/danieljameskay</a></p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65">https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html">https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html</a> 这里是官网介绍如何使用consumer</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="cktb2i56e002xwnn4aelu7xv9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Kafka几个重要的配置总结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" class="article-date">
@@ -147,7 +520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="ckrbei44h0007c7n40hhi246v" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="cktb2i5560008wnn490ky0nxm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -214,7 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="ckrbei45p002kc7n47tb7f0v5" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="cktb2i56c002rwnn44vc7bb9z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
@@ -359,7 +732,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="ckrbei45v0030c7n4a2012ttb" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="cktb2i56i0039wnn40mjb5emk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
@@ -409,7 +782,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="ckrbei45m002bc7n4dc9p0d31" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="cktb2i569002lwnn495lv9clf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
@@ -469,7 +842,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="ckrbei44v000sc7n4capm5vgu" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="cktb2i55i000uwnn42lq66o8v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li></ul>
@@ -544,353 +917,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="ckrbei44r000lc7n418fw96dq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="cktb2i55e000lwnn4btdlat7n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li></ul>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-了解Docker容器退出代码" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" class="article-date">
-  <time datetime="2021-03-05T03:43:59.000Z" itemprop="datePublished">2021-03-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/docker/">docker</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/">了解Docker容器退出代码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="最常见的退出代码，它们的含义以及导致它们的原因"><a href="#最常见的退出代码，它们的含义以及导致它们的原因" class="headerlink" title="最常见的退出代码，它们的含义以及导致它们的原因"></a>最常见的退出代码，它们的含义以及导致它们的原因</h2><p>Docker容器退出代码-如何使用它们进行故障排除？</p>
-<p>这是我遇到的最常见的问题之一：“为什么我的容器没有运行？”</p>
-<p>码头集装箱出口代码可以帮助解决此问题吗？</p>
-<p>回答此问题的第一步是识别Docker容器的退出代码。退出代码可以提示停止容器运行的情况。本文列出了使用Docker容器时最常见的退出代码，旨在回答两个重要问题：</p>
-<ul>
-<li>这个特定的退出代码是什么意思？</li>
-<li>导致此退出代码的动作是什么？</li>
-</ul>
-<p>这最终将有助于回答最初的问题：“为什么我的容器没有运行？”</p>
-<h1 id="如何查找退出代码"><a href="#如何查找退出代码" class="headerlink" title="如何查找退出代码"></a>如何查找退出代码</h1><h2 id="选项1：列出所有退出的容器"><a href="#选项1：列出所有退出的容器" class="headerlink" title="选项1：列出所有退出的容器"></a>选项1：列出所有退出的容器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps --filter“状态&#x3D;退出”</span><br></pre></td></tr></table></figure>
-
-<h2 id="选项2：按容器名称进行的Grep"><a href="#选项2：按容器名称进行的Grep" class="headerlink" title="选项2：按容器名称进行的Grep"></a>选项2：按容器名称进行的Grep</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a grep &lt;容器名称&gt;示例：docker ps -a | grep hello-world</span><br></pre></td></tr></table></figure>
-
-<h2 id="选项3：按容器ID检查"><a href="#选项3：按容器ID检查" class="headerlink" title="选项3：按容器ID检查"></a>选项3：按容器ID检查</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">码头工人检查&lt;container-id&gt; --format &#x3D;&#39;&#123;&#123;。State.ExitCode&#125;&#125;&#39;示例：码头工人检查ca6cbb290468 --format &#x3D;&#39;&#123;&#123;。State.ExitCode&#125;&#125;&#39;</span><br></pre></td></tr></table></figure>
-
-<h1 id="退出码"><a href="#退出码" class="headerlink" title="退出码"></a>退出码</h1><p>与Docker容器关联的常见退出代码为：</p>
-<ul>
-<li><strong>退出代码0</strong>：缺少附加的前台进程</li>
-<li><strong>退出代码1</strong>：指示由于应用程序错误而导致的失败</li>
-<li><strong>退出代码137</strong>：指示由于容器收到SIGKILL而失败（手动干预或“ oom-killer” [OUT-OF-MEMORY]）</li>
-<li><strong>退出代码139</strong>：指示由于收到容器SIGSEGV而失败</li>
-<li><strong>退出代码143</strong>：指示由于收到容器而失败SIGTERM</li>
-</ul>
-<h2 id="退出码0"><a href="#退出码0" class="headerlink" title="退出码0"></a>退出码0</h2><ul>
-<li>退出代码0指示特定的容器没有附加的前台进程。</li>
-<li>此退出代码是所有其他后续退出代码的例外。这并不一定意味着发生了不好的事情。</li>
-<li>如果开发人员想要在容器完成其工作后自动停止其容器，则使用此退出代码。</li>
-</ul>
-<p>这是一个使用公共docker容器的示例-“ hello-world”。如果在系统或VM实例上安装了docker，请运行以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker运行hello-world</span><br></pre></td></tr></table></figure>
-
-<p>您将收到一条消息，“您好，码头工人！” 但尝试使用以下代码查找容器：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">泊坞窗ps -a | grep hello-world</span><br></pre></td></tr></table></figure>
-
-<p>您会注意到该容器已退出，并且退出代码为0。这是因为该容器没有附加任何前台进程，例如Java进程或运行直到发生SIGTERM事件的Shell进程。</p>
-<p><img src="https://miro.medium.com/max/60/1*onZujADMgDc3KvsDt8k0BA.png?q=20" alt="图片发布"></p>
-<p><img src="https://miro.medium.com/max/3868/1*onZujADMgDc3KvsDt8k0BA.png" alt="图片发布"></p>
-<p>退出码0</p>
-<h2 id="退出代码1"><a href="#退出代码1" class="headerlink" title="退出代码1"></a>退出代码1</h2><ul>
-<li>指示容器由于应用程序错误或Dockerfile中对容器中不存在的文件的错误引用而停止。</li>
-<li>应用程序错误可能很简单，例如“除以0”，也可能很复杂，例如“引用与相同名称和类的现有不兼容Bean定义冲突的Bean名称”。</li>
-<li>Dockerfile中对容器中不存在的文件的错误引用可以像错字一样简单（下面的示例使用<code>sample.ja</code>代替<code>sample.jar</code>）</li>
-</ul>
-<p><img src="https://miro.medium.com/max/60/1*0C1noFKfmrj5FVnhpbO53w.png?q=20" alt="图片发布"></p>
-<p><img src="https://miro.medium.com/max/1756/1*0C1noFKfmrj5FVnhpbO53w.png" alt="图片发布"></p>
-<p>退出代码1</p>
-<h2 id="退出代码137"><a href="#退出代码137" class="headerlink" title="退出代码137"></a>退出代码137</h2><ul>
-<li>这表明容器收到了SIGKILL</li>
-<li>引发SIGKILL的常见事件是docker kill。这可以由用户或由docker守护程序手动启动：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">码头工人杀死&lt;container-id&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>docker kill</code>可以由用户或主机手动启动。如果由主机启动，则通常是由于内存不足。要确认容器是否由于内存不足而退出，请<code>docker inspect</code>针对以下部分的容器ID进行验证，并检查其是否<code>OOMKilled</code>为true（这表明容器内存不足）：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">“状态”：&#123; </span><br><span class="line">“状态”：“退出”，</span><br><span class="line">“运行”：假，</span><br><span class="line">“暂停”：假，</span><br><span class="line">“重启”：假，</span><br><span class="line">“ OOMKilled”：真，</span><br><span class="line">“死”：假，</span><br><span class="line">“ Pid”：0，</span><br><span class="line">“ ExitCode“：137，</span><br><span class="line">”错误“：”“，</span><br><span class="line">” StartedAt“：” 2019-10-21T01：13：51.7340288Z“，</span><br><span class="line">” FinishedAt“：” 2019-10-21T01：13：51.7961614Z“ </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="退出代码139"><a href="#退出代码139" class="headerlink" title="退出代码139"></a>退出代码139</h2><ul>
-<li>这表明该容器收到了SIGSEGV</li>
-<li>SIGSEGV指示分段错误。当程序尝试访问不允许访问的存储位置或试图以不允许的方式访问<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Computer_memory">存储</a>位置时，会发生这种情况。</li>
-<li>从Docker容器的角度来看，这要么表明应用程序代码有问题，要么有时表明容器使用的基本映像有问题。</li>
-</ul>
-<h2 id="退出代码143"><a href="#退出代码143" class="headerlink" title="退出代码143"></a>退出代码143</h2><ul>
-<li>这表明该容器收到了SIGTERM。</li>
-<li>发起SIGTERM的常见事件是<code>docker stop</code>或<code>docker-compose stop</code>。在这种情况下，有一个手动终止操作迫使容器退出：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker stop &lt;container-id&gt;</span><br><span class="line">或</span><br><span class="line">docker-compose down &lt;container-id&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>注意：</strong>有时<code>docker stop</code>还会导致退出代码137。通常，如果绑定到容器的应用程序无法处理SIGTERM，则通常会发生这种情况-docker守护程序等待十秒钟，然后发出SIGKILL</li>
-</ul>
-<h2 id="Docker容器的一些不常见的退出代码（通常使用shell脚本）"><a href="#Docker容器的一些不常见的退出代码（通常使用shell脚本）" class="headerlink" title="Docker容器的一些不常见的退出代码（通常使用shell脚本）"></a><strong>Docker容器的一些不常见的退出代码（通常使用shell脚本）</strong></h2><ul>
-<li><strong>退出代码126</strong>：权限问题或命令不可执行</li>
-<li><strong>退出代码127</strong>：shell脚本中可能出现拼写错误且字符无法识别的情况</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="ckrbei45j0026c7n48ae7gbcg" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-线程池使用番外-分析RejectedExecutionException异常" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" class="article-date">
-  <time datetime="2021-03-03T06:36:03.000Z" itemprop="datePublished">2021-03-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/">线程池使用番外-分析RejectedExecutionException异常</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>　　一、入门示例</p>
-<p>　　二、异常场景1</p>
-<p>　　三、异常场景2</p>
-<p>　　四、解决方法</p>
-<p>之前在使用线程池的时候，出现了 java.util.concurrent.RejectedExecutionException ，原因是线程池配置不合理，导致提交的任务来不及处理。接下来用一个简单的例子来复现异常。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.util.concurrent.RejectedExecutionException: Task org.cellphone.common.pool.Worker@f6f4d33 rejected from java.util.concurrent.ThreadPoolExecutor@23fc625e[Running, pool size &#x3D; 3, active threads &#x3D; 3, queued tasks &#x3D; 15, completed tasks &#x3D; 0]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)</span><br><span class="line">    at org.cellphone.common.pool.RejectedExecutionExceptionExample.main(RejectedExecutionExceptionExample.java:22)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="一、入门示例"><a href="#一、入门示例" class="headerlink" title="一、入门示例"></a>一、入门示例</h2><p>下面的测试程序使用 ThreadPoolExecutor 类来创建线程池执行任务，代表任务 Worker 类代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Created by on 2019&#x2F;4&#x2F;20.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Worker implements Runnable &#123;</span><br><span class="line"></span><br><span class="line">    private int id;</span><br><span class="line"></span><br><span class="line">    public Worker(int id) &#123;</span><br><span class="line">        this.id &#x3D; id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + &quot; 执行任务 &quot; + id);</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + &quot; 完成任务 &quot; + id);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p> 执行 Worker 任务的代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Created by on 2019&#x2F;4&#x2F;20.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor &#x3D; new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        Worker tasks[] &#x3D; new Worker[10];</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] &#x3D; new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();    &#x2F;&#x2F; 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p> 运行一下，看到如下输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">主线程结束</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-1 执行任务 3</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-2 执行任务 4</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-3 执行任务 5</span><br><span class="line">pool-1-thread-2 完成任务 4</span><br><span class="line">pool-1-thread-2 执行任务 6</span><br><span class="line">pool-1-thread-3 完成任务 5</span><br><span class="line">pool-1-thread-1 完成任务 3</span><br><span class="line">pool-1-thread-3 执行任务 7</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">pool-1-thread-3 完成任务 7</span><br><span class="line">pool-1-thread-2 完成任务 6</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-2 执行任务 9</span><br><span class="line">pool-1-thread-2 完成任务 9</span><br></pre></td></tr></table></figure>
-
-
-
-<p> 在 RejectedExecutionExceptionExample 类里，我们使用 ThreadPoolExecutor 类创建了一个数量为3的线程池来执行任务，在这3个线程执行任务被占用期间，如果有新任务提交给线程池，那么这些新任务会被保存在 BlockingQueue 阻塞队列里，以等待被空闲线程取出并执行。在这里我们使用一个大小为15的 ArrayBlockingQueue 队列来保存待执行的任务，然后我们创建了10个任务提交给 ThreadPoolExecutor 线程池。</p>
-<h2 id="二、异常场景1"><a href="#二、异常场景1" class="headerlink" title="二、异常场景1"></a>二、异常场景1</h2><p>产生 RejectedExecutionException 异常的第一个原因：</p>
-<p>调用 shutdown() 方法关闭了 ThreadPoolExecutor 线程池，又提交新任务给 ThreadPoolExecutor 线程池执行。一般调用 shutdown() 方法之后，JVM会得到一个关闭线程池的信号，并不会立即关闭线程池，原来线程池里未执行完的任务仍然在执行，等到任务都执行完后才关闭线程池，但是JVM不允许再提交新任务给线程池。</p>
-<p>让我们用以下例子来重现该异常：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Created by on 2019&#x2F;4&#x2F;20.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor &#x3D; new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        Worker tasks[] &#x3D; new Worker[10];</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] &#x3D; new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();&#x2F;&#x2F; 关闭线程池</span><br><span class="line">        executor.execute(tasks[0]);&#x2F;&#x2F; 关闭线程池之后提交新任务，运行之后抛异常</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>运行一下，看到如下输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">主线程结束</span><br><span class="line">Exception in thread &quot;main&quot; java.util.concurrent.RejectedExecutionException: Task org.cellphone.common.pool.Worker@36baf30c rejected from java.util.concurrent.ThreadPoolExecutor@5caf905d[Shutting down, pool size &#x3D; 3, active threads &#x3D; 3, queued tasks &#x3D; 7, completed tasks &#x3D; 0]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)</span><br><span class="line">    at org.cellphone.common.pool.RejectedExecutionExceptionExample.main(RejectedExecutionExceptionExample.java:26)</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-1 执行任务 3</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-2 执行任务 4</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-3 执行任务 5</span><br><span class="line">pool-1-thread-3 完成任务 5</span><br><span class="line">pool-1-thread-3 执行任务 6</span><br><span class="line">pool-1-thread-2 完成任务 4</span><br><span class="line">pool-1-thread-2 执行任务 7</span><br><span class="line">pool-1-thread-1 完成任务 3</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">pool-1-thread-3 完成任务 6</span><br><span class="line">pool-1-thread-2 完成任务 7</span><br><span class="line">pool-1-thread-3 执行任务 9</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-3 完成任务 9</span><br></pre></td></tr></table></figure>
-
-
-
-<p>从以上例子可以看出，在调用 shutdown() 方法之后，由于JVM不允许再提交新任务给线程池，于是抛出了 RejectedExecutionException 异常。</p>
-<h2 id="三、异常场景2"><a href="#三、异常场景2" class="headerlink" title="三、异常场景2"></a>三、异常场景2</h2><p>产生 RejectedExecutionException 异常第二个原因：</p>
-<p>要提交给阻塞队列的任务超出了该队列的最大容量。当线程池里的线程都繁忙的时候，新任务会被提交给阻塞队列保存，这个阻塞队列一旦饱和，线程池就会拒绝接收新任务，随即抛出异常。</p>
-<p>示例代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Created by on 2019&#x2F;4&#x2F;20.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor &#x3D; new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 提交20个任务给线程池</span><br><span class="line">        Worker tasks[] &#x3D; new Worker[20];</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 20; i++) &#123;</span><br><span class="line">            tasks[i] &#x3D; new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();&#x2F;&#x2F; 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>在上面的例子中，我们使用了一个大小为15的 ArrayBlockingQueue 阻塞队列来保存等待执行的任务。接着我们提交了20个任务给线程池，由于每个线程执行任务的时候会睡眠1秒，因此当3个线程繁忙的时候，其他任务不会立即得到执行，我们提交的新任务会被保存在队列里。当等待任务的数量超过线程池阻塞队列的最大容量时，抛出了 RejectedExecutionException 异常。</p>
-<h2 id="四、解决方法"><a href="#四、解决方法" class="headerlink" title="四、解决方法"></a>四、解决方法</h2><p>要解决 RejectedExecutionException 异常，首先我们要注意两种情况：</p>
-<ol>
-<li>当调用了线程池的<code>shutdown()</code>方法以后，不要提交新任务给线程池</li>
-<li>不要提交大量超过线程池处理能力的任务，这时可能会导致队列饱和，抛出异常</li>
-</ol>
-<p>对于第二种情况，我们很容易解决。我们可以选择一种不需要设置大小限制的数据结构，比如 LinkedBlockingQueue 阻塞队列。因此在使用 LinkedBlockingQueue 队列以后，如果还出现 RejectedExecutionException 异常，就要将问题的重点放在第一种情况上。如果第一种情况不是产生问题的原因，那么我们还需要寻找更复杂的原因。比如，由于线程死锁和 LinkedBlockingQueue 饱和，导致内存占用过大，这个时候我们就需要考虑JVM可用内存的问题了。</p>
-<p>对于第二种情况，通常有一些隐藏的信息被我们忽略。其实我们可以给使用 ArrayBlockingQueue 作为阻塞队列的 ThreadPoolExecutor 线程池提交超过15个的任务，只要我们在提交新任务前设置一个完成原来任务的等待时间，这时3个线程就会逐渐消费 ArrayBlockingQueue 阻塞队列里的任务，而不会使它堵塞。示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Created by on 2019&#x2F;4&#x2F;20.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor &#x3D; new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 提交20个任务给线程池</span><br><span class="line">        Worker tasks[] &#x3D; new Worker[20];</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] &#x3D; new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Thread.sleep(3000);&#x2F;&#x2F; 让主线程睡眠三秒</span><br><span class="line">        for (int i &#x3D; 10; i &lt; 20; i++) &#123;</span><br><span class="line">            tasks[i] &#x3D; new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();&#x2F;&#x2F; 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>运行一下，看到如下输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-3 执行任务 4</span><br><span class="line">pool-1-thread-2 执行任务 3</span><br><span class="line">pool-1-thread-1 执行任务 5</span><br><span class="line">pool-1-thread-3 完成任务 4</span><br><span class="line">pool-1-thread-3 执行任务 6</span><br><span class="line">pool-1-thread-2 完成任务 3</span><br><span class="line">pool-1-thread-2 执行任务 7</span><br><span class="line">pool-1-thread-1 完成任务 5</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5caf905d, 10</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@27716f4, 11</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@8efb846, 12</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2a84aee7, 13</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@a09ee92, 14</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@30f39991, 15</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@452b3a41, 16</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4a574795, 17</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@f6f4d33, 18</span><br><span class="line">pool-1-thread-3 完成任务 6</span><br><span class="line">pool-1-thread-2 完成任务 7</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-2 执行任务 10</span><br><span class="line">pool-1-thread-3 执行任务 9</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@23fc625e, 19</span><br><span class="line">pool-1-thread-1 执行任务 11</span><br><span class="line">主线程结束</span><br><span class="line">pool-1-thread-2 完成任务 10</span><br><span class="line">pool-1-thread-2 执行任务 12</span><br><span class="line">pool-1-thread-1 完成任务 11</span><br><span class="line">pool-1-thread-1 执行任务 13</span><br><span class="line">pool-1-thread-3 完成任务 9</span><br><span class="line">pool-1-thread-3 执行任务 14</span><br><span class="line">pool-1-thread-2 完成任务 12</span><br><span class="line">pool-1-thread-2 执行任务 15</span><br><span class="line">pool-1-thread-3 完成任务 14</span><br><span class="line">pool-1-thread-3 执行任务 16</span><br><span class="line">pool-1-thread-1 完成任务 13</span><br><span class="line">pool-1-thread-1 执行任务 17</span><br><span class="line">pool-1-thread-2 完成任务 15</span><br><span class="line">pool-1-thread-2 执行任务 18</span><br><span class="line">pool-1-thread-3 完成任务 16</span><br><span class="line">pool-1-thread-1 完成任务 17</span><br><span class="line">pool-1-thread-3 执行任务 19</span><br><span class="line">pool-1-thread-2 完成任务 18</span><br><span class="line">pool-1-thread-3 完成任务 19</span><br></pre></td></tr></table></figure>
-
-
-
-<p>当然上面这种设置等待时间来分隔旧任务和新任务的方式，在高并发情况下效率并不高，一方面由于我们无法准确预估等待时间，一方面由于 ArrayBlockingQueue 内部只使用了一个锁来隔离读和写的操作，因此效率没有使用了两个锁来隔离读写操作的 LinkedBlockingQueue 高，故而不推荐使用这种方式。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="ckrbei45u002yc7n4cbtn971k" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-app抓包问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" class="article-date">
-  <time datetime="2021-02-24T08:26:00.000Z" itemprop="datePublished">2021-02-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="还在为大厂app抓不到包而犯愁吗？"><a href="#还在为大厂app抓不到包而犯愁吗？" class="headerlink" title="还在为大厂app抓不到包而犯愁吗？"></a>还在为大厂app抓不到包而犯愁吗？</h1><h2 id="抓不到请求的现象"><a href="#抓不到请求的现象" class="headerlink" title="抓不到请求的现象"></a>抓不到请求的现象</h2><p>我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。</p>
-<h2 id="抓不到请求的原因"><a href="#抓不到请求的原因" class="headerlink" title="抓不到请求的原因"></a>抓不到请求的原因</h2><p>大家都知道 http协议下层是tcp协议，tcp协议都是内置在操作系统里面的，我们最多只能使用tcp协议对外暴露的socket接口来进行编程， 我们是无法修改操作系统本身的tcp协议的实现的。</p>
-<p>但是http协议不同，http协议 都是各个开发者自己实现的， 换句话说 你要实现什么样的http客户端，这个客户端对http协议实现的好坏，实现了多少，支持哪些细节都是你自己决定的。 比如说android上 最有名的<strong>okhttp</strong> 就是一个http客户端的实现。</p>
-<p>既然是自己实现，那就有说法了，虽然你系统设置了代理，但是我完全可以不使用你的代理（或者说我压根就没实现http协议中 proxy的部分）。 这样自然就会像大厂中的某些app一样， 你虽然设置了代理 但是你还是无法抓包。</p>
-<p>因为人家http协议的客户端** 压根就没有使用你系统设置的 代理**。</p>
-<h2 id="看源码"><a href="#看源码" class="headerlink" title="看源码"></a>看源码</h2><p>想明白这个，我们再带着目的 去看源码 就很简单了。</p>
-<p>首先okhttp 是肯定有实现http代理的部分的，否则我们每天也不可能使用代理 愉快的进行抓包。 那么既然有大厂的app 抓不到，那么肯定是某些属性 动态设置了。</p>
-<p>注意看下面的代码：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>如果我这样设置了，你就会发现 你的app的接口 也会抓不到了。</p>
-<p>继续看源码： <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b864723b15224d3984fb06470f9be8e9~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>注释说的很明白，大概意思就是当你设置了这个属性以后，我们就不会使用系统代理了。 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22b61e3eef7a47c190f480d51b6afcb5~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>其实flutter也是有类似的功能，只不过okhttp 默认情况下是使用系统代理的，你要不想使用 你就必须写额外的代码，但是flutter是反过来的， flutter是默认就不使用系统代理，你要开启代理，必须在代码中进行设置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">lass ProxyDio &#123;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理地址</span><br><span class="line">  static const _PROXY_IP_ADDRESS &#x3D; &quot;10.12.65.66&quot;;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理端口号</span><br><span class="line">  static const _PROXY_PORT_NUM &#x3D; &quot;5000&quot;;</span><br><span class="line"></span><br><span class="line">  static Dio getProxyDio() &#123;</span><br><span class="line">    var dio &#x3D; Dio();</span><br><span class="line">    final adapter &#x3D; dio.httpClientAdapter as DefaultHttpClientAdapter;</span><br><span class="line">    adapter.onHttpClientCreate &#x3D; (client) &#123;</span><br><span class="line">      &#x2F;&#x2F; 设置该客户端的代理为指定的 ip:端口</span><br><span class="line">      client.findProxy &#x3D; (uri) &#123;</span><br><span class="line">        &#x2F;&#x2F; localProxyIPAddress 和 localProxyPort 是在外部被忽略文件中定义, 方便各个开发者自行更改.</span><br><span class="line">        return &quot;PROXY &quot; + _PROXY_IP_ADDRESS + &quot;:&quot; + _PROXY_PORT_NUM;</span><br><span class="line">      &#125;;</span><br><span class="line">      &#x2F;&#x2F; 安卓机上面证书授权:</span><br><span class="line">      client.badCertificateCallback &#x3D; (cert, host, port) &#x3D;&gt; true;</span><br><span class="line">    &#125;;</span><br><span class="line">    return dio;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<h2 id="特殊定制"><a href="#特殊定制" class="headerlink" title="特殊定制"></a>特殊定制</h2><p>了解到 事情的来龙去脉以后，我们还需要思考1个问题，为什么大厂的app 是有些接口抓不到，有些接口 就能抓到呢？ 这里其实有3个原因。</p>
-<p>第一： webview webview 使用的http协议 显然跟我们的okhttp是不一样的。而webview使用的 http协议栈 默认都是c代码的实现，我们很难干预，从测试的情况来看，这个http协议栈的实现 是会使用默认系统代理的。 我暂时没找到 关闭这个功能的api，如果有小伙伴实现了 可以告诉我</p>
-<p>第二：可以针对性的对某些敏感接口 使用no_proxy,而其余接口保持正常。</p>
-<p>实际上okhttp做的非常强大，对于代理的设置 他可以做到针对 接口地址不同 而 使用不一样的设置。</p>
-<p>比如这种写法 和上面的no_proxy 就是差不多效果的 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd0e64fe6d444b57a8bdabc0edec4606~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>再看看 <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/147e0c1bbf2a4ab4ae1b1d6b5f36ac19~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>第三： 即使你使用了全局的no_proxy 代理，但是通常 我们的app里面都不会只有一个okhttp的 client，因为还有其他第三方的库引进来，他们的client 如果没有使用 no_proxy 那他们的接口 还是可以被抓包软件抓到的。</p>
-<p>当然这个问题也是可以解决的，我们只要利用 字节码修改技术 直接修改 字节码即可。 这里就不多介绍了，有兴趣的可以自己实现。</p>
-<h2 id="使用了no-proxy-真的就抓不到了吗？"><a href="#使用了no-proxy-真的就抓不到了吗？" class="headerlink" title="使用了no_proxy 真的就抓不到了吗？"></a>使用了no_proxy 真的就抓不到了吗？</h2><p>当然不是，解决问题的方法就很多，最简单的就是使用drony这个软件，模拟一个vpn网络 即可。 原理很简单，让流量走到vpn里面， 然后vpn默认使用代理 即可。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="ckrbei450000zc7n492hu0lja" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-pure-ftp安装和配置" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" class="article-date">
-  <time datetime="2021-02-10T07:26:55.000Z" itemprop="datePublished">2021-02-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">pure-ftp安装和配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a target="_blank" rel="noopener" href="https://www.pureftpd.org/project/pure-ftpd/">Pure-FTPd </a>是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在<a target="_blank" rel="noopener" href="https://www.cco.xyz/archives/tag/centos">CentOS</a>中安装与使用Pure-FTPd。</p>
-<h2 id="1-安装Pure-FTPd"><a href="#1-安装Pure-FTPd" class="headerlink" title="1.安装Pure-FTPd"></a>1.安装Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install pure-ftpd</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-配置Pure-FTPd"><a href="#2-配置Pure-FTPd" class="headerlink" title="2.配置Pure-FTPd"></a>2.配置Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;pure-ftpd&#x2F;pure-ftpd.conf</span><br></pre></td></tr></table></figure>
-
-<p>根据以下内容修改：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ChrootEveryone               yes</span><br><span class="line">BrokenClientsCompatibility   no</span><br><span class="line">MaxClientsNumber             50</span><br><span class="line">Daemonize                    yes</span><br><span class="line">MaxClientsPerIP              8</span><br><span class="line">VerboseLog                   no</span><br><span class="line">DisplayDotFiles              yes</span><br><span class="line">AnonymousOnly                no</span><br><span class="line">NoAnonymous                  no</span><br><span class="line">SyslogFacility               ftp</span><br><span class="line">DontResolve                  yes</span><br><span class="line">MaxIdleTime                  15</span><br><span class="line">PureDB                        &#x2F;etc&#x2F;pure-ftpd&#x2F;pureftpd.pdb</span><br><span class="line">PAMAuthentication             yes</span><br><span class="line">LimitRecursion               10000 8</span><br><span class="line">AnonymousCanCreateDirs       no</span><br><span class="line">MaxLoad                      4</span><br><span class="line">AntiWarez                    yes</span><br><span class="line">Umask                        133:022</span><br><span class="line">MinUID                      1000</span><br><span class="line">AllowUserFXP                 no</span><br><span class="line">AllowAnonymousFXP            no</span><br><span class="line">ProhibitDotFilesWrite        no</span><br><span class="line">ProhibitDotFilesRead         no</span><br><span class="line">AutoRename                   no</span><br><span class="line">AnonymousCantUpload         yes</span><br><span class="line">AltLog                     clf:&#x2F;var&#x2F;log&#x2F;pureftpd.log</span><br><span class="line">PIDFile                     &#x2F;var&#x2F;run&#x2F;pure-ftpd.pid</span><br><span class="line">MaxDiskUsage                   99</span><br><span class="line">CustomerProof                yes</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-新增系统用户"><a href="#3-新增系统用户" class="headerlink" title="3.新增系统用户"></a>3.新增系统用户</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd www</span><br><span class="line">useradd -g www www</span><br></pre></td></tr></table></figure>
-
-<p>创建FTP的根目录，并赋予权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mdkir -p &#x2F;data&#x2F;wwwroot</span><br><span class="line">chown www:www -R &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-虚拟用户管理"><a href="#4-虚拟用户管理" class="headerlink" title="4.虚拟用户管理"></a>4.虚拟用户管理</h2><h3 id="4-1-创建虚拟用户"><a href="#4-1-创建虚拟用户" class="headerlink" title="4.1 创建虚拟用户"></a>4.1 创建虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw useradd wwwuser -u www -g www -d &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
-
-<p>创建FTP用户<code>wwwuser</code>, 将该虚拟用户关联到系统用户的<code>www和www用户组</code>，指定FTP的根目录为<code>/data/wwwroot</code>，按下回车，输入密码即可创建。<br>创建完虚拟FTP用户后，需要重新生成用户数据库文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw mkdb</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-2-查看虚拟用户"><a href="#4-2-查看虚拟用户" class="headerlink" title="4.2 查看虚拟用户"></a>4.2 查看虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pure-pw list  # 查看用户列表</span><br><span class="line"></span><br><span class="line">pure-pw show wwwuser  # 查看wwwuser用户</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-2-修改虚拟用户信息"><a href="#4-2-修改虚拟用户信息" class="headerlink" title="4.2 修改虚拟用户信息"></a>4.2 修改虚拟用户信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pure-pw passwd wwwuser   #修改密码</span><br><span class="line">pure-pw usermod wwwuser -d &#x2F;data&#x2F;wwwroot1  # 修改根目录</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-4-删除虚拟用户"><a href="#4-4-删除虚拟用户" class="headerlink" title="4.4 删除虚拟用户"></a>4.4 删除虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw userdel wwwuser</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckrbei45f001uc7n45ssqcwj3" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -913,7 +944,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
     </div>
   </div>
 
@@ -923,7 +954,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -933,7 +964,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 15px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 15px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 15px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 20px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 15px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 15px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 15px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 20px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -942,7 +973,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -955,23 +986,23 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/09/08/jrebel-license-server/">分享自建的 Jrebel License Server 激活 Jrebel</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/07/29/test/">test</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/07/29/dnf/">(no title)</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/">python接收请求参数</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/">centos安装python3</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/">centos7 安装 mysql</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">CentOS安装oh-my-zsh并配置语法高亮和命令自动补全 </a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/">CentOS 7 安装 JAVA环境（JDK 1.8）</a>
           </li>
         
       </ul>
