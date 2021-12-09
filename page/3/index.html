@@ -66,6 +66,116 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-使用性能分析工具定位Spring-Boot启动慢问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-04-02T11:03:53.000Z" itemprop="datePublished">2021-04-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/">使用性能分析工具定位Spring Boot启动慢问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>背景<br>项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。</p>
+<p>性能分析<br>VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）<br>《在windows上面启动》<a target="_blank" rel="noopener" href="https://software.intel.com/en-us/get-started-with-vtune-windows-os">https://software.intel.com/en-us/get-started-with-vtune-windows-os</a><br>《分析Java程序》<a target="_blank" rel="noopener" href="https://software.intel.com/zh-cn/vtune-help-java-code-analysis">https://software.intel.com/zh-cn/vtune-help-java-code-analysis</a><br>为了能够在VTune分析Java项目，首先创建一个启动脚本启动项目，然后在VTune创建一个性能分析项目开启性能监控。<br>start.bat脚本如下，很简单。</p>
+<p> java -jar myboot.jar<br>1</p>
+<p>项目启动后结束性能监控，VTune会自动分析监控结果，在Bottom-up Tab页可以看到哪些方法花费了大量CPU时间。<br>其中Spring的一个matches方法就占用了50秒。</p>
+<p>org.springframework.boot.bind.DefaultPropertyNamePatternsMatcher.matches<br>1</p>
+<p>性能瓶颈<br>查阅DefaultPropertyNamePatternsMatcher.matches源码及资料，matches的作用是根据我们在ConfigurationProperties中设置的prefix的值获取对应的匹配项。<br>由于分库分表后有多个主库与从库，Properties配置了大量不同的数据源。解析这些数据源配置耗费了大量时间，再加上解析后初始化数据源对象。</p>
+<p>spring.datasource.url=jdbc:mysql://127.0.0.1:3310/test<br>spring.datasource.username=root<br>spring.datasource.password=123456<br>1<br>2<br>3<br>    @Bean(name = “masterDataSource”)<br>    @ConfigurationProperties(prefix = “spring.datasource”)<br>    public DataSource masterDataSource() {<br>        return DataSourceBuilder.create().type(dataSourceType).build();<br>    }<br>1<br>2<br>3<br>4<br>5<br>根据Spring官方github，matches在匹配prefix值的过程中确实性能欠佳，尤其是prefix越短所花费的匹配时间越长。<br>详见：spring boot startup performance issue when large properties file</p>
+<p>改善<br>matches性能问题在Spring Boot 2中已经得到改善，但项目升Spring Boot 2遥遥无期。<br>既然瓶颈在过多的prefix，首先可以减少prefix配置但治标不治本。最终解决方法为本地调试绕过Spring matches方法，改用测试插件去初始化数据源，将项目启动时间从400秒压缩为100秒左右。<br>————————————————<br>版权声明：本文为CSDN博主「tom3mao」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/j16421881/article/details/105444700">https://blog.csdn.net/j16421881/article/details/105444700</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="ckwyadd9z002swxn40f3xf73j" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring-项目打不同环境的-jar-包原理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" class="article-date">
+  <time datetime="2021-03-18T12:12:08.000Z" itemprop="datePublished">2021-03-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/">Spring 项目打不同环境的 jar 包原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在 application.yml 中配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring:  profiles:    active: @spring.profile@</span><br></pre></td></tr></table></figure>
+
+<p>其中， spring.profiles.active 配置项表示启用哪套环境，这里没有明确指定，而是用了占位符 @spring.profile@</p>
+<p>不同的环境有不同的配置文件，例如以下有 dev、prod、test 三套环境：</p>
+<p>在打包时，如果想要打 prod 环境的包，可以使用命令：</p>
+<p>mvn clean package -Dmaven.test.skip=true -Dspring.profile=prod</p>
+<p>打包后解压，再次查看 application.yml，占位符 @spring.profile@ 被替换成了 prod，即打包命令通过 -Dspring.profile=prod 传入的值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring:  profiles:    active: prod</span><br></pre></td></tr></table></figure>
+
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>Spring Boot 项目通过 @..@ 指定占位符，参考文档：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#howto-automatic-expansion-maven">https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#howto-automatic-expansion-maven</a></p>
+<p>我们的 Spring Boot 项目都是继承自 spring-boot-starter-parent 模块，源码中可以找到：</p>
+<p>配置占位符为 @：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L19">https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L19</a></p>
+<p>并且使用了 maven-resources-plugin 插件</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L132">https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L132</a></p>
+<p>查看 maven-resources-plugin 插件的文档，可以看到这个插件可以在打包时通过 “-D” 选项，对项目中的占位符进行替换：</p>
+<p><a target="_blank" rel="noopener" href="https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html">https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="ckwyadd93000uwxn498en0mzn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Slf4j日志框架的使用及Logback、Log4j2的整合和性能对比" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" class="article-date">
@@ -129,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="cktkxcbyc000s32n47mzk09hd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="ckwyadd90000nwxn4545691i2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li></ul>
@@ -246,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="cktkxcbz3002d32n4b6k771q9" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="ckwyadd9w002gwxn4hfhrbsxm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
@@ -351,7 +461,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="cktkxcbzg003632n40txqaxd4" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="ckwyaddai005wwxn4dfhq2wnx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
@@ -413,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cktkxcbyh000w32n4awwg54g2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="ckwyadd980012wxn48cjh965z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -473,7 +583,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cktkxcbyz002232n40s03bjbt" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckwyadd9l0021wxn4hzg089ff" class="article-share-link">Share</a>
       
       
     </footer>
@@ -567,7 +677,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="cktkxcbxp000132n48c3hft4y" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckwyadd8q0007wxn4gcmg31n9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li></ul>
@@ -624,7 +734,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="cktkxcbyv001q32n4h87s8u6r" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckwyadd9e001hwxn44kzm1680" class="article-share-link">Share</a>
       
       
     </footer>
@@ -711,292 +821,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="cktkxcbzc002x32n4h3veb14k" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckwyaddah005twxn4cxki6vj6" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-redis分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" class="article-date">
-  <time datetime="2021-01-20T03:48:19.000Z" itemprop="datePublished">2021-01-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/">redis分析</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-</blockquote>
-<h2 id="1-安装redis-cli"><a href="#1-安装redis-cli" class="headerlink" title="1.安装redis-cli"></a>1.安装redis-cli</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis命令安装 就可以获取redis-cli</span><br><span class="line">yum install redis</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-dump-文件：rdb"><a href="#2-dump-文件：rdb" class="headerlink" title="2.dump 文件：rdb"></a>2.dump 文件：rdb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 需要使用从库防止影响线上服务</span><br><span class="line">redis-cli -h host -p port  -a password --rdb filename</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="RDR-简介"><a href="#RDR-简介" class="headerlink" title="RDR 简介"></a><strong>RDR 简介</strong></h2><p><code>RDR</code> 是解析 <code>redis rdbfile</code> 工具。与<code>redis-rdb-tools</code>相比，RDR 是由golang 实现的，速度更快（5GB rdbfile 在我的PC上大约需要2分钟）。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><strong>例子</strong></h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr show -p 8080 *.rdb</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://pic4.zhimg.com/80/v2-e42dabaaa2cf15a65779da6539161583_1440w.jpg" alt="img"></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr keys example.rdb</span><br><span class="line"></span><br><span class="line">portfolio:stock_follower_count:ZH314136</span><br><span class="line">portfolio:stock_follower_count:ZH654106</span><br><span class="line">portfolio:stock_follower:ZH617824</span><br><span class="line">portfolio:stock_follower_count:ZH001019</span><br><span class="line">portfolio:stock_follower_count:ZH346349</span><br><span class="line">portfolio:stock_follower_count:ZH951803</span><br><span class="line">portfolio:stock_follower:ZH924804</span><br><span class="line">portfolio:stock_follower_count:INS104806</span><br></pre></td></tr></table></figure>
-
-<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a><strong>优势</strong></h2><ul>
-<li>分析 Redis 内存中那个 Key 值占用的内存最多</li>
-<li>分析出 Redis 内存中那一类开头的 Key 占用最多，有利于内存优化</li>
-<li>Redis Key 值以 Dashboard 展示，这样更直观</li>
-</ul>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a><strong>安装</strong></h2><ul>
-<li>Linux amd64</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-linux -O /usr/<span class="built_in">local</span>/bin/rdr </span><br><span class="line">$ chmod +x /usr/<span class="built_in">local</span>/bin/rdr</span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li>MacOS</li>
-</ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-darwin -o /usr/local/bin/rdr </span><br><span class="line">$ chmod +x /usr/local/bin/rdr</span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li>Windows</li>
-</ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 浏览器下载下面链接，在点击运行 </span><br><span class="line">https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-windows.exe</span><br></pre></td></tr></table></figure>
-
-<h2 id="RDR-参数解释"><a href="#RDR-参数解释" class="headerlink" title="RDR 参数解释"></a><strong>RDR 参数解释</strong></h2><ul>
-<li>show 网页显示 rdbfile 的统计信息</li>
-<li>keys 从 rdbfile 获取所有 key</li>
-<li>help 帮助</li>
-<li>–version 显示版本信息</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">分析多个 Redis rdb</span><br><span class="line">$ rdr keys FILE1 [FILE2] [FILE3]...</span><br></pre></td></tr></table></figure>
-
-<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a><strong>项目地址</strong></h2><ul>
-<li><a href="https://link.zhihu.com/?target=https://github.com/xueqiu/rdr">https://github.com/xueqiu/rdr</a></li>
-</ul>
-<h1 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>​    Redis是基于内存的KV数据库，内存作为存储介质，关注其内存的使用情况是一个重要指标，解析其内部的存储信息是给出优化方法和维护的最基本要求。解析内存有二种方法：第一个是通过scan遍历所有key，针对每个key进行分析（memory usage）；第二个是基于RDB文件进行所有key的分析（<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">redis-rdb-tools</a>）。本文将介绍如何使用<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具。</p>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具包括了3个可执行文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rdb  -- 解析整个rdb文件</span><br><span class="line">redis-memory-for-key -- 解析server里的单个key</span><br><span class="line">redis-profiler --解析rdb文件成html格式</span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdb</a>是rdbtools工具包其中之一的工具，也是解析dump.rdb文件的工具：分析内存并将数据导出到JSON，Rdbtools是Redis的dump.rdb文件的解析器，解析器生成类似于xml。rdbtools提供了以下实用程序：</p>
-<ol>
-<li>生成所有数据库和键中数据的内存报告</li>
-<li>将转储文件转换为JSON</li>
-<li>使用标准差异工具比较两个转储文件</li>
-</ol>
-<h2 id="安装-rdbtools"><a href="#安装-rdbtools" class="headerlink" title="安装 rdbtools"></a>安装 rdbtools</h2><h3 id="前提条件："><a href="#前提条件：" class="headerlink" title="前提条件："></a>前提条件：</h3><ol>
-<li><p>安装 python-lzf ：加快解析速度</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install python-lzf</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装redis-py：可选，仅在运行测试用例时需要</p>
-</li>
-</ol>
-<h3 id="PyPI安装（推荐）"><a href="#PyPI安装（推荐）" class="headerlink" title="PyPI安装（推荐）"></a>PyPI安装（推荐）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install rdbtools python-lzf</span><br></pre></td></tr></table></figure>
-
-<h3 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;sripathikrishnan&#x2F;redis-rdb-tools</span><br><span class="line">cd redis-rdb-tools</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
-
-<h2 id="命令行用法示例"><a href="#命令行用法示例" class="headerlink" title="命令行用法示例"></a>命令行用法示例</h2><h3 id="help："><a href="#help：" class="headerlink" title="help："></a>help：</h3><p>**1，rdb –help：解析整个rdb文件<br>**</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">usage: rdb [options] &#x2F;path&#x2F;to&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Example : rdb --command json -k &quot;user.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">-- 要处理的dump文件</span><br><span class="line">  dump_file             RDB Dump file to process       </span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit  </span><br><span class="line">-- 要处理的命令，-c后的有效参数为：json, diff,justkeys, justkeyvals, memory，protocol </span><br><span class="line">  -c CMD, --command CMD</span><br><span class="line">                        Command to execute. Valid commands are json, diff,</span><br><span class="line">                        justkeys, justkeyvals, memory and protocol  </span><br><span class="line">-- 输出文件       </span><br><span class="line">  -f FILE, --file FILE  Output file</span><br><span class="line">-- 数据库号，可以提供多个数据库。如果未指定，则包括所有数据库。</span><br><span class="line">  -n DBS, --db DBS      Database Number. Multiple databases can be provided.</span><br><span class="line">                        If not specified, all databases will be included.</span><br><span class="line">-- 要导出的key。这可以是一个正则表达式</span><br><span class="line">  -k KEYS, --key KEYS   Keys to export. This can be a regular expression</span><br><span class="line">-- key不导出。这可以是一个正则表达式</span><br><span class="line">  -o NOT_KEYS, --not-key NOT_KEYS</span><br><span class="line">                        Keys Not to export. This can be a regular expression</span><br><span class="line">-- 解析的数据类型。可能的值为string，hash，set，sortedset，list。可以输入多种类型提供。如果未指定，则为所有数据类型</span><br><span class="line">  -t TYPES, --type TYPES</span><br><span class="line">                        Data types to include. Possible values are string,</span><br><span class="line">                        hash, set, sortedset, list. Multiple typees can be</span><br><span class="line">                        provided. If not specified, all data types will be</span><br><span class="line">                        returned</span><br><span class="line">--  将key的内存输出限制为大于或等此值（以字节为单位）</span><br><span class="line">  -b BYTES, --bytes BYTES</span><br><span class="line">                        Limit memory output to keys greater to or equal to</span><br><span class="line">                        this value (in bytes)</span><br><span class="line">--  将内存按大小输出前N个key                       </span><br><span class="line">  -l LARGEST, --largest LARGEST</span><br><span class="line">                        Limit memory output to only the top N keys (by size)</span><br><span class="line">-- 将字符串转义为编码：raw（默认），print，utf8或base64。</span><br><span class="line">  -e &#123;raw,print,utf8,base64&#125;, --escape &#123;raw,print,utf8,base64&#125;</span><br><span class="line">                        Escape strings to encoding: raw (default), print,</span><br><span class="line">                        utf8, or base64.</span><br><span class="line">-- 使用command protocol参数，从所有键中删除到期的key                       </span><br><span class="line">  -x, --no-expire       With protocol command, remove expiry from all keys</span><br><span class="line">-- 使用command protocol参数，将N秒添加到key的到期时间</span><br><span class="line">  -a N, --amend-expire N</span><br><span class="line">                        With protocol command, add N seconds to key expiry</span><br><span class="line">                        time</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p><strong>2，redis-memory-for-key –help：– 解析server里指定的单个key</strong></p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-memory-for-key [options] redis-key</span><br><span class="line">Examples :</span><br><span class="line">redis-memory-for-key user:13423</span><br><span class="line">redis-memory-for-key -s localhost -p 6379 user:13423</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 服务地址，默认127.0.0.1</span><br><span class="line">  -s HOST, --server&#x3D;HOST</span><br><span class="line">                        Redis Server hostname. Defaults to 127.0.0.1</span><br><span class="line">-- 服务端口，默认6379                        </span><br><span class="line">  -p PORT, --port&#x3D;PORT  Redis Server port. Defaults to 6379</span><br><span class="line">--服务密码</span><br><span class="line">  -a PASSWORD, --password&#x3D;PASSWORD</span><br><span class="line">                        Password to use when connecting to the server</span><br><span class="line">-- 数据库号，默认0</span><br><span class="line">  -d DB, --db&#x3D;DB        Database number, defaults to 0 </span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>**3，redis-profiler –help：<br>**</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-profiler [options] &#x2F;path&#x2F;to&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Example 1 : redis-profiler -k &quot;user.*&quot; -k &quot;friends.*&quot; -f memoryreport.html &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line">Example 2 : redis-profiler &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 输出</span><br><span class="line">  -f FILE, --file&#x3D;FILE  Output file</span><br><span class="line">-- 组合在一起的键。 多个正则表达式</span><br><span class="line">  -k KEYS, --key&#x3D;KEYS   Keys that should be grouped together. Multiple regexes</span><br><span class="line">                        can be provided</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>每次运行以上工具时都需要指定一个命令，以指示对解析的RDB数据应执行的操作。 操作有：</p>
-<h3 id="转储的JSON："><a href="#转储的JSON：" class="headerlink" title="转储的JSON："></a>转储的JSON：</h3><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;user003&quot;:&#123;&quot;fname&quot;:&quot;Ron&quot;,&quot;sname&quot;:&quot;Bumquist&quot;&#125;,</span><br><span class="line">&quot;lizards&quot;:[&quot;Bush anole&quot;,&quot;Jackson&#39;s chameleon&quot;,&quot;Komodo dragon&quot;,&quot;Ground agama&quot;,&quot;Bearded dragon&quot;],</span><br><span class="line">&quot;user001&quot;:&#123;&quot;fname&quot;:&quot;Raoul&quot;,&quot;sname&quot;:&quot;Duke&quot;&#125;,</span><br><span class="line">&quot;user002&quot;:&#123;&quot;fname&quot;:&quot;Gonzo&quot;,&quot;sname&quot;:&quot;Dr&quot;&#125;,</span><br><span class="line">&quot;user_list&quot;:[&quot;user003&quot;,&quot;user002&quot;,&quot;user001&quot;]&#125;,&#123;</span><br><span class="line">&quot;baloon&quot;:&#123;&quot;helium&quot;:&quot;birthdays&quot;,&quot;medical&quot;:&quot;angioplasty&quot;,&quot;weather&quot;:&quot;meteorology&quot;&#125;,</span><br><span class="line">&quot;armadillo&quot;:[&quot;chacoan naked-tailed&quot;,&quot;giant&quot;,&quot;Andean hairy&quot;,&quot;nine-banded&quot;,&quot;pink fairy&quot;],</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<h3 id="过滤解析："><a href="#过滤解析：" class="headerlink" title="过滤解析："></a>过滤解析：</h3><p>正则表达式匹配key，并且仅打印键和值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command justkeyvals --key &quot;user.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">user003 fname Ron,sname Bumquist,</span><br><span class="line">user001 fname Raoul,sname Duke,</span><br><span class="line">user002 fname Gonzo,sname Dr,</span><br><span class="line">user_list user003,user002,user001</span><br></pre></td></tr></table></figure>
-
-<p>仅处理数据库2中hash类型的a开头的key：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json --db 2 --type hash --key &quot;a.*&quot; &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;&#125;,&#123;</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
-
-<h3 id="dump文件转换为JSON："><a href="#dump文件转换为JSON：" class="headerlink" title="dump文件转换为JSON："></a>dump文件转换为JSON：</h3><p>输出是UTF-8编码的JSON。 默认情况下，回调尝试使用UTF-8解析RDB数据，并使用\U表示符转义非’ASCII可打印’字符，或使用\x转义非UTF-8可解析的字节。 尝试对RDB数据进行解码可能会导致二进制数据错误，可以通过使用–escape raw选项来避免这种情况。 另一种选择是使用-e base64进行二进制数据的Base64编码。 </p>
-<p>解析dump文件并在标准输出上打印JSON： </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00e4ttre sent \u00e4n aldrig&quot;,&quot;Bra karl reder sig sj\u00e4lv&quot;,&quot;Man ska inte k\u00f6pa grisen i s\u00e4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\\xFE\u0000\u00e2\\xF2&quot;&#125;]</span><br></pre></td></tr></table></figure>
-
-<p>将dump文件解析为原始字节，并在标准输出上打印JSON：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb --escape raw</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00c3\u00a4ttre sent \u00c3\u00a4n aldrig&quot;,&quot;Bra karl reder sig sj\u00c3\u00a4lv&quot;,&quot;Man ska inte k\u00c3\u00b6pa grisen i s\u00c3\u00a4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\u00fe\u0000\u00c3\u00a2\u00f2&quot;&#125;]</span><br></pre></td></tr></table></figure>
-
-<h3 id="生成内存报告："><a href="#生成内存报告：" class="headerlink" title="生成内存报告："></a>生成内存报告：</h3><p>使用-c memory 运行会生成CSV报告，其中包含该键使用的近似内存。 –bytes C 和 –largest N 可用于将输出限制为大于C字节的键或N个最大键。</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c memory &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb --bytes 128 -f memory.csv</span><br><span class="line">&gt; cat memory.csv</span><br><span class="line"></span><br><span class="line">database,type,key,size_in_bytes,encoding,num_elements,len_largest_element</span><br><span class="line">0,list,lizards,241,quicklist,5,19</span><br><span class="line">0,list,user_list,190,quicklist,3,7</span><br><span class="line">2,hash,baloon,138,ziplist,3,11</span><br><span class="line">2,list,armadillo,231,quicklist,5,20</span><br><span class="line">2,hash,aroma,129,ziplist,3,11</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>生成的CSV具有以下列：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">database：数据库编号</span><br><span class="line">type：数据类型</span><br><span class="line">key：键</span><br><span class="line">size_in_bytes：使用的内存：包括键，值和任何其他开销</span><br><span class="line">encoding：RDB编码类型</span><br><span class="line">num_elements：key中的value的个数</span><br><span class="line">len_largest_element：key中的value的长度</span><br><span class="line">expiry：过期值</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>注意：内存使用情况是近似的。 通常，实际使用的内存将略高于报告的内存。可以按键或数据库编号或数据类型过滤报告。内存报告应有助于检测由应用程序逻辑引起的内存泄漏。 它还将帮助优化Redis的内存使用。</p>
-<h3 id="查找单键使用的内存："><a href="#查找单键使用的内存：" class="headerlink" title="查找单键使用的内存："></a>查找单键使用的内存：</h3><p>查找特定键使用的内存（运行整个内存报告非常耗时），使用redis-memory-for-key：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; redis-memory-for-key person:1</span><br><span class="line"></span><br><span class="line">&gt; redis-memory-for-key -s localhost -p 6379 -a mypassword person:1</span><br><span class="line"></span><br><span class="line">Key             person:1</span><br><span class="line">Bytes                111</span><br><span class="line">Type                hash</span><br><span class="line">Encoding            ziplist</span><br><span class="line">Number of Elements        2</span><br><span class="line">Length of Largest Element    8</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<h3 id="比较RDB文件："><a href="#比较RDB文件：" class="headerlink" title="比较RDB文件："></a>比较RDB文件：</h3><p>使用–command diff选项，并将输出通过管道传递到标准sort：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command diff &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump1.rdb | sort &gt; dump1.txt</span><br><span class="line">&gt; rdb --command diff &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump2.rdb | sort &gt; dump2.txt</span><br></pre></td></tr></table></figure>
-
-<p>运行差异程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; kdiff3 dump1.txt dump2.txt</span><br></pre></td></tr></table></figure>
-
-<p>要限制文件的大小，可以使用–key选项过滤键</p>
-<h3 id="使用Redis协议："><a href="#使用Redis协议：" class="headerlink" title="使用Redis协议："></a>使用Redis协议：</h3><p>使用<a target="_blank" rel="noopener" href="https://redis.io/topics/protocol">protocol</a>命令将RDB文件转换为redis协议流：</p>
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c protocol &#x2F;var&#x2F;redis&#x2F;6379&#x2F;dump.rdb</span><br><span class="line"></span><br><span class="line">*4</span><br><span class="line">$4</span><br><span class="line">HSET</span><br><span class="line">$9</span><br><span class="line">users:123</span><br><span class="line">$9</span><br><span class="line">firstname</span><br><span class="line">$8</span><br><span class="line">Sripathi</span><br></pre></td></tr></table></figure>
-
-<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
-<p>可以将输出通过管道传输到netcat并重新导入数据的子集。如果要将数据在两个Redis实例上共享，则可以使用–key标志选择数据的子集，然后将输出传递给正在运行的Redis实例并加载该数据。 当输出打印协议时，–escape选项可以避免出现不可打印/控制字符。</p>
-<p>默认情况下，如果过期时间在rdb文件中存在，则会删除过去所有过期的键。 如果不需要此行为，则使用-x/–no-expire选项将忽略所有关键的到期命令。使用-a/–amend-expire选项设置将来的到期时间，该选项会为已设置为到期的每个密钥的到期时间增加整数秒，不会更改尚未设置有效期的key。</p>
-<h3 id="使用解析器（Python）："><a href="#使用解析器（Python）：" class="headerlink" title="使用解析器（Python）："></a>使用解析器（Python）：</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code </p>
-<h2 id="测试说明"><a href="#测试说明" class="headerlink" title="测试说明"></a>测试说明</h2><h3 id="一、rdb：根据要求分析这个RDB文件"><a href="#一、rdb：根据要求分析这个RDB文件" class="headerlink" title="一、rdb：根据要求分析这个RDB文件"></a>一、rdb：根据要求分析这个RDB文件</h3><ol>
-<li><p><strong>按json格式导出rdb：</strong></p>
-<p>rdb –command <strong>json</strong> dump.rdb </p>
-<p>**<br>**</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出rdb中的keys：</strong>rdb -c <strong>justkeys</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出rdb中的values</strong>：rdb -c <strong>justkeyvals</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p>导出rdb中keys的内存分析：</p>
-<p>rdb -c <strong>memory</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>按RESP协议导出RDB内容：</strong></p>
-<p>rdb -c <strong>protocol</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>分析RDB结果导出到文件：</strong></p>
-<p>rdb -c <strong>memory</strong> dump.rdb <strong>-f</strong> ttt.csv</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定数据库的keys：</strong></p>
-<p>rdb -c justkeyvals dump.rdb <strong>-n</strong> **0<br>**</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出\</strong>**匹配（正则）的**<em>\</em>keys：<strong>rdb –command justkeyvals *<em>–key “.\</em>set*“</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>不导出匹配（正则）的keys：</strong>rdb –command justkeyvals <strong>–not-key</strong> <strong>“.*set*“</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定类型的keys：</strong></p>
-<p>rdb –command json <strong>–type</strong> <strong>hash</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p>导出大于指定字节的keys：</p>
-<p>rdb –command <strong>memory</strong> <strong>–bytes 128</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出内存字节排名前3个keys：</strong>rdb –command <strong>memory</strong> <strong>–largest 3</strong> dump.rdb </p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出指定编码转义：</strong>rdb –command justkeyvals <strong>–escape raw</strong> dump.rdb</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-</li>
-<li><p><strong>导出keys（过期keys除外）</strong>：rdb –command memory <strong>–no-expire</strong> dump.rdb </p>
-</li>
-<li><p><strong>导出keys（给过期keys添加时间）：</strong>rdb –command memory <strong>–amend-expire 100</strong> dump.rdb </p>
-</li>
-</ol>
-<p>以上操作参数可以相互叠加使用，按照实际要求进行组合。并且可以导出成csv文件，导入到数据库里进行聚合统计和监控。</p>
-<h3 id="二、redis-memory-for-key：查看指定key的内存"><a href="#二、redis-memory-for-key：查看指定key的内存" class="headerlink" title="二、redis-memory-for-key：查看指定key的内存"></a>二、redis-memory-for-key：查看指定key的内存</h3><p><strong>查看指定key的内存分析情况：</strong>redis-memory-for-key <strong>–server</strong>=192.168.163.134 <strong>–port</strong>=8379 <strong>f</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-<h3 id="三、redis-profiler：RDB分析生成html"><a href="#三、redis-profiler：RDB分析生成html" class="headerlink" title="三、redis-profiler：RDB分析生成html"></a>三、redis-profiler：RDB分析生成html</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
-<p>分析后的效果图（一部分）如：</p>
-<p><img src="https://img2020.cnblogs.com/blog/163084/202007/163084-20200711003724347-1828918463.png" alt="img"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过本文对于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>说明，能够更好的解析RDB其内部的存储信息，从而方便给出优化和维护的建议，关于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>更多的说明可以看官网。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="cktkxcbz1002832n4070jb8qo" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-linux下mysql数据库备份与还原" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" class="article-date">
-  <time datetime="2021-01-15T07:47:56.000Z" itemprop="datePublished">2021-01-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/">linux下mysql数据库备份与还原</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>使用如下命令导出</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mysqldump -u root -p 数据库密码 数据库名称 &gt; 具体备份路径</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># mysqldump -u root -p mysite &gt; /var/databakup/mysite.sql</span></span><br></pre></td></tr></table></figure>
-
-<p>导入数据库<br> 首先需要创建数据库，如果已经存在就不用创建了。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br><span class="line"><span class="comment">#根据提示输入密码后进入mysql控制台</span></span><br><span class="line">show databases;</span><br><span class="line"><span class="comment">#创建数据库</span></span><br><span class="line">create database mysite;</span><br><span class="line"><span class="comment">#进入数据库</span></span><br><span class="line"><span class="keyword">use</span> <span class="title">mysite</span>;</span><br><span class="line"><span class="comment">#从文件导入所有数据</span></span><br><span class="line">source /<span class="keyword">var</span>/databakup/mysite.sql</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<p>作者：coreki<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/04416670d1e2">https://www.jianshu.com/p/04416670d1e2</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" data-id="cktkxcbyx001x32n4gc3b4bnc" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li></ul>
-
     </footer>
   </div>
   
@@ -1019,7 +846,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/redis/">redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
     </div>
   </div>
 
@@ -1029,7 +856,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -1039,7 +866,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 15px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 15px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 20px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 20px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 15px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 15px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 20px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 20px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/rocketMq/" style="font-size: 10px;">rocketMq</a> <a href="/blogOfLin/tags/scan/" style="font-size: 10px;">scan</a> <a href="/blogOfLin/tags/security/" style="font-size: 10px;">security</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" style="font-size: 10px;">消费</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -1048,7 +875,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -1061,23 +888,23 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/">关于rockteMq消息并发消费写db的小技巧</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/">关于redis的scan命令踩过的坑</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/">git导出干净代码</a>
           </li>
         
           <li>
             <a href="/blogOfLin/2021/09/08/jrebel-license-server/">分享自建的 Jrebel License Server 激活 Jrebel</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/07/29/test/">test</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/07/29/dnf/">(no title)</a>
           </li>
         
       </ul>
