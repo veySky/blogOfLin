@@ -66,6 +66,218 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-循环缓冲区（RingBuffer）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" class="article-date">
+  <time datetime="2021-04-06T10:43:14.000Z" itemprop="datePublished">2021-04-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/">循环缓冲区（RingBuffer）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><h2 id="1、循环缓冲区的实现原理"><a href="#1、循环缓冲区的实现原理" class="headerlink" title="1、循环缓冲区的实现原理"></a>1、循环缓冲区的实现原理</h2><p>环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须添加互斥保护机制来确保多个用户互斥访问环形缓冲区。</p>
+<h2 id="2、概念"><a href="#2、概念" class="headerlink" title="2、概念"></a>2、概念</h2><p>关于循环缓冲区（Ring Buffer）的概念，其实来自于Linux内核（Maybe），是为解决某些特殊情况下的竞争问题提供了一种免锁的方法。这种特殊的情况就是当生产者和消费者都只有一个，而在其它情况下使用它也是必须要加锁的。对应在Linux内核中有对它的定义：</p>
+<p>struct kfifo { </p>
+<p>​     unsigned char *buffer; </p>
+<p>​     unsigned int size; </p>
+<p>​     unsigned int in; </p>
+<p>​     unsigned int out; </p>
+<p>​     spinlock_t *lock; </p>
+<p>}; </p>
+<p>其中buffer指向存放数据的缓冲区，size是缓冲区的大小，in是写指针下标，out是读指针下标，lock是加到struct kfifo上的自旋锁（上面说不加锁不是这里的锁），防止多个进程并发访问此数据结构。当in==out时，说明缓冲区为空；当(in-out)==size时，说明缓冲区已满。 </p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp" alt="img"></p>
+<p> 注：我们保有对应的读写指针，当第一批数据（蓝色）完成，第二批数据（红色）会根据当前的写指针位置继续我们的数据操作，当达到最大的Buffer_Size时，会重新回到Buffer的开始端。</p>
+<p>我们更多要说的是Ring Buffer关于在我们在日志处理方面的一个应用，我们知道对于Program来说日志记录提供了故障前应用程序状态的详细信息，在一段时间的运行过程中，会将不断地产生大量的跟踪数据，以及调试信息并持续地将其写入到磁盘上的文本文件中。多亿进行有效的日志记录，需要使用大量的磁盘空间，并且在多线程环境中，所需的磁盘空间会成倍地增加。常规的日志处理来说存在一些问题，比如硬盘空间的可用性，以及在对一个文件写入数据时磁盘 I/O 的速度较慢。持续地对磁盘进行写入操作可能会极大地降低程序的性能，导致其运行速度缓慢。通常，可以通过使用日志轮换策略来解决空间问题，将日志保存在几个文件中，当这些文件大小达到某个预定义的字节数时，对它们进行截断和覆盖。</p>
+<p>  所以要克服空间问题并实现磁盘 I/O 的最小化，某些程序可以将它们的跟踪数据记录在内存中，仅当请求时才转储这些数据。这个循环的、内存中的缓冲区称为循环缓冲区。它可以将相关的数据保存在内存中，而不是每次都将其写入到磁盘上的文件中。在需要的时候（比如当用户请求将内存数据转储到文件中时、程序检测到一个错误时，或者由于非法的操作或者接收到的信号而引起程序崩溃时）可以将内存中的数据转储到磁盘。循环缓冲区日志记录由一个固定大小的内存缓冲区构成，进程使用这个内存缓冲区进行日志记录。</p>
+<p>  当然现在我们面对的大多是多线程的协同工作，对于日志记录来说，倘若采取传统的加锁机制访问我们的存储文件，这些线程将在获得和释放锁上花费了大部分的时间，所以采取循环缓冲区会是一个不错的办法。通过使得每个线程将数据写入到它自己的内存块，就可以完全避免同步问题。当收到来自用户的转储数据的请求时，每个线程获得一个锁，并将其转储到中心位置。或者分配一个很大的全局内存块，并将其划分为较小的槽位，其中每个槽位都可由一个线程用来进行日志记录。每个线程只能够读写它自己的槽位，而不是整个缓冲区。当每个线程第一次尝试写入数据时，它会尝试寻找一个空的内存槽位，并将其标记为忙碌。当线程获得了一个特定的槽位时，可以将跟踪槽位使用情况的位图中相应的位设置为1，当该线程退出时，重新将这个位设置为 0。在这里需要同时需要维护当前使用的槽位编号的全局列表，以及正在使用它的线程的线程信息。</p>
+<p>  但是这里需要注意的是当一个线程已经死亡，却没有释放相应的槽位，并在垃圾收集器释放该槽位之前，再次使用了这个线程 ID 并为其分配一个新的槽位。对于新的线程来说，检查全局列表并且重用相同的槽位（如果以前的实例使用了它的话），这是非常重要的。因为垃圾收集器线程和写入者线程可能同时尝试修改全局列表，所以同样也需要使用某种锁定机制。</p>
+<p>二、Ring Buffer的优点</p>
+<p>  我们使用 Ring Buffer 这种数据结构，是因为它给我们提供了可靠的消息传递特性。这个理由就足够了，不过它还有一些其他的优点。</p>
+<p>首先，Ring Buffer 比链表要快，因为它是数组，而且有一个容易预测的访问模式。这很不错，对 CPU 高速缓存友好 （CPU-cache-friendly）－数据可以在硬件层面预加载到高速缓存，因此 CPU 不需要经常回到主内存 RAM 里去寻找 Ring Buffer 的下一条数据。</p>
+<p>第二点，Ring Buffer 是一个数组，你可以预先分配内存，并保持数组元素永远有效。这意味着内存垃圾收集（GC）在这种情况下几乎什么也不用做。此外，也不像链表那样每增加一条数据都要创建对象－当这些数据从链表里删除时，这些对象都要被清理掉。</p>
+<p>参考网址：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/sim_szm/article/details/17011545">https://blog.csdn.net/sim_szm/article/details/17011545</a></p>
+<p>图片说明：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/u011046042/article/details/51853535">环形缓冲区的应用ringbuffer - CSDN博客</a></p>
+<p>作者：萧修<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8499d9603544">https://www.jianshu.com/p/8499d9603544</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="cky1j4nwc003crln454g2hb8k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-让你彻底理解Synchronized" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" class="article-date">
+  <time datetime="2021-04-02T12:15:53.000Z" itemprop="datePublished">2021-04-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/">让你彻底理解Synchronized</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-synchronized简介"><a href="#1-synchronized简介" class="headerlink" title="1. synchronized简介"></a>1. synchronized简介</h1><p>在学习知识前，我们先来看一个现象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> SynchronizedDemo());</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;result: &quot;</span> + count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++)</span><br><span class="line">            count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启了10个线程，每个线程都累加了1000000次，如果结果正确的话自然而然总数就应该是10 * 1000000 = 10000000。可就运行多次结果都不是这个数，而且每次运行结果都不一样。这是为什么了？有什么解决方案了？这就是我们今天要聊的事情。</p>
+<p>在上一篇博文中我们已经了解了<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d52fea0d6ba5">java内存模型</a>的一些知识，并且已经知道出现线程安全的主要来源于JMM的设计，主要集中在主内存和线程的工作内存而导致的<strong>内存可见性问题</strong>，以及<strong>重排序导致的问题</strong>，进一步知道了<strong>happens-before规则</strong>。线程运行时拥有自己的栈空间，会在自己的栈空间运行，如果多线程间没有共享的数据也就是说多线程间并没有协作完成一件事情，那么，多线程就不能发挥优势，不能带来巨大的价值。那么共享数据的线程安全问题怎样处理？很自然而然的想法就是每一个线程依次去读写这个共享变量，这样就不会有任何数据安全的问题，因为每个线程所操作的都是当前最新的版本数据。那么，在java关键字synchronized就具有使每个线程依次排队操作共享变量的功能。很显然，这种同步机制效率很低，但synchronized是其他并发容器实现的基础，对它的理解也会大大提升对并发编程的感觉，从功利的角度来说，这也是面试高频的考点。好了，下面，就来具体说说这个关键字。</p>
+<h1 id="2-synchronized实现原理"><a href="#2-synchronized实现原理" class="headerlink" title="2. synchronized实现原理"></a>2. synchronized实现原理</h1><p>在java代码中使用synchronized可是使用在代码块和方法中，根据Synchronized用的位置可以有这些使用场景：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-08f16aeac7e0977d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/993/format/webp" alt="img"></p>
+<p>Synchronized的使用场景</p>
+<p> 如图，synchronized可以用在<strong>方法</strong>上也可以使用在<strong>代码块</strong>中，其中方法是实例方法和静态方法分别锁的是该类的实例对象和该类的对象。而使用在代码块中也可以分为三种，具体的可以看上面的表格。这里的需要注意的是：<strong>如果锁的是类对象的话，尽管new多个实例对象，但他们仍然是属于同一个类依然会被锁住，即线程之间保证同步关系</strong>。</p>
+<p>现在我们已经知道了怎样synchronized了，看起来很简单，拥有了这个关键字就真的可以在并发编程中得心应手了吗？爱学的你，就真的不想知道synchronized底层是怎样实现了吗？</p>
+<h2 id="2-1-对象锁（monitor）机制"><a href="#2-1-对象锁（monitor）机制" class="headerlink" title="2.1 对象锁（monitor）机制"></a>2.1 对象锁（monitor）机制</h2><p>现在我们来看看synchronized的具体底层实现。先写一个简单的demo:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (SynchronizedDemo.class) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        method();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中有一个同步代码块，锁住的是类对象，并且还有一个同步静态方法，锁住的依然是该类的类对象。编译之后，切换到SynchronizedDemo.class的同级目录之后，然后用<strong>javap -v SynchronizedDemo.class</strong>查看字节码文件：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-10e9e5d556d5214d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/778/format/webp" alt="img"></p>
+<p>SynchronizedDemo.class</p>
+<p> 如图，上面用黄色高亮的部分就是需要注意的部分了，这也是添Synchronized关键字之后独有的。执行同步代码块后首先要先执行<strong>monitorenter</strong>指令，退出的时候<strong>monitorexit</strong>指令。通过分析之后可以看出，使用Synchronized进行同步，其关键就是必须要对对象的监视器monitor进行获取，当线程获取monitor后才能继续往下执行，否则就只能等待。而这个获取的过程是<strong>互斥</strong>的，即同一时刻只有一个线程能够获取到monitor。上面的demo中在执行完同步代码块之后紧接着再会去执行一个静态同步方法，而这个方法锁的对象依然就这个类对象，那么这个正在执行的线程还需要获取该锁吗？答案是不必的，从上图中就可以看出来，执行静态同步方法的时候就只有一条monitorexit指令，并没有monitorenter获取锁的指令。这就是<strong>锁的重入性</strong>，即在同一锁程中，线程不需要再次获取同一把锁。Synchronized先天具有重入性。<strong>每个对象拥有一个计数器，当线程获取该对象锁后，计数器就会加一，释放锁后就会将计数器减一</strong>。</p>
+<p>任意一个对象都拥有自己的监视器，当这个对象由同步块或者这个对象的同步方法调用时，执行方法的线程必须先获取该对象的监视器才能进入同步块和同步方法，如果没有获取到监视器的线程将会被阻塞在同步块和同步方法的入口处，进入到BLOCKED状态（关于线程的状态可以看<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f65ea68a4a7f">这篇文章</a>）</p>
+<p>下图表现了对象，对象监视器，同步队列以及执行线程状态之间的关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-58bf5739c7c49c05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/993/format/webp" alt="img"></p>
+<p>对象，对象监视器，同步队列和线程状态的关系</p>
+<p>该图可以看出，任意线程对Object的访问，首先要获得Object的监视器，如果获取失败，该线程就进入同步状态，线程状态变为BLOCKED，当Object的监视器占有者释放后，在同步队列中得线程就会有机会重新获取该监视器。</p>
+<h2 id="2-2-synchronized的happens-before关系"><a href="#2-2-synchronized的happens-before关系" class="headerlink" title="2.2 synchronized的happens-before关系"></a>2.2 synchronized的happens-before关系</h2><p>在上一篇文章中讨论过<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d52fea0d6ba5">happens-before</a>规则，抱着学以致用的原则我们现在来看一看Synchronized的happens-before规则，即监视器锁规则：对同一个监视器的解锁，happens-before于对该监视器的加锁。继续来看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MonitorDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;     <span class="comment">// 1</span></span><br><span class="line">        a++;                                <span class="comment">// 2</span></span><br><span class="line">    &#125;                                       <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;    <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">int</span> i = a;                         <span class="comment">// 5</span></span><br><span class="line">    &#125;                                      <span class="comment">// 6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该代码的happens-before关系如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-d025c6be230f72a2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/650/format/webp" alt="img"></p>
+<p>Synchronized的happens-before关系</p>
+<p> 在图中每一个箭头连接的两个节点就代表之间的happens-before关系，黑色的是通过程序顺序规则推导出来，红色的为监视器锁规则推导而出：<strong>线程A释放锁happens-before线程B加锁</strong>，蓝色的则是通过程序顺序规则和监视器锁规则推测出来happens-befor关系，通过传递性规则进一步推导的happens-before关系。现在我们来重点关注2 happens-before 5，通过这个关系我们可以得出什么？</p>
+<p>根据happens-before的定义中的一条:如果A happens-before B，则A的执行结果对B可见，并且A的执行顺序先于B。线程A先对共享变量A进行加一，由2 happens-before 5关系可知线程A的执行结果对线程B可见即线程B所读取到的a的值为1。</p>
+<h2 id="2-3-锁获取和锁释放的内存语义"><a href="#2-3-锁获取和锁释放的内存语义" class="headerlink" title="2.3 锁获取和锁释放的内存语义"></a>2.3 锁获取和锁释放的内存语义</h2><p>在上一篇文章提到过JMM核心为两个部分：happens-before规则以及内存抽象模型。我们分析完Synchronized的happens-before关系后，还是不太完整的，我们接下来看看基于java内存抽象模型的Synchronized的内存语义。</p>
+<p>废话不多说依旧先上图。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-8faace4c9e651d6e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/557/format/webp" alt="img"></p>
+<p>线程A写共享变量</p>
+<p>从上图可以看出，线程A会首先先从主内存中读取共享变量a=0的值然后将该变量拷贝到自己的本地内存，进行加一操作后，再将该值刷新到主内存，整个过程即为线程A 加锁–&gt;执行临界区代码–&gt;释放锁相对应的内存语义。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-540462b1425e38d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/564/format/webp" alt="img"></p>
+<p>线程B读共享变量</p>
+<p>线程B获取锁的时候同样会从主内存中共享变量a的值，这个时候就是最新的值1,然后将该值拷贝到线程B的工作内存中去，释放锁的时候同样会重写到主内存中。</p>
+<p>从整体上来看，线程A的执行结果（a=1）对线程B是可见的，实现原理为：释放锁的时候会将值刷新到主内存中，其他线程获取锁时会强制从主内存中获取最新的值。另外也验证了2 happens-before 5，2的执行结果对5是可见的。</p>
+<p>从横向来看，这就像线程A通过主内存中的共享变量和线程B进行通信，A 告诉 B 我们俩的共享数据现在为1啦，这种线程间的通信机制正好吻合java的内存模型正好是共享内存的并发模型结构。</p>
+<h1 id="3-synchronized优化"><a href="#3-synchronized优化" class="headerlink" title="3. synchronized优化"></a>3. synchronized优化</h1><p>通过上面的讨论现在我们对Synchronized应该有所印象了，它最大的特征就是在同一时刻只有一个线程能够获得对象的监视器（monitor），从而进入到同步代码块或者同步方法之中，即表现为<strong>互斥性（排它性）</strong>。这种方式肯定效率低下，每次只能通过一个线程，既然每次只能通过一个，这种形式不能改变的话，那么我们能不能让每次通过的速度变快一点了。打个比方，去收银台付款，之前的方式是，大家都去排队，然后去纸币付款收银员找零，有的时候付款的时候在包里拿出钱包再去拿出钱，这个过程是比较耗时的，然后，支付宝解放了大家去钱包找钱的过程，现在只需要扫描下就可以完成付款了，也省去了收银员跟你找零的时间的了。同样是需要排队，但整个付款的时间大大缩短，是不是整体的效率变高速率变快了？这种优化方式同样可以引申到锁优化上，缩短获取锁的时间，伟大的科学家们也是这样做的，令人钦佩，毕竟java是这么优秀的语言（微笑脸）。</p>
+<p>在聊到锁的优化也就是锁的几种状态前，有两个知识点需要先关注：（1）CAS操作 （2）Java对象头，这是理解下面知识的前提条件。</p>
+<h2 id="3-1-CAS操作"><a href="#3-1-CAS操作" class="headerlink" title="3.1 CAS操作"></a>3.1 CAS操作</h2><h3 id="3-1-1-什么是CAS"><a href="#3-1-1-什么是CAS" class="headerlink" title="3.1.1 什么是CAS?"></a>3.1.1 什么是CAS?</h3><p>使用锁时，线程获取锁是一种<strong>悲观锁策略</strong>，即假设每一次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时也会阻塞其他线程获取该锁。而CAS操作（又称为无锁操作）是一种<strong>乐观锁策略</strong>，它假设所有线程访问共享资源的时候不会出现冲突，既然不会出现冲突自然而然就不会阻塞其他线程的操作。因此，线程就不会出现阻塞停顿的状态。那么，如果出现冲突了怎么办？无锁操作是使用**CAS(compare and swap)**又叫做比较交换来鉴别线程是否出现冲突，出现冲突就重试当前操作直到没有冲突为止。</p>
+<h3 id="3-1-2-CAS的操作过程"><a href="#3-1-2-CAS的操作过程" class="headerlink" title="3.1.2 CAS的操作过程"></a>3.1.2 CAS的操作过程</h3><p>CAS比较交换的过程可以通俗的理解为CAS(V,O,N)，包含三个值分别为：<strong>V 内存地址存放的实际值；O 预期的值（旧值）；N 更新的新值</strong>。当V和O相同时，也就是说旧值和内存中实际的值相同表明该值没有被其他线程更改过，即该旧值O就是目前来说最新的值了，自然而然可以将新值N赋值给V。反之，V和O不相同，表明该值已经被其他线程改过了则该旧值O不是最新版本的值了，所以不能将新值N赋给V，返回V即可。当多个线程使用CAS操作一个变量是，只有一个线程会成功，并成功更新，其余会失败。失败的线程会重新尝试，当然也可以选择挂起线程</p>
+<p>CAS的实现需要硬件指令集的支撑，在JDK1.5后虚拟机才可以使用处理器提供的<strong>CMPXCHG</strong>指令实现。</p>
+<blockquote>
+<p>Synchronized VS CAS</p>
+</blockquote>
+<p>元老级的Synchronized(未优化前)最主要的问题是：在存在线程竞争的情况下会出现线程阻塞和唤醒锁带来的性能问题，因为这是一种互斥同步（阻塞同步）。而CAS并不是武断的间线程挂起，当CAS操作失败后会进行一定的尝试，而非进行耗时的挂起唤醒的操作，因此也叫做非阻塞同步。这是两者主要的区别。</p>
+<h3 id="3-1-3-CAS的应用场景"><a href="#3-1-3-CAS的应用场景" class="headerlink" title="3.1.3 CAS的应用场景"></a>3.1.3 CAS的应用场景</h3><p>在J.U.C包中利用CAS实现类有很多，可以说是支撑起整个concurrency包的实现，在Lock实现中会有CAS改变state变量，在atomic包中的实现类也几乎都是用CAS实现，关于这些具体的实现场景在之后会详细聊聊，现在有个印象就好了（微笑脸）。</p>
+<h3 id="3-1-4-CAS的问题"><a href="#3-1-4-CAS的问题" class="headerlink" title="3.1.4 CAS的问题"></a>3.1.4 CAS的问题</h3><p><strong>1. ABA问题</strong><br> 因为CAS会检查旧值有没有变化，这里存在这样一个有意思的问题。比如一个旧值A变为了成B，然后再变成A，刚好在做CAS时检查发现旧值并没有变化依然为A，但是实际上的确发生了变化。解决方案可以沿袭数据库中常用的乐观锁方式，添加一个版本号可以解决。原来的变化路径A-&gt;B-&gt;A就变成了1A-&gt;2B-&gt;3C。java这么优秀的语言，当然在java 1.5后的atomic包中提供了AtomicStampedReference来解决ABA问题，解决思路就是这样的。</p>
+<p><strong>2. 自旋时间过长</strong></p>
+<p>使用CAS时非阻塞同步，也就是说不会将线程挂起，会自旋（无非就是一个死循环）进行下一次尝试，如果这里自旋时间过长对性能是很大的消耗。如果JVM能支持处理器提供的pause指令，那么在效率上会有一定的提升。</p>
+<p><strong>3. 只能保证一个共享变量的原子操作</strong></p>
+<p>当对一个共享变量执行操作时CAS能保证其原子性，如果对多个共享变量进行操作,CAS就不能保证其原子性。有一个解决方案是利用对象整合多个共享变量，即一个类中的成员变量就是这几个共享变量。然后将这个对象做CAS操作就可以保证其原子性。atomic中提供了AtomicReference来保证引用对象之间的原子性。</p>
+<h2 id="3-2-Java对象头"><a href="#3-2-Java对象头" class="headerlink" title="3.2 Java对象头"></a>3.2 Java对象头</h2><p>在同步的时候是获取对象的monitor,即获取到对象的锁。那么对象的锁怎么理解？无非就是类似对对象的一个标志，那么这个标志就是存放在Java对象的对象头。Java对象头里的Mark Word里默认的存放的对象的Hashcode,分代年龄和锁标记位。32为JVM Mark Word默认存储结构为（注:java对象头以及下面的锁状态变化摘自《java并发编程的艺术》一书，该书我认为写的足够好，就没在自己组织语言班门弄斧了）：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-668194c20734e01f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1016/format/webp" alt="img"></p>
+<p>Mark Word存储结构</p>
+<p>如图在Mark Word会默认存放hasdcode，年龄值以及锁标志位等信息。</p>
+<p>Java SE 1.6中，锁一共有4种状态，级别从低到高依次是：<strong>无锁状态、偏向锁状态、轻量级锁状态和重量级锁状态</strong>，这几个状态会随着竞争情况逐渐升级。<strong>锁可以升级但不能降级</strong>，意味着偏向锁升级成轻量级锁后不能降级成偏向锁。这种锁升级却不能降级的策略，目的是为了提高获得锁和释放锁的效率。对象的MarkWord变化为下图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-4556662630b15159.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1010/format/webp" alt="img"></p>
+<p>Mark Word状态变化</p>
+<h2 id="3-2-偏向锁"><a href="#3-2-偏向锁" class="headerlink" title="3.2 偏向锁"></a>3.2 偏向锁</h2><p>HotSpot的作者经过研究发现，大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得，为了让线程获得锁的代价更低而引入了偏向锁。</p>
+<blockquote>
+<p><strong>偏向锁的获取</strong></p>
+</blockquote>
+<p>当一个线程访问同步块并获取锁时，会在<strong>对象头</strong>和<strong>栈帧中的锁记录</strong>里存储锁偏向的线程ID，以后该线程在进入和退出同步块时不需要进行CAS操作来加锁和解锁，只需简单地测试一下对象头的Mark Word里是否存储着指向当前线程的偏向锁。如果测试成功，表示线程已经获得了锁。如果测试失败，则需要再测试一下Mark Word中偏向锁的标识是否设置成1（表示当前是偏向锁）：如果没有设置，则使用CAS竞争锁；如果设置了，则尝试使用CAS将对象头的偏向锁指向当前线程</p>
+<blockquote>
+<p><strong>偏向锁的撤销</strong></p>
+</blockquote>
+<p>偏向锁使用了一种<strong>等到竞争出现才释放锁</strong>的机制，所以当其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-5b183494bd1e145d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/567/format/webp" alt="img"></p>
+<p>偏向锁撤销流程</p>
+<p> 如图，偏向锁的撤销，需要等待<strong>全局安全点</strong>（在这个时间点上没有正在执行的字节码）。它会首先暂停拥有偏向锁的线程，然后检查持有偏向锁的线程是否活着，如果线程不处于活动状态，则将对象头设置成无锁状态；如果线程仍然活着，拥有偏向锁的栈会被执行，遍历偏向对象的锁记录，栈中的锁记录和对象头的Mark Word<strong>要么</strong>重新偏向于其他线程，<strong>要么</strong>恢复到无锁或者标记对象不适合作为偏向锁，最后唤醒暂停的线程。</p>
+<p>下图线程1展示了偏向锁获取的过程，线程2展示了偏向锁撤销的过程。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-0b954fa67e8721c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/791/format/webp" alt="img"></p>
+<p>偏向锁获取和撤销流程</p>
+<blockquote>
+<p><strong>如何关闭偏向锁</strong></p>
+</blockquote>
+<p>偏向锁在Java 6和Java 7里是默认启用的，但是它在应用程序启动几秒钟之后才激活，如有必要可以使用JVM参数来关闭延迟：**-XX:BiasedLockingStartupDelay=0<strong>。如果你确定应用程序里所有的锁通常情况下处于竞争状态，可以通过JVM参数关闭偏向锁：</strong>-XX:-UseBiasedLocking=false**，那么程序默认会进入轻量级锁状态</p>
+<h2 id="3-3-轻量级锁"><a href="#3-3-轻量级锁" class="headerlink" title="3.3 轻量级锁"></a>3.3 轻量级锁</h2><blockquote>
+<p><strong>加锁</strong></p>
+</blockquote>
+<p>线程在执行同步块之前，JVM会先在当前线程的栈桢中<strong>创建用于存储锁记录的空间</strong>，并将对象头中的Mark Word复制到锁记录中，官方称为<strong>Displaced Mark Word</strong>。然后线程尝试使用CAS<strong>将对象头中的Mark Word替换为指向锁记录的指针</strong>。如果成功，当前线程获得锁，如果失败，表示其他线程竞争锁，当前线程便尝试使用自旋来获取锁</p>
+<blockquote>
+<p><strong>解锁</strong></p>
+</blockquote>
+<p>轻量级解锁时，会使用原子的CAS操作将Displaced Mark Word替换回到对象头，如果成功，则表示没有竞争发生。如果失败，表示当前锁存在竞争，锁就会膨胀成重量级锁。下图是两个线程同时争夺锁，导致锁膨胀的流程图。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2615789-0c92d94dad8bdc27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/794/format/webp" alt="img"></p>
+<p>轻量级锁加锁解锁以及锁膨胀</p>
+<p>因为自旋会消耗CPU，为了避免无用的自旋（比如获得锁的线程被阻塞住了），一旦锁升级成重量级锁，就不会再恢复到轻量级锁状态。当锁处于这个状态下，其他线程试图获取锁时，都会被阻塞住，当持有锁的线程释放锁之后会唤醒这些线程，被唤醒的线程就会进行新一轮的夺锁之争。</p>
+<h2 id="3-5-各种锁的比较"><a href="#3-5-各种锁的比较" class="headerlink" title="3.5 各种锁的比较"></a>3.5 各种锁的比较</h2><p><img src="https://upload-images.jianshu.io/upload_images/2615789-56647501fd77289f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1014/format/webp" alt="img"></p>
+<p>各种锁的对比</p>
+<h1 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4. 一个例子"></a>4. 一个例子</h1><p>经过上面的理解，我们现在应该知道了该怎样解决了。更正后的代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SynchronizedDemo</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> SynchronizedDemo());</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;result: &quot;</span> + count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (SynchronizedDemo.class) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++)</span><br><span class="line">                count++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启十个线程，每个线程在原值上累加1000000次，最终正确的结果为10X1000000=10000000，这里能够计算出正确的结果是因为在做累加操作时使用了同步代码块，这样就能保证每个线程所获得共享变量的值都是当前最新的值，如果不使用同步的话，就可能会出现A线程累加后，而B线程做累加操作有可能是使用原来的就值，即“脏值”。这样，就导致最终的计算结果不是正确的。而使用Syncnized就可能保证内存可见性，保证每个线程都是操作的最新值。这里只是一个示例性的demo，聪明的你，还有其他办法吗？</p>
+<blockquote>
+<p>参考文献</p>
+</blockquote>
+<p>《java并发编程的艺术》</p>
+<p>作者：你听___<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d53bf830fa09">https://www.jianshu.com/p/d53bf830fa09</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="cky1j4nwg003srln462g8bale" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-使用性能分析工具定位Spring-Boot启动慢问题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" class="article-date">
@@ -104,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="ckwyadd9z002swxn40f3xf73j" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="cky1j4nw8002srln46xx31942" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
@@ -164,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="ckwyadd93000uwxn498en0mzn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="cky1j4nve000rrln4gmejhk4h" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li></ul>
@@ -239,7 +451,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="ckwyadd90000nwxn4545691i2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="cky1j4nvb000mrln46pn96ndo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li></ul>
@@ -356,7 +568,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="ckwyadd9w002gwxn4hfhrbsxm" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="cky1j4nw7002nrln43wrj7ifl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
@@ -461,7 +673,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="ckwyaddai005wwxn4dfhq2wnx" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="cky1j4nwd003hrln4833i4gc4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
@@ -523,7 +735,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="ckwyadd980012wxn48cjh965z" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cky1j4nvj0011rln43q18b3yw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -583,7 +795,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="ckwyadd9l0021wxn4hzg089ff" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cky1j4nw3002arln4g85s6oiv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -677,7 +889,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="ckwyadd8q0007wxn4gcmg31n9" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="cky1j4nv30008rln47ny07rfc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li></ul>
@@ -689,153 +901,11 @@
 
 
   
-    <article id="post-idea-推荐插件" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" class="article-date">
-  <time datetime="2021-02-05T07:47:30.000Z" itemprop="datePublished">2021-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/">idea 推荐插件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>推荐一款方便、实用的IDEA插件EasyApi</p>
-<p>在我们开发http请求接口时，开发完成需要进行本地自测，在postman中一个一个输入接口地址，在输入请求参数，尤其是在请求参数较多的情况下，很费劲，尤其是post请求还需要json格式的数据，此时该插件的效果就体现出来了，可以将请求地址以及请求参数导出至postman</p>
-<p>**</p>
-<h2 id="EasyApi插件"><a href="#EasyApi插件" class="headerlink" title="EasyApi插件"></a>EasyApi插件</h2><p>**</p>
-<p>博主是基于mac下的IDEA开发的</p>
-<p>1、安装插件<br><img src="https://img-blog.csdnimg.cn/20200731104909115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>具体安装方法就不在介绍了，安装后为了使插件生效，别忘了对IDEA进行重启哦</p>
-<p>2、然后进行导出，找到我们需要导出的Controller，选中后点击（control+回车）</p>
-<p><img src="https://img-blog.csdnimg.cn/20200731105119191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>执行后会发现出现以下错误，别慌这是配有配置token导致的<br><img src="https://img-blog.csdnimg.cn/202007311052104.png" alt="在这里插入图片描述"></p>
-<p>3、获取token，这里的token是登录postman软件的用户的token<br>链接:<a target="_blank" rel="noopener" href="https://web.postman.co/settings/me/api-keys">https://web.postman.co/settings/me/api-keys</a><br><img src="https://img-blog.csdnimg.cn/20200731105315927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>4、IDEA中添加对应token<br><img src="https://img-blog.csdnimg.cn/20200731105459337.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>然后在进行导出，在postman中查看就会发现响应的请求地址和参数均已导出</p>
-<p><img src="https://img-blog.csdnimg.cn/20200731105621675.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h2 id="RestfulToolkit插件"><a href="#RestfulToolkit插件" class="headerlink" title="RestfulToolkit插件"></a>RestfulToolkit插件</h2><p>快速搜索http请求接口路径的插件</p>
-<p>mac下快捷键（command+\）<br>效果图如下：<br><img src="https://img-blog.csdnimg.cn/20200731105918844.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<ul>
-<li></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="ckwyadd9e001hwxn44kzm1680" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-深入理解Redis的scan命令" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" class="article-date">
-  <time datetime="2021-01-27T06:04:11.000Z" itemprop="datePublished">2021-01-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">深入理解Redis的scan命令</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="深入理解Redis的scan命令"><a href="#深入理解Redis的scan命令" class="headerlink" title="深入理解Redis的scan命令"></a>深入理解Redis的scan命令</h1><p>熟悉Redis的人都知道，它是单线程的。因此在使用一些时间复杂度为O(N)的命令时要非常谨慎。可能一不小心就会阻塞进程，导致Redis出现卡顿。</p>
-<p>有时，我们需要针对符合条件的一部分命令进行操作，比如删除以test_开头的key。那么怎么获取到这些key呢？在Redis2.8版本之前，我们可以使用keys命令按照正则匹配得到我们需要的key。但是这个命令有两个缺点：</p>
-<ol>
-<li>没有limit，我们只能一次性获取所有符合条件的key，如果结果有上百万条，那么等待你的就是“无穷无尽”的字符串输出。</li>
-<li>keys命令是遍历算法，时间复杂度是O(N)。如我们刚才所说，这个命令非常容易导致Redis服务卡顿。因此，我们要尽量避免在生产环境使用该命令。</li>
-</ol>
-<p>在满足需求和存在造成Redis卡顿之间究竟要如何选择呢？面对这个两难的抉择，Redis在2.8版本给我们提供了解决办法——scan命令。</p>
-<p>相比于keys命令，scan命令有两个比较明显的优势：</p>
-<ol>
-<li>scan命令的时间复杂度虽然也是O(N)，但它是分次进行的，不会阻塞线程。</li>
-<li>scan命令提供了limit参数，可以控制每次返回结果的最大条数。</li>
-</ol>
-<p>这两个优势就帮助我们解决了上面的难题，不过scan命令也并不是完美的，它返回的结果有可能重复，因此需要客户端去重。至于为什么会重复，相信你看完本文之后就会有答案了。</p>
-<p>关于scan命令的基本用法，可以参看<a target="_blank" rel="noopener" href="https://jackeyzhe.github.io/2018/09/22/Redis%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%9AKeys/">Redis命令详解：Keys</a>一文中关于SCAN命令的介绍。</p>
-<p>今天我们主要从底层的结构和源码的角度来讨论scan是如何工作的。</p>
-<h4 id="Redis的结构"><a href="#Redis的结构" class="headerlink" title="Redis的结构"></a>Redis的结构</h4><p>Redis使用了Hash表作为底层实现，原因不外乎高效且实现简单。说到Hash表，很多Java程序员第一反应就是HashMap。没错，Redis底层key的存储结构就是类似于HashMap那样数组+链表的结构。其中第一维的数组大小为2n(n&gt;=0)。每次扩容数组长度扩大一倍。</p>
-<p>scan命令就是对这个一维数组进行遍历。每次返回的游标值也都是这个数组的索引。limit参数表示遍历多少个数组的元素，将这些元素下挂接的符合条件的结果都返回。因为每个元素下挂接的链表大小不同，所以每次返回的结果数量也就不同。</p>
-<h4 id="SCAN的遍历顺序"><a href="#SCAN的遍历顺序" class="headerlink" title="SCAN的遍历顺序"></a>SCAN的遍历顺序</h4><p>关于scan命令的遍历顺序，我们可以用一个小栗子来具体看一下。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;db_number&quot;</span><br><span class="line">2) &quot;key1&quot;</span><br><span class="line">3) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 0 MATCH * COUNT 1</span><br><span class="line">1) &quot;2&quot;</span><br><span class="line">2) 1) &quot;db_number&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 2 MATCH * COUNT 1</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) 1) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 1 MATCH * COUNT 1</span><br><span class="line">1) &quot;3&quot;</span><br><span class="line">2) 1) &quot;key1&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 3 MATCH * COUNT 1</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>我们的Redis中有3个key，我们每次只遍历一个一维数组中的元素。如上所示，SCAN命令的遍历顺序是</p>
-<p>0-&gt;2-&gt;1-&gt;3</p>
-<p>这个顺序看起来有些奇怪。我们把它转换成二进制就好理解一些了。</p>
-<p>00-&gt;10-&gt;01-&gt;11</p>
-<p>我们发现每次这个序列是高位加1的。普通二进制的加法，是从右往左相加、进位。而这个序列是从左往右相加、进位的。这一点我们在redis的源码中也得到印证。</p>
-<p>在dict.c文件的dictScan函数中对游标进行了如下处理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v &#x3D; rev(v);</span><br><span class="line">v++;</span><br><span class="line">v &#x3D; rev(v);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>意思是，将游标倒置，加一后，再倒置，也就是我们所说的“高位加1”的操作。</p>
-<p>这里大家可能会有疑问了，为什么要使用这样的顺序进行遍历，而不是用正常的0、1、2……这样的顺序呢，这是因为需要考虑遍历时发生字典扩容与缩容的情况（不得不佩服开发者考虑问题的全面性）。</p>
-<p>我们来看一下在SCAN遍历过程中，发生扩容时，遍历会如何进行。加入我们原始的数组有4个元素，也就是索引有两位，这时需要把它扩充成3位，并进行rehash。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/10/9/166596e4dac0695e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="rehash"></p>
-<p>原来挂接在xx下的所有元素被分配到0xx和1xx下。在上图中，当我们即将遍历10时，dict进行了rehash，这时，scan命令会从010开始遍历，而000和100（原00下挂接的元素）不会再被重复遍历。</p>
-<p>再来看看缩容的情况。假设dict从3位缩容到2位，当即将遍历110时，dict发生了缩容，这时scan会遍历10。这时010下挂接的元素会被重复遍历，但010之前的元素都不会被重复遍历了。所以，缩容时还是可能会有些重复元素出现的。</p>
-<h4 id="Redis的rehash"><a href="#Redis的rehash" class="headerlink" title="Redis的rehash"></a>Redis的rehash</h4><p>rehash是一个比较复杂的过程，为了不阻塞Redis的进程，它采用了一种渐进式的rehash的机制。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 字典 *&#x2F;</span><br><span class="line">typedef struct dict &#123;</span><br><span class="line">    &#x2F;&#x2F; 类型特定函数</span><br><span class="line">    dictType *type;</span><br><span class="line">    &#x2F;&#x2F; 私有数据</span><br><span class="line">    void *privdata;</span><br><span class="line">    &#x2F;&#x2F; 哈希表</span><br><span class="line">    dictht ht[2];</span><br><span class="line">    &#x2F;&#x2F; rehash 索引</span><br><span class="line">    &#x2F;&#x2F; 当 rehash 不在进行时，值为 -1</span><br><span class="line">    int rehashidx; &#x2F;* rehashing not in progress if rehashidx &#x3D;&#x3D; -1 *&#x2F;</span><br><span class="line">    &#x2F;&#x2F; 目前正在运行的安全迭代器的数量</span><br><span class="line">    int iterators; &#x2F;* number of iterators currently running *&#x2F;</span><br><span class="line">&#125; dict;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>在Redis的字典结构中，有两个hash表，一个新表，一个旧表。在rehash的过程中，redis将旧表中的元素逐步迁移到新表中，接下来我们看一下dict的rehash操作的源码。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* Performs N steps of incremental rehashing. Returns 1 if there are still</span><br><span class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span><br><span class="line"> *</span><br><span class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</span><br><span class="line"> * than one key as we use chaining) from the old to the new hash table, however</span><br><span class="line"> * since part of the hash table may be composed of empty spaces, it is not</span><br><span class="line"> * guaranteed that this function will rehash even a single bucket, since it</span><br><span class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span><br><span class="line"> * work it does would be unbound and the function may block for a long time. *&#x2F;</span><br><span class="line">int dictRehash(dict *d, int n) &#123;</span><br><span class="line">    int empty_visits &#x3D; n*10; &#x2F;* Max number of empty buckets to visit. *&#x2F;</span><br><span class="line">    if (!dictIsRehashing(d)) return 0;</span><br><span class="line"></span><br><span class="line">    while(n-- &amp;&amp; d-&gt;ht[0].used !&#x3D; 0) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        &#x2F;* Note that rehashidx can&#39;t overflow as we are sure there are more</span><br><span class="line">         * elements because ht[0].used !&#x3D; 0 *&#x2F;</span><br><span class="line">        assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);</span><br><span class="line">        while(d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D;&#x3D; NULL) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            if (--empty_visits &#x3D;&#x3D; 0) return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        de &#x3D; d-&gt;ht[0].table[d-&gt;rehashidx];</span><br><span class="line">        &#x2F;* Move all the keys in this bucket from the old to the new hash HT *&#x2F;</span><br><span class="line">        while(de) &#123;</span><br><span class="line">            uint64_t h;</span><br><span class="line"></span><br><span class="line">            nextde &#x3D; de-&gt;next;</span><br><span class="line">            &#x2F;* Get the index in the new hash table *&#x2F;</span><br><span class="line">            h &#x3D; dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;</span><br><span class="line">            de-&gt;next &#x3D; d-&gt;ht[1].table[h];</span><br><span class="line">            d-&gt;ht[1].table[h] &#x3D; de;</span><br><span class="line">            d-&gt;ht[0].used--;</span><br><span class="line">            d-&gt;ht[1].used++;</span><br><span class="line">            de &#x3D; nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[0].table[d-&gt;rehashidx] &#x3D; NULL;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* Check if we already rehashed the whole table... *&#x2F;</span><br><span class="line">    if (d-&gt;ht[0].used &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        zfree(d-&gt;ht[0].table);</span><br><span class="line">        d-&gt;ht[0] &#x3D; d-&gt;ht[1];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">        d-&gt;rehashidx &#x3D; -1;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;* More to rehash... *&#x2F;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<p>通过注释我们就能了解到，rehash的过程是以bucket为基本单位进行迁移的。所谓的bucket其实就是我们前面所提到的一维数组的元素。每次迁移一个列表。下面来解释一下这段代码。</p>
-<ul>
-<li>首先判断一下是否在进行rehash，如果是，则继续进行；否则直接返回。</li>
-<li>接着就是分n步开始进行渐进式rehash。同时还判断是否还有剩余元素，以保证安全性。</li>
-<li>在进行rehash之前，首先判断要迁移的bucket是否越界。</li>
-<li>然后跳过空的bucket，这里有一个empty_visits变量，表示最大可访问的空bucket的数量，这一变量主要是为了保证不过多的阻塞Redis。</li>
-<li>接下来就是元素的迁移，将当前bucket的全部元素进行rehash，并且更新两张表中元素的数量。</li>
-<li>每次迁移完一个bucket，需要将旧表中的bucket指向NULL。</li>
-<li>最后判断一下是否全部迁移完成，如果是，则收回空间，重置rehash索引，否则告诉调用方，仍有数据未迁移。</li>
-</ul>
-<p>由于Redis使用的是渐进式rehash机制，因此，scan命令在需要同时扫描新表和旧表，将结果返回客户端。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="ckwyaddah005twxn4cxki6vj6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><a class="page-number" href="/blogOfLin/page/5/">5</a><a class="extend next" rel="next" href="/blogOfLin/page/4/">Next &amp;raquo;</a>
+    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><a class="page-number" href="/blogOfLin/page/5/">5</a><a class="page-number" href="/blogOfLin/page/6/">6</a><a class="extend next" rel="next" href="/blogOfLin/page/4/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -846,7 +916,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/redis/">redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/redis/">redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
     </div>
   </div>
 
@@ -856,7 +926,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/vsftpd/" rel="tag">vsftpd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
     </div>
   </div>
 
@@ -866,7 +936,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 15px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 15px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/git/" style="font-size: 20px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 20px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/rocketMq/" style="font-size: 10px;">rocketMq</a> <a href="/blogOfLin/tags/scan/" style="font-size: 10px;">scan</a> <a href="/blogOfLin/tags/security/" style="font-size: 10px;">security</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" style="font-size: 10px;">消费</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 13.33px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 13.33px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/ftp/" style="font-size: 10px;">ftp</a> <a href="/blogOfLin/tags/git/" style="font-size: 16.67px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 16.67px;">kafka</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/rocketMq/" style="font-size: 10px;">rocketMq</a> <a href="/blogOfLin/tags/scan/" style="font-size: 10px;">scan</a> <a href="/blogOfLin/tags/security/" style="font-size: 10px;">security</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/vsftpd/" style="font-size: 10px;">vsftpd</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 13.33px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" style="font-size: 10px;">消费</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
     </div>
   </div>
 
@@ -875,7 +945,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -888,6 +958,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2022/01/05/Docker-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%90%AD%E5%BB%BA%E8%BF%90%E8%A1%8CFTP%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%88vsftpd/">Docker - 在容器中搭建运行FTP服务器（vsftpd)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/">docker相关</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
           </li>
         
@@ -897,14 +975,6 @@
         
           <li>
             <a href="/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/">关于redis的scan命令踩过的坑</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/">git导出干净代码</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/09/08/jrebel-license-server/">分享自建的 Jrebel License Server 激活 Jrebel</a>
           </li>
         
       </ul>
@@ -919,7 +989,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2021 John Doe<br>
+      &copy; 2022 John Doe<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
