@@ -66,6 +66,82 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux构建web服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" class="article-date">
+  <time datetime="2021-07-29T10:10:59.488Z" itemprop="datePublished">2021-07-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用Python-FastAPI构建Web服务"><a href="#使用Python-FastAPI构建Web服务" class="headerlink" title="使用Python FastAPI构建Web服务"></a>使用Python FastAPI构建Web服务</h2><p>FastAPI 是一个使用 Python 编写的 Web 框架，还应用了 Python asyncio 库中最新的优化。本文将会介绍如何搭建基于容器的开发环境，还会展示如何使用 FastAPI 实现一个小型 Web 服务。</p>
+<ul>
+<li><p>作者：Clément Verna来源：<a target="_blank" rel="noopener" href="https://linux.cn/article-12280-1.html">Linux中国</a>|<em>2020-06-04 17:38</em></p>
+<p><a href="javascript:favorBox('open');"> 收藏</a><a href="javascript:;"> 分享</a></p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://s5.51cto.com/oss/202006/04/6020256f19e58bc4c74ba17778455cae.jpg-wh_651x-s_472077657.jpg"><img src="https://s5.51cto.com/oss/202006/04/6020256f19e58bc4c74ba17778455cae.jpg-wh_651x-s_472077657.jpg" alt="使用Python FastAPI构建Web服务"></a></p>
+<p><a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI</a> 是一个使用 Python 编写的 Web 框架，还应用了 Python asyncio 库中最新的优化。本文将会介绍如何搭建基于容器的开发环境，还会展示如何使用 FastAPI 实现一个小型 Web 服务。</p>
+<h3 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h3><p>我们将使用 Fedora 作为基础镜像来搭建开发环境，并使用 Dockerfile 为镜像注入 FastAPI、<a target="_blank" rel="noopener" href="https://www.uvicorn.org/">Uvicorn</a> 和 <a target="_blank" rel="noopener" href="https://github.com/Tinche/aiofiles">aiofiles</a> 这几个包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM fedora:32RUN dnf install -y python-pip \    &amp;&amp; dnf clean all \    &amp;&amp; pip install fastapi uvicorn aiofilesWORKDIR &#x2F;srvCMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--reload&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>在工作目录下保存 <code>Dockerfile</code> 之后，执行 <code>podman</code> 命令构建容器镜像。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman build -t fastapi .$ podman imagesREPOSITORY TAG IMAGE ID CREATED SIZElocalhost&#x2F;fastapi latest 01e974cabe8b 18 seconds ago 326 MB</span><br></pre></td></tr></table></figure>
+
+<p>下面我们可以开始创建一个简单的 FastAPI 应用程序，并通过容器镜像运行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPI app &#x3D; FastAPI() @app.get(&quot;&#x2F;&quot;)async def root():    return &#123;&quot;message&quot;: &quot;Hello Fedora Magazine!&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将上面的代码保存到 <code>main.py</code> 文件中，然后执行以下命令开始运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman run --rm -v $PWD:&#x2F;srv:z -p 8000:8000 --name fastapi -d fastapi$ curl http:&#x2F;&#x2F;127.0.0.1:8000&#123;&quot;message&quot;:&quot;Hello Fedora Magazine!&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样，一个基于 FastAPI 的 Web 服务就跑起来了。由于指定了 <code>--reload</code> 参数，一旦 <code>main.py</code> 文件发生了改变，整个应用都会自动重新加载。你可以尝试将返回信息 <code>&quot;Hello Fedora Magazine!&quot;</code> 修改为其它内容，然后观察效果。</p>
+<p>可以使用以下命令停止应用程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman stop fastapi</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建一个小型-Web-服务"><a href="#构建一个小型-Web-服务" class="headerlink" title="构建一个小型 Web 服务"></a>构建一个小型 Web 服务</h3><p>接下来我们会构建一个需要 I/O 操作的应用程序，通过这个应用程序，我们可以看到 FastAPI 自身的特点，以及它在性能上有什么优势（可以在<a target="_blank" rel="noopener" href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=composite&l=z8kflr-v&a=2&f=jz8cg-0-3s-0-3k-6bo-0-0-18y74-8s5c-0">这里</a>参考 FastAPI 和其它 Python Web 框架的对比）。为简单起见，我们直接使用 <code>dnf history</code> 命令的输出来作为这个应用程序使用的数据。</p>
+<p>首先将 <code>dnf history</code> 命令的输出保存到文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dnf history | tail --lines&#x3D;+3 &gt; history.txt</span><br></pre></td></tr></table></figure>
+
+<p>在上面的命令中，我们使用 <code>tail</code> 去除了 <code>dnf history</code> 输出内容中无用的表头信息。剩余的每一条 <code>dnf</code> 事务都包括了以下信息：</p>
+<ul>
+<li><code>id</code>：事务编号（每次运行一条新事务时该编号都会递增）</li>
+<li><code>command</code>：事务中运行的 <code>dnf</code> 命令</li>
+<li><code>date</code>：执行事务的日期和时间</li>
+</ul>
+<p>然后修改 <code>main.py</code> 文件将相关的数据结构添加进去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPIfrom pydantic import BaseModel app &#x3D; FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str</span><br></pre></td></tr></table></figure>
+
+<p>FastAPI 自带的 <a target="_blank" rel="noopener" href="https://pydantic-docs.helpmanual.io/">pydantic</a> 库让你可以轻松定义一个数据类，其中的类型注释对数据的验证也提供了方便。</p>
+<p>再增加一个函数，用于从 <code>history.txt</code> 文件中读取数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import aiofiles from fastapi import FastAPIfrom pydantic import BaseModel app &#x3D; FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str  async def read_history():    transactions &#x3D; []    async with aiofiles.open(&quot;history.txt&quot;) as f:        async for line in f:            transactions.append(DnfTransaction(                id&#x3D;line.split(&quot;|&quot;)[0].strip(&quot; &quot;),                command&#x3D;line.split(&quot;|&quot;)[1].strip(&quot; &quot;),                date&#x3D;line.split(&quot;|&quot;)[2].strip(&quot; &quot;)))    return transactions</span><br></pre></td></tr></table></figure>
+
+<p>这个函数中使用了 <code>aiofiles</code> 库，这个库提供了一个异步 API 来处理 Python 中的文件，因此打开文件或读取文件的时候不会阻塞其它对服务器的请求。</p>
+<p>最后，修改 <code>root</code> 函数，让它返回事务列表中的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@app.get(&quot;&#x2F;&quot;)async def read_root():    return await read_history()</span><br></pre></td></tr></table></figure>
+
+<p>执行以下命令就可以看到应用程序的输出内容了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http:&#x2F;&#x2F;127.0.0.1:8000 | python -m json.tool[&#123;&quot;id&quot;: 103,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-25 08:35&quot;&#125;,&#123;&quot;id&quot;: 102,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-23 15:46&quot;&#125;,&#123;&quot;id&quot;: 101,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-22 11:32&quot;&#125;,....]</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>FastAPI 提供了一种使用 asyncio 构建 Web 服务的简单方法，因此它在 Python Web 框架的生态中日趋流行。要了解 FastAPI 的更多信息，欢迎查阅 <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI 文档</a>。</p>
+<p>本文中的代码可以在 <a target="_blank" rel="noopener" href="https://github.com/cverna/fastapi_app">GitHub</a> 上找到。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" data-id="cl3onqzsp0021a1n4h3q78oz7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-dnf" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/07/29/dnf/" class="article-date">
@@ -219,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="cl2zzvvyd001jppn4ankg5t01" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="cl3onqzse0016a1n4ghknhza4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -264,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="cl2zzvvyu002kppn4bgsb15fi" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="cl3onqzsu002da1n40y3n3a1s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li></ul>
@@ -363,7 +439,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="cl2zzvvy80011ppn4b232agie" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="cl3onqzse0014a1n4a3ahb5mk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>
@@ -416,7 +492,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="cl2zzvvy80015ppn4e1o55p7h" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="cl3onqzsd0012a1n4ho512ap3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li></ul>
@@ -473,7 +549,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="cl2zzvvxc0001ppn465wy6oef" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="cl3onqzro0003a1n40s35hsol" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
@@ -530,7 +606,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="cl2zzvvxj0003ppn40i028404" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="cl3onqzt5003ja1n43haqhypy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
@@ -592,7 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="cl2zzvvyw002vppn4bf32b6u4" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="cl3onqzsx002ra1n425li8kwc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li></ul>
@@ -647,8 +723,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#x74;&#64;&#x6e;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#104;&#101;&#110;&#103;&#x6a;&#105;&#x65;&#46;&#111;&#114;&#103;&#x2e;&#99;&#110;">&#x72;&#111;&#111;&#x74;&#64;&#x6e;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#104;&#101;&#110;&#103;&#x6a;&#105;&#x65;&#46;&#111;&#114;&#103;&#x2e;&#99;&#110;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#x6e;&#111;&#100;&#x65;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#110;&#x67;&#106;&#105;&#101;&#x2e;&#111;&#114;&#x67;&#x2e;&#99;&#x6e;">&#x72;&#111;&#111;&#116;&#64;&#x6e;&#111;&#100;&#x65;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#110;&#x67;&#106;&#105;&#101;&#x2e;&#111;&#114;&#x67;&#x2e;&#99;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#x74;&#x40;&#110;&#x6f;&#100;&#101;&#49;&#48;&#56;&#46;&#121;&#x69;&#x6e;&#122;&#104;&#101;&#110;&#x67;&#106;&#x69;&#101;&#46;&#111;&#x72;&#103;&#x2e;&#99;&#110;">&#114;&#x6f;&#111;&#x74;&#x40;&#110;&#x6f;&#100;&#101;&#49;&#48;&#56;&#46;&#121;&#x69;&#x6e;&#122;&#104;&#101;&#110;&#x67;&#106;&#x69;&#101;&#46;&#111;&#x72;&#103;&#x2e;&#99;&#110;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#x6f;&#x64;&#x65;&#x31;&#48;&#56;&#x2e;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#101;&#x6e;&#x67;&#x6a;&#105;&#x65;&#x2e;&#111;&#x72;&#x67;&#46;&#99;&#x6e;">&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#x6f;&#x64;&#x65;&#x31;&#48;&#56;&#x2e;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#101;&#x6e;&#x67;&#x6a;&#105;&#x65;&#x2e;&#111;&#x72;&#x67;&#46;&#99;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -718,7 +794,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="cl2zzvvyg001sppn476oc8x92" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="cl3onqzso001ya1n45l2yblfl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
@@ -813,60 +889,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="cl2zzvvyz0037ppn48aclglkn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="cl3onqzt20038a1n42bz29ahv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-idea多Module出现依赖循环问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" class="article-date">
-  <time datetime="2021-04-25T12:02:40.000Z" itemprop="datePublished">2021-04-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">idea多Module出现依赖循环问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>idea循环依赖aAnnotation processing is not supported for module cycles. </p>
-<ol>
-<li>错误现象<br>Error:java: Annotation processing is not supported for module cycles. Please ensure that all modules from cycle [book-rpc,book-api] are excluded from annotation processing  </li>
-</ol>
-<p>通过Analyze-&gt;Analyze Module Dependencies…发现是循环依赖。  </p>
-<p> 2.解决办法<br>先是找到这个依赖，删掉相关的（右击第一个module选中open module setting–&gt;Dependencies） </p>
-<p>然后在book-api中的pom.xml找到第二个这个依赖，删掉，重新import Changes need to be imported </p>
-<p>如果仅仅删除module中的Dependencies中的相关依赖，有可能没有解决根本性的问题，所以要看一下pom.xml中是否已经存在了相关依赖</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="cl2zzvvyf001qppn494db67nr" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
 
     </footer>
   </div>
@@ -932,6 +958,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/">mysql查询某一个字段是否包含中文汉字</a>
           </li>
         
@@ -945,10 +975,6 @@
         
           <li>
             <a href="/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/">docker相关</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
           </li>
         
       </ul>

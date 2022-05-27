@@ -66,6 +66,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-app抓包问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-02-24T08:26:00.000Z" itemprop="datePublished">2021-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="还在为大厂app抓不到包而犯愁吗？"><a href="#还在为大厂app抓不到包而犯愁吗？" class="headerlink" title="还在为大厂app抓不到包而犯愁吗？"></a>还在为大厂app抓不到包而犯愁吗？</h1><h2 id="抓不到请求的现象"><a href="#抓不到请求的现象" class="headerlink" title="抓不到请求的现象"></a>抓不到请求的现象</h2><p>我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。</p>
+<h2 id="抓不到请求的原因"><a href="#抓不到请求的原因" class="headerlink" title="抓不到请求的原因"></a>抓不到请求的原因</h2><p>大家都知道 http协议下层是tcp协议，tcp协议都是内置在操作系统里面的，我们最多只能使用tcp协议对外暴露的socket接口来进行编程， 我们是无法修改操作系统本身的tcp协议的实现的。</p>
+<p>但是http协议不同，http协议 都是各个开发者自己实现的， 换句话说 你要实现什么样的http客户端，这个客户端对http协议实现的好坏，实现了多少，支持哪些细节都是你自己决定的。 比如说android上 最有名的<strong>okhttp</strong> 就是一个http客户端的实现。</p>
+<p>既然是自己实现，那就有说法了，虽然你系统设置了代理，但是我完全可以不使用你的代理（或者说我压根就没实现http协议中 proxy的部分）。 这样自然就会像大厂中的某些app一样， 你虽然设置了代理 但是你还是无法抓包。</p>
+<p>因为人家http协议的客户端** 压根就没有使用你系统设置的 代理**。</p>
+<h2 id="看源码"><a href="#看源码" class="headerlink" title="看源码"></a>看源码</h2><p>想明白这个，我们再带着目的 去看源码 就很简单了。</p>
+<p>首先okhttp 是肯定有实现http代理的部分的，否则我们每天也不可能使用代理 愉快的进行抓包。 那么既然有大厂的app 抓不到，那么肯定是某些属性 动态设置了。</p>
+<p>注意看下面的代码：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>如果我这样设置了，你就会发现 你的app的接口 也会抓不到了。</p>
+<p>继续看源码： <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b864723b15224d3984fb06470f9be8e9~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>注释说的很明白，大概意思就是当你设置了这个属性以后，我们就不会使用系统代理了。 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22b61e3eef7a47c190f480d51b6afcb5~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>其实flutter也是有类似的功能，只不过okhttp 默认情况下是使用系统代理的，你要不想使用 你就必须写额外的代码，但是flutter是反过来的， flutter是默认就不使用系统代理，你要开启代理，必须在代码中进行设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">lass ProxyDio &#123;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理地址</span><br><span class="line">  static const _PROXY_IP_ADDRESS &#x3D; &quot;10.12.65.66&quot;;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理端口号</span><br><span class="line">  static const _PROXY_PORT_NUM &#x3D; &quot;5000&quot;;</span><br><span class="line"></span><br><span class="line">  static Dio getProxyDio() &#123;</span><br><span class="line">    var dio &#x3D; Dio();</span><br><span class="line">    final adapter &#x3D; dio.httpClientAdapter as DefaultHttpClientAdapter;</span><br><span class="line">    adapter.onHttpClientCreate &#x3D; (client) &#123;</span><br><span class="line">      &#x2F;&#x2F; 设置该客户端的代理为指定的 ip:端口</span><br><span class="line">      client.findProxy &#x3D; (uri) &#123;</span><br><span class="line">        &#x2F;&#x2F; localProxyIPAddress 和 localProxyPort 是在外部被忽略文件中定义, 方便各个开发者自行更改.</span><br><span class="line">        return &quot;PROXY &quot; + _PROXY_IP_ADDRESS + &quot;:&quot; + _PROXY_PORT_NUM;</span><br><span class="line">      &#125;;</span><br><span class="line">      &#x2F;&#x2F; 安卓机上面证书授权:</span><br><span class="line">      client.badCertificateCallback &#x3D; (cert, host, port) &#x3D;&gt; true;</span><br><span class="line">    &#125;;</span><br><span class="line">    return dio;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="特殊定制"><a href="#特殊定制" class="headerlink" title="特殊定制"></a>特殊定制</h2><p>了解到 事情的来龙去脉以后，我们还需要思考1个问题，为什么大厂的app 是有些接口抓不到，有些接口 就能抓到呢？ 这里其实有3个原因。</p>
+<p>第一： webview webview 使用的http协议 显然跟我们的okhttp是不一样的。而webview使用的 http协议栈 默认都是c代码的实现，我们很难干预，从测试的情况来看，这个http协议栈的实现 是会使用默认系统代理的。 我暂时没找到 关闭这个功能的api，如果有小伙伴实现了 可以告诉我</p>
+<p>第二：可以针对性的对某些敏感接口 使用no_proxy,而其余接口保持正常。</p>
+<p>实际上okhttp做的非常强大，对于代理的设置 他可以做到针对 接口地址不同 而 使用不一样的设置。</p>
+<p>比如这种写法 和上面的no_proxy 就是差不多效果的 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd0e64fe6d444b57a8bdabc0edec4606~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>再看看 <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/147e0c1bbf2a4ab4ae1b1d6b5f36ac19~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
+<p>第三： 即使你使用了全局的no_proxy 代理，但是通常 我们的app里面都不会只有一个okhttp的 client，因为还有其他第三方的库引进来，他们的client 如果没有使用 no_proxy 那他们的接口 还是可以被抓包软件抓到的。</p>
+<p>当然这个问题也是可以解决的，我们只要利用 字节码修改技术 直接修改 字节码即可。 这里就不多介绍了，有兴趣的可以自己实现。</p>
+<h2 id="使用了no-proxy-真的就抓不到了吗？"><a href="#使用了no-proxy-真的就抓不到了吗？" class="headerlink" title="使用了no_proxy 真的就抓不到了吗？"></a>使用了no_proxy 真的就抓不到了吗？</h2><p>当然不是，解决问题的方法就很多，最简单的就是使用drony这个软件，模拟一个vpn网络 即可。 原理很简单，让流量走到vpn里面， 然后vpn默认使用代理 即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cl3onqzsc0010a1n41rdhevxq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-pure-ftp安装和配置" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" class="article-date">
@@ -116,7 +176,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cl2zzvvyu002oppn4acgy7ai6" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" data-id="cl3onqzsw002ma1n44ctu7hrf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -210,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="cl2zzvvxq0008ppn43ukh8ugl" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/Java-Optional-%E2%80%93-orElse-vs-orElseGet/" data-id="cl3onqzrt0007a1n47isu2qiq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li></ul>
@@ -267,7 +327,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="cl2zzvvye001lppn4c42dbnm7" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" data-id="cl3onqzsj001ma1n45yw201wm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -354,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="cl2zzvvz1003cppn49sk4121d" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" data-id="cl3onqzt2003ba1n4g3tubwct" class="article-share-link">Share</a>
       
       
     </footer>
@@ -588,7 +648,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="cl2zzvvyv002rppn4dder5xzn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" data-id="cl3onqzsv002ja1n44p5w22tx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -635,7 +695,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" data-id="cl2zzvvyj001xppn4hxq30rfe" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/" data-id="cl3onqzsn001ua1n49ofigkij" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li></ul>
@@ -699,7 +759,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="cl2zzvvxy000lppn49pgb85l3" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/01/04/MySQL%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E6%97%B6%E9%97%B4%E7%9A%84%E8%8E%B7%E5%8F%96-%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2-%E6%A0%BC%E5%BC%8F%E5%8C%96/" data-id="cl3onqzrz000ha1n44qir9pew" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li></ul>
@@ -763,7 +823,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="cl2zzvvy0000qppn499da4qsj" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/12/11/Spring-Autowired-Map-%E5%92%8C-List/" data-id="cl3onqzs5000sa1n4bw0f9cnn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -808,197 +868,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="cl2zzvvyf001oppn4ct1l1cgu" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="cl3onqzsi001ha1n40wkec45j" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-编程老司机带你玩转-CompletableFuture-异步编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="article-date">
-  <time datetime="2020-11-16T13:09:48.000Z" itemprop="datePublished">2020-11-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">编程老司机带你玩转 CompletableFuture 异步编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文从实例出发，介绍 <code>CompletableFuture</code> 基本用法。不过讲的再多，不如亲自上手练习一下。所以建议各位小伙伴看完，上机练习一把，快速掌握 <code>CompletableFuture</code>。</p>
-<blockquote>
-<p>转载地址：<a target="_blank" rel="noopener" href="https://sourl.cn/s5MbCm">https://sourl.cn/s5MbCm</a></p>
-</blockquote>
-<p><strong>全文摘要：</strong></p>
-<ul>
-<li><code>Future</code> VS <code>CompletableFuture</code></li>
-<li><code>CompletableFuture</code> 基本用法</li>
-</ul>
-<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00. 前言"></a>0x00. 前言</h2><p>一些业务场景我们需要使用多线程异步执行任务，加快任务执行速度。 Java 提供 <code>Runnable</code> <code>Future&lt;V&gt;</code> 两个接口用来实现异步任务逻辑。</p>
-<p>虽然 <code>Future&lt;V&gt;</code> 可以获取任务执行结果，但是获取方式十方不变。我们不得不使用<code>Future#get</code> 阻塞调用线程，或者使用轮询方式判断 <code>Future#isDone</code> 任务是否结束，再获取结果。</p>
-<p>这两种处理方式都不是很优雅，JDK8 之前并发类库没有提供相关的异步回调实现方式。没办法，我们只好借助第三方类库，如 <code>Guava</code>，扩展 <code>Future</code>，增加支持回调功能。相关代码如下:</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-c42b2d87678baef55c701f7db740782e5fe.JPEG" alt="img"></p>
-<p>虽然这种方式增强了 Java 异步编程能力，但是还是无法解决多个异步任务需要相互依赖的场景。</p>
-<p>举一个生活上的例子，假如我们需要出去旅游，需要完成三个任务：</p>
-<ul>
-<li>任务一：订购航班</li>
-<li>任务二：订购酒店</li>
-<li>任务三：订购租车服务</li>
-</ul>
-<p>很显然任务一和任务二没有相关性，可以单独执行。但是任务三必须等待任务一与任务二结束之后，才能订购租车服务。</p>
-<p>为了使任务三时执行时能获取到任务一与任务二执行结果，我们还需要借助 <code>CountDownLatch</code> 。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-f7c663d510c5ccaa0aecbdc08592b9cd1fa.JPEG" alt="img"></p>
-<h2 id="0x01-CompletableFuture"><a href="#0x01-CompletableFuture" class="headerlink" title="0x01. CompletableFuture"></a>0x01. CompletableFuture</h2><p>JDK8 之后，Java 新增一个功能十分强大的类：<code>CompletableFuture</code>。单独使用这个类就可以轻松的完成上面的需求:</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-c4cb12b1605a1b8c1b91c136837da417f75.JPEG" alt="img"></p>
-<blockquote>
-<p>大家可以先不用管 <code>CompletableFuture</code> 相关 <code>API</code>，下面将会具体讲解。</p>
-</blockquote>
-<p>对比 <code>Future&lt;V&gt;</code>，<code>CompletableFuture</code> 优点在于：</p>
-<ul>
-<li>不需要手工分配线程，JDK 自动分配</li>
-<li>代码语义清晰，异步任务链式调用</li>
-<li>支持编排异步任务</li>
-</ul>
-<p>怎么样，是不是功能很强大？接下来抓稳了，小黑哥要发车了。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-777ed5094fbba4e4225b9d1c6d936bb8457.gif" alt="img"></p>
-<h3 id="1-1-方法一览"><a href="#1-1-方法一览" class="headerlink" title="1.1 方法一览"></a>1.1 方法一览</h3><p>首先来通过 IDE 查看下这个类提供的方法：</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-e06a7b173412a6a0ba058363c2ef57146a3.JPEG" alt="img"></p>
-<p>稍微数一下，这个类总共有 50 多个方法，我的天。。。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-8c5992b3ff508b5ec511b81daa02ef9189e.JPEG" alt="img"></p>
-<p>不过也不要怕，小黑哥帮你们归纳好了，跟着小黑哥的节奏，带你们掌握 <code>CompletableFuture</code>。</p>
-<blockquote>
-<p>若图片不清晰，可以关注『程序通事』，回复：『233』，获取该思维导图</p>
-</blockquote>
-<p><img src="https://oscimg.oschina.net/oscnet/up-d52a1726e6fd93e8a0c9df26daa980865b5.JPEG" alt="img"></p>
-<h3 id="1-2-创建-CompletableFuture-实例"><a href="#1-2-创建-CompletableFuture-实例" class="headerlink" title="1.2 创建 CompletableFuture 实例"></a>1.2 创建 CompletableFuture 实例</h3><p>创建 <code>CompletableFuture</code> 对象实例我们可以使用如下几个方法：</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-b7de5aff615a3246206742d64013e3aff7d.JPEG" alt="img"></p>
-<p>第一个方法创建一个具有默认结果的 <code>CompletableFuture</code>，这个没啥好讲。我们重点讲述下下面四个异步方法。</p>
-<p>前两个方法 <code>runAsync</code> 不支持返回值，而 <code>supplyAsync</code>可以支持返回结果。</p>
-<p>这个两个方法默认将会使用公共的 <code>ForkJoinPool</code> 线程池执行，这个线程池默认线程数是 <strong>CPU</strong> 的核数。</p>
-<blockquote>
-<p>可以设置 JVM option:-Djava.util.concurrent.ForkJoinPool.common.parallelism 来设置 ForkJoinPool 线程池的线程数</p>
-</blockquote>
-<p>使用共享线程池将会有个弊端，一旦有任务被阻塞，将会造成其他任务没机会执行。所以<strong>强烈</strong>建议使用后两个方法，根据任务类型不同，主动创建线程池，进行资源隔离，避免互相干扰。</p>
-<h3 id="1-3-设置任务结果"><a href="#1-3-设置任务结果" class="headerlink" title="1.3 设置任务结果"></a>1.3 设置任务结果</h3><p><code>CompletableFuture</code> 提供以下方法，可以主动设置任务结果。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">complete</span><span class="params">(T value)</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">completeExceptionally</span><span class="params">(Throwable ex)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>第一个方法，主动设置 <code>CompletableFuture</code> 任务执行结果，若返回 <code>true</code>，表示设置成功。如果返回 <code>false</code>，设置失败，这是因为任务已经执行结束，已经有了执行结果。</p>
-<p>示例代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行异步任务</span></span><br><span class="line">CompletableFuture cf = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">  System.out.println(<span class="string">&quot;cf 任务执行开始&quot;</span>);</span><br><span class="line">  sleep(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">  System.out.println(<span class="string">&quot;cf 任务执行结束&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;楼下小黑哥&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">Executors.newSingleThreadScheduledExecutor().execute(() -&gt; &#123;</span><br><span class="line">  sleep(<span class="number">5</span>, TimeUnit.SECONDS);</span><br><span class="line">  System.out.println(<span class="string">&quot;主动设置 cf 任务结果&quot;</span>);</span><br><span class="line">  <span class="comment">// 设置任务结果，由于 cf 任务未执行结束，结果返回 true</span></span><br><span class="line">  cf.complete(<span class="string">&quot;程序通事&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 由于 cf 未执行结束，将会被阻塞。5 秒后，另外一个线程主动设置任务结果</span></span><br><span class="line">System.out.println(<span class="string">&quot;get:&quot;</span> + cf.get());</span><br><span class="line"><span class="comment">// 等待 cf 任务执行结束</span></span><br><span class="line">sleep(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line"><span class="comment">// 由于已经设置任务结果，cf 执行结束任务结果将会被抛弃</span></span><br><span class="line">System.out.println(<span class="string">&quot;get:&quot;</span> + cf.get());</span><br><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment">   * cf 任务执行开始</span></span><br><span class="line"><span class="comment">   * 主动设置 cf 任务结果</span></span><br><span class="line"><span class="comment">   * get:程序通事</span></span><br><span class="line"><span class="comment">   * cf 任务执行结束</span></span><br><span class="line"><span class="comment">   * get:程序通事</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
-
-<p>这里需要注意一点，一旦 <code>complete</code> 设置成功，<code>CompletableFuture</code> 返回结果就不会被更改，即使后续 <code>CompletableFuture</code> 任务执行结束。</p>
-<p>第二个方法，给 <code>CompletableFuture</code> 设置异常对象。若设置成功，如果调用 <code>get</code> 等方法获取结果，将会抛错。</p>
-<p>示例代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行异步任务</span></span><br><span class="line">CompletableFuture cf = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;cf 任务执行开始&quot;</span>);</span><br><span class="line">    sleep(<span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">    System.out.println(<span class="string">&quot;cf 任务执行结束&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;楼下小黑哥&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">Executors.newSingleThreadScheduledExecutor().execute(() -&gt; &#123;</span><br><span class="line">    sleep(<span class="number">5</span>, TimeUnit.SECONDS);</span><br><span class="line">    System.out.println(<span class="string">&quot;主动设置 cf 异常&quot;</span>);</span><br><span class="line">    <span class="comment">// 设置任务结果，由于 cf 任务未执行结束，结果返回 true</span></span><br><span class="line">    cf.completeExceptionally(<span class="keyword">new</span> RuntimeException(<span class="string">&quot;啊，挂了&quot;</span>));</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 由于 cf 未执行结束，前 5 秒将会被阻塞。后续程序抛出异常，结束</span></span><br><span class="line">System.out.println(<span class="string">&quot;get:&quot;</span> + cf.get());</span><br><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment"> * cf 任务执行开始</span></span><br><span class="line"><span class="comment"> * 主动设置 cf 异常</span></span><br><span class="line"><span class="comment"> * java.util.concurrent.ExecutionException: java.lang.RuntimeException: 啊，挂了</span></span><br><span class="line"><span class="comment"> * ......</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-4-CompletionStage"><a href="#1-4-CompletionStage" class="headerlink" title="1.4 CompletionStage"></a>1.4 CompletionStage</h3><p><code>CompletableFuture</code> 分别实现两个接口 <code>Future</code>与 <code>CompletionStage</code>。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-d7b6b9ca092770e607e2a46f3d817eaf1ab.JPEG" alt="img"></p>
-<p><code>Future</code> 接口大家都比较熟悉，这里主要讲讲 <code>CompletionStage</code>。</p>
-<p><code>CompletableFuture</code> 大部分方法来自<code>CompletionStage</code> 接口，正是因为这个接口，<code>CompletableFuture</code>才有如从强大功能。</p>
-<p>想要理解 <code>CompletionStage</code> 接口，我们需要先了解任务的时序关系的。我们可以将任务时序关系分为以下几种：</p>
-<ul>
-<li>串行执行关系</li>
-<li>并行执行关系</li>
-<li>AND 汇聚关系</li>
-<li>OR 汇聚关系</li>
-</ul>
-<h3 id="1-5-串行执行关系"><a href="#1-5-串行执行关系" class="headerlink" title="1.5 串行执行关系"></a>1.5 串行执行关系</h3><p>任务串行执行，下一个任务必须等待上一个任务完成才可以继续执行。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-fd7c0a53e6da994bac1efdbfb16f535034a.JPEG" alt="img"></p>
-<p><code>CompletionStage</code> 有四组接口可以描述串行这种关系，分别为:</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-65b7b2c16b980f2a88fb53f04e8fb1a55b0.JPEG" alt="img"></p>
-<p><code>thenApply</code> 方法需要传入核心参数为 <code>Function&lt;T,R&gt;</code>类型。这个类核心方法为：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>所以这个接口将会把上一个任务返回结果当做入参，执行结束将会返回结果。</p>
-<p><code>thenAccept</code> 方法需要传入参数对象为 <code>Consumer&lt;T&gt;</code>类型，这个类核心方法为：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">accept</span><span class="params">(T t)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>返回值 <code>void</code> 可以看出，这个方法不支持返回结果，但是需要将上一个任务执行结果当做参数传入。</p>
-<p><code>thenRun</code> 方法需要传入参数对象为 <code>Runnable</code> 类型，这个类大家应该都比较熟悉，核心方法既不支持传入参数，也不会返回执行结果。</p>
-<p><code>thenCompose</code> 方法作用与 <code>thenApply</code> 一样，只不过 <code>thenCompose</code> 需要返回新的 <code>CompletionStage</code>。这么理解比较抽象，可以集合代码一起理解。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-8fe697424d04aff6289b351ed634acc264a.JPEG" alt="img"></p>
-<p>方法中带有 <strong>Async</strong> ，代表可以异步执行，这个系列还有重载方法，可以传入自定义的线程池，上图未展示，读者只可以自行查看 API。</p>
-<p>最后我们通过代码展示 <code>thenApply</code> 使用方式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture&lt;String&gt; cf</span><br><span class="line">        = CompletableFuture.supplyAsync(() -&gt; <span class="string">&quot;hello,楼下小黑哥&quot;</span>)<span class="comment">// 1</span></span><br><span class="line">        .thenApply(s -&gt; s + <span class="string">&quot;@程序通事&quot;</span>) <span class="comment">// 2</span></span><br><span class="line">        .thenApply(String::toUpperCase); <span class="comment">// 3</span></span><br><span class="line">System.out.println(cf.join());</span><br><span class="line"><span class="comment">// 输出结果 HELLO,楼下小黑哥@程序通事</span></span><br></pre></td></tr></table></figure>
-
-<p>这段代码比较简单，首先我们开启一个异步任务，接着串行执行后续两个任务。任务 2 需要等待任务1 执行完成，任务 3 需要等待任务 2。</p>
-<blockquote>
-<p>上面方法，大家需要记住了 <code>Function&lt;T，R&gt;</code>，<code>Consumer&lt;T&gt;</code>，<code>Runnable</code> 三者区别，根据场景选择使用。</p>
-</blockquote>
-<h3 id="1-6-AND-汇聚关系"><a href="#1-6-AND-汇聚关系" class="headerlink" title="1.6 AND 汇聚关系"></a>1.6 AND 汇聚关系</h3><p>AND 汇聚关系代表所有任务完成之后，才能进行下一个任务。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-adfc95c43a5a70f2fc825b348641da2ea97.JPEG" alt="img"></p>
-<p>如上所示，只有任务 A 与任务 B 都完成之后，任务 C 才会开始执行。</p>
-<p><code>CompletionStage</code> 有以下接口描述这种关系。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-e17207d448150049e8ddd7e4fd90d272684.JPEG" alt="img"></p>
-<p><code>thenCombine</code> 方法核心参数 <code>BiFunction</code> ，作用与 <code>Function</code>一样，只不过 <code>BiFunction</code> 可以接受两个参数，而 <code>Function</code> 只能接受一个参数。</p>
-<p><code>thenAcceptBoth</code> 方法核心参数<code>BiConsumer</code> 作用也与 <code>Consumer</code>一样，不过其需要接受两个参数。</p>
-<p><code>runAfterBoth</code> 方法核心参数最简单，上面已经介绍过，不再介绍。</p>
-<p>这三组方法只能完成两个任务 AND 汇聚关系，如果需要完成多个任务汇聚关系，需要使用 <code>CompletableFuture#allOf</code>，不过这里需要注意，这个方法是不支持返回任务结果。</p>
-<p>AND 汇聚关系相关示例代码，开头已经使用过了，这里再粘贴一下，方便大家理解：</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-c4cb12b1605a1b8c1b91c136837da417f75.JPEG" alt="img"></p>
-<h3 id="1-7-OR-汇聚关系"><a href="#1-7-OR-汇聚关系" class="headerlink" title="1.7 OR 汇聚关系"></a>1.7 OR 汇聚关系</h3><p>有 AND 汇聚关系，当然也存在 OR 汇聚关系。OR 汇聚关系代表只要多个任务中任一任务完成，就可以接着接着执行下一任务。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-8da70f24641d7538a203d3fa3dd8281bab3.JPEG" alt="img"></p>
-<p><code>CompletionStage</code> 有以下接口描述这种关系：</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-d4ce05888ce7ba1fc854800a6004ddbf491.JPEG" alt="img"></p>
-<p>前面三组接口方法传参与 AND 汇聚关系一致，这里也不再详细解释了。</p>
-<p>当然 OR 汇聚关系可以使用 <code>CompletableFuture#anyOf</code> 执行多个任务。</p>
-<p>下面示例代码展示如何使用 <code>applyToEither</code> 完成 OR 关系。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture&lt;String&gt; cf</span><br><span class="line">        = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">    sleep(<span class="number">5</span>, TimeUnit.SECONDS);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello,楼下小黑哥&quot;</span>;</span><br><span class="line">&#125;);<span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line">CompletableFuture&lt;String&gt; cf2 = cf.supplyAsync(() -&gt; &#123;</span><br><span class="line">    sleep(<span class="number">3</span>, TimeUnit.SECONDS);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello，程序通事&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 执行 OR 关系</span></span><br><span class="line">CompletableFuture&lt;String&gt; cf3 = cf2.applyToEither(cf, s -&gt; s);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出结果，由于 cf2 只休眠 3 秒，优先执行完毕</span></span><br><span class="line">System.out.println(cf2.join());</span><br><span class="line"><span class="comment">// 结果：hello，程序通事</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-8-异常处理"><a href="#1-8-异常处理" class="headerlink" title="1.8 异常处理"></a>1.8 异常处理</h3><p><code>CompletableFuture</code> 方法执行过程若产生异常，当调用 <code>get</code>，<code>join </code>获取任务结果才会抛出异常。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-9074887b6f23fe5c02e3066dfedf3312c2b.JPEG" alt="img"></p>
-<p>上面代码我们显示使用 <code>try..catch</code> 处理上面的异常。不过这种方式不太优雅，<code>CompletionStage</code> 提供几个方法，可以优雅处理异常。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-2fafa23a18cdd072aae9aab80c115462ad1.JPEG" alt="img"></p>
-<p><code>exceptionally</code> 使用方式类似于 <code>try..catch</code> 中 <code>catch</code>代码块中异常处理。</p>
-<p><code>whenComplete</code> 与 <code>handle</code> 方法就类似于 <code>try..catch..finanlly</code> 中 <code>finally</code> 代码块。无论是否发生异常，都将会执行的。这两个方法区别在于 <code>handle</code> 支持返回结果。</p>
-<p>下面示例代码展示 <code>handle</code> 用法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture&lt;Integer&gt;</span><br><span class="line">        f0 = CompletableFuture.supplyAsync(() -&gt; (<span class="number">7</span> / <span class="number">0</span>))</span><br><span class="line">        .thenApply(r -&gt; r * <span class="number">10</span>)</span><br><span class="line">        .handle((integer, throwable) -&gt; &#123;</span><br><span class="line">            <span class="comment">// 如果异常存在,打印异常，并且返回默认值</span></span><br><span class="line">            <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) &#123;</span><br><span class="line">                throwable.printStackTrace();</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 如果</span></span><br><span class="line">                <span class="keyword">return</span> integer;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">System.out.println(f0.join());</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *java.util.concurrent.CompletionException: java.lang.ArithmeticException: / by zero</span></span><br><span class="line"><span class="comment"> * .....</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 0</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="0x02-总结"><a href="#0x02-总结" class="headerlink" title="0x02. 总结"></a>0x02. 总结</h2><p>JDK8 提供 <code>CompletableFuture</code> 功能非常强大，可以编排异步任务，完成串行执行，并行执行，AND 汇聚关系，OR 汇聚关系。</p>
-<p>不过这个类方法实在太多，且方法还需要传入各种函数式接口，新手刚开始使用会直接会被弄懵逼。这里帮大家在总结一下三类核心参数的作用</p>
-<ul>
-<li><code>Function</code> 这类函数接口既支持接收参数，也支持返回值</li>
-<li><code>Consumer</code> 这类接口函数只支持接受参数，不支持返回值</li>
-<li><code>Runnable</code> 这类接口不支持接受参数，也不支持返回值</li>
-</ul>
-<p>搞清楚函数参数作用以后，然后根据串行，AND 汇聚关系，OR 汇聚关系归纳一下相关方法，这样就比较好理解了</p>
-<p>最后再贴一下，文章开头的思维导图，希望对你有帮助。</p>
-<p><img src="https://oscimg.oschina.net/oscnet/up-e6932e814c7f276640f00f2a11666859bd3.JPEG" alt="img"></p>
-<h2 id="0x03-帮助文档"><a href="#0x03-帮助文档" class="headerlink" title="0x03. 帮助文档"></a>0x03. 帮助文档</h2><ol>
-<li>极客时间-并发编程专栏</li>
-<li><a target="_blank" rel="noopener" href="https://colobu.com/2016/02/29/Java-CompletableFuture">https://colobu.com/2016/02/29/Java-CompletableFuture</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-cf-of-jdk8/index.html">https://www.ibm.com/developerworks/cn/java/j-cf-of-jdk8/index.html</a></li>
-</ol>
-<h2 id="最后说一句（求关注）"><a href="#最后说一句（求关注）" class="headerlink" title="最后说一句（求关注）"></a>最后说一句（求关注）</h2><p><code>CompletableFuture</code> 很早之前就有关注，本以为跟 <code>Future</code>一样，使用挺简单，谁知道学的时候才发现好难。各种 API 方法看的头有点大。</p>
-<p>后来看到极客时间-『并发编程』专栏使用归纳方式分类 <code>CompletableFuture</code> 各种方法，一下子就看懂了。所这篇文章也参考这种归纳方式。</p>
-<p>这篇文章找资料，整理一个星期，幸好今天顺利产出。</p>
-<p>看在小黑哥写的这么辛苦的份上，点个关注吧，赏个赞呗。别下次一定啊，大哥！写文章很辛苦的，需要来点正反馈。</p>
-<p>才疏学浅，难免会有纰漏，如果你发现了错误的地方，还请你留言给我指出来，我对其加以修改。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/16/%E7%BC%96%E7%A8%8B%E8%80%81%E5%8F%B8%E6%9C%BA%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC-CompletableFuture-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" data-id="cl2zzvvz4003rppn48pciciac" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li></ul>
 
     </footer>
   </div>
@@ -1064,6 +937,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/">mysql查询某一个字段是否包含中文汉字</a>
           </li>
         
@@ -1077,10 +954,6 @@
         
           <li>
             <a href="/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/">docker相关</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
           </li>
         
       </ul>

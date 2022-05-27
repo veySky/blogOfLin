@@ -66,6 +66,56 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-idea多Module出现依赖循环问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-04-25T12:02:40.000Z" itemprop="datePublished">2021-04-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">idea多Module出现依赖循环问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>idea循环依赖aAnnotation processing is not supported for module cycles. </p>
+<ol>
+<li>错误现象<br>Error:java: Annotation processing is not supported for module cycles. Please ensure that all modules from cycle [book-rpc,book-api] are excluded from annotation processing  </li>
+</ol>
+<p>通过Analyze-&gt;Analyze Module Dependencies…发现是循环依赖。  </p>
+<p> 2.解决办法<br>先是找到这个依赖，删掉相关的（右击第一个module选中open module setting–&gt;Dependencies） </p>
+<p>然后在book-api中的pom.xml找到第二个这个依赖，删掉，重新import Changes need to be imported </p>
+<p>如果仅仅删除module中的Dependencies中的相关依赖，有可能没有解决根本性的问题，所以要看一下pom.xml中是否已经存在了相关依赖</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="cl3onqzsk001pa1n4grc4hp4h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-理解-Kafka-消费者属性的-enable-auto-commit" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" class="article-date">
@@ -156,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="cl2zzvvz3003mppn40trdds9r" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="cl3onqzt3003da1n49wan7gbu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -249,7 +299,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="cl2zzvvxs000bppn43jgveff2" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="cl3onqzru0008a1n44oss1ysz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -316,7 +366,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="cl2zzvvz1003eppn47uaw3wjy" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="cl3onqzt8003wa1n4clv0axpf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
@@ -461,7 +511,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="cl2zzvvz5003uppn44wtk31a1" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="cl3onqzt7003ta1n47qx440i4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
@@ -511,7 +561,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="cl2zzvvyz0033ppn40y2qcojk" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="cl3onqzsz002za1n4h6cm2i40" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
@@ -571,7 +621,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="cl2zzvvy2000rppn40taf15qa" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" data-id="cl3onqzsb000xa1n44spa7d7a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li></ul>
@@ -646,7 +696,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="cl2zzvvxz000mppn4d1i3a515" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/17/Slf4j%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8%E5%8F%8ALogback%E3%80%81Log4j2%E7%9A%84%E6%95%B4%E5%90%88%E5%92%8C%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" data-id="cl3onqzs2000la1n4fcuz65r3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li></ul>
@@ -763,7 +813,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="cl2zzvvyw002tppn4ds093r9h" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" data-id="cl3onqzsy002va1n4gnv17uk8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
@@ -868,71 +918,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="cl2zzvvz2003kppn42zwhau7l" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" data-id="cl3onqzt4003ia1n411ey0f2i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li></ul>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-app抓包问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" class="article-date">
-  <time datetime="2021-02-24T08:26:00.000Z" itemprop="datePublished">2021-02-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/">app抓包问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="还在为大厂app抓不到包而犯愁吗？"><a href="#还在为大厂app抓不到包而犯愁吗？" class="headerlink" title="还在为大厂app抓不到包而犯愁吗？"></a>还在为大厂app抓不到包而犯愁吗？</h1><h2 id="抓不到请求的现象"><a href="#抓不到请求的现象" class="headerlink" title="抓不到请求的现象"></a>抓不到请求的现象</h2><p>我们经常在wifi设置中 设置代理到我们的pc http代理软件上，多数情况下，此时我们开启的app流量都可以在代理软件上看到，比如charles ， fiddler等等。 但是细心的人会发现 某些大厂的app 某些请求 在这些 http代理软件上就是抓不到， 给人的感觉就是 流量没从代理软件走一样。</p>
-<h2 id="抓不到请求的原因"><a href="#抓不到请求的原因" class="headerlink" title="抓不到请求的原因"></a>抓不到请求的原因</h2><p>大家都知道 http协议下层是tcp协议，tcp协议都是内置在操作系统里面的，我们最多只能使用tcp协议对外暴露的socket接口来进行编程， 我们是无法修改操作系统本身的tcp协议的实现的。</p>
-<p>但是http协议不同，http协议 都是各个开发者自己实现的， 换句话说 你要实现什么样的http客户端，这个客户端对http协议实现的好坏，实现了多少，支持哪些细节都是你自己决定的。 比如说android上 最有名的<strong>okhttp</strong> 就是一个http客户端的实现。</p>
-<p>既然是自己实现，那就有说法了，虽然你系统设置了代理，但是我完全可以不使用你的代理（或者说我压根就没实现http协议中 proxy的部分）。 这样自然就会像大厂中的某些app一样， 你虽然设置了代理 但是你还是无法抓包。</p>
-<p>因为人家http协议的客户端** 压根就没有使用你系统设置的 代理**。</p>
-<h2 id="看源码"><a href="#看源码" class="headerlink" title="看源码"></a>看源码</h2><p>想明白这个，我们再带着目的 去看源码 就很简单了。</p>
-<p>首先okhttp 是肯定有实现http代理的部分的，否则我们每天也不可能使用代理 愉快的进行抓包。 那么既然有大厂的app 抓不到，那么肯定是某些属性 动态设置了。</p>
-<p>注意看下面的代码：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84ca760b2944c6787503b9439b5f16e~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>如果我这样设置了，你就会发现 你的app的接口 也会抓不到了。</p>
-<p>继续看源码： <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b864723b15224d3984fb06470f9be8e9~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>注释说的很明白，大概意思就是当你设置了这个属性以后，我们就不会使用系统代理了。 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22b61e3eef7a47c190f480d51b6afcb5~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>其实flutter也是有类似的功能，只不过okhttp 默认情况下是使用系统代理的，你要不想使用 你就必须写额外的代码，但是flutter是反过来的， flutter是默认就不使用系统代理，你要开启代理，必须在代码中进行设置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">lass ProxyDio &#123;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理地址</span><br><span class="line">  static const _PROXY_IP_ADDRESS &#x3D; &quot;10.12.65.66&quot;;</span><br><span class="line">  &#x2F;&#x2F;填入你的代理端口号</span><br><span class="line">  static const _PROXY_PORT_NUM &#x3D; &quot;5000&quot;;</span><br><span class="line"></span><br><span class="line">  static Dio getProxyDio() &#123;</span><br><span class="line">    var dio &#x3D; Dio();</span><br><span class="line">    final adapter &#x3D; dio.httpClientAdapter as DefaultHttpClientAdapter;</span><br><span class="line">    adapter.onHttpClientCreate &#x3D; (client) &#123;</span><br><span class="line">      &#x2F;&#x2F; 设置该客户端的代理为指定的 ip:端口</span><br><span class="line">      client.findProxy &#x3D; (uri) &#123;</span><br><span class="line">        &#x2F;&#x2F; localProxyIPAddress 和 localProxyPort 是在外部被忽略文件中定义, 方便各个开发者自行更改.</span><br><span class="line">        return &quot;PROXY &quot; + _PROXY_IP_ADDRESS + &quot;:&quot; + _PROXY_PORT_NUM;</span><br><span class="line">      &#125;;</span><br><span class="line">      &#x2F;&#x2F; 安卓机上面证书授权:</span><br><span class="line">      client.badCertificateCallback &#x3D; (cert, host, port) &#x3D;&gt; true;</span><br><span class="line">    &#125;;</span><br><span class="line">    return dio;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
-
-<h2 id="特殊定制"><a href="#特殊定制" class="headerlink" title="特殊定制"></a>特殊定制</h2><p>了解到 事情的来龙去脉以后，我们还需要思考1个问题，为什么大厂的app 是有些接口抓不到，有些接口 就能抓到呢？ 这里其实有3个原因。</p>
-<p>第一： webview webview 使用的http协议 显然跟我们的okhttp是不一样的。而webview使用的 http协议栈 默认都是c代码的实现，我们很难干预，从测试的情况来看，这个http协议栈的实现 是会使用默认系统代理的。 我暂时没找到 关闭这个功能的api，如果有小伙伴实现了 可以告诉我</p>
-<p>第二：可以针对性的对某些敏感接口 使用no_proxy,而其余接口保持正常。</p>
-<p>实际上okhttp做的非常强大，对于代理的设置 他可以做到针对 接口地址不同 而 使用不一样的设置。</p>
-<p>比如这种写法 和上面的no_proxy 就是差不多效果的 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd0e64fe6d444b57a8bdabc0edec4606~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>再看看 <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/147e0c1bbf2a4ab4ae1b1d6b5f36ac19~tplv-k3u1fbpfcp-zoom-1.image" alt="img"></p>
-<p>第三： 即使你使用了全局的no_proxy 代理，但是通常 我们的app里面都不会只有一个okhttp的 client，因为还有其他第三方的库引进来，他们的client 如果没有使用 no_proxy 那他们的接口 还是可以被抓包软件抓到的。</p>
-<p>当然这个问题也是可以解决的，我们只要利用 字节码修改技术 直接修改 字节码即可。 这里就不多介绍了，有兴趣的可以自己实现。</p>
-<h2 id="使用了no-proxy-真的就抓不到了吗？"><a href="#使用了no-proxy-真的就抓不到了吗？" class="headerlink" title="使用了no_proxy 真的就抓不到了吗？"></a>使用了no_proxy 真的就抓不到了吗？</h2><p>当然不是，解决问题的方法就很多，最简单的就是使用drony这个软件，模拟一个vpn网络 即可。 原理很简单，让流量走到vpn里面， 然后vpn默认使用代理 即可。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/02/24/app%E6%8A%93%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="cl2zzvvy7000yppn453z23t72" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -997,6 +987,10 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/">mysql查询某一个字段是否包含中文汉字</a>
           </li>
         
@@ -1010,10 +1004,6 @@
         
           <li>
             <a href="/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/">docker相关</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
           </li>
         
       </ul>
