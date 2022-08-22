@@ -66,6 +66,115 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-关于redis的scan命令踩过的坑" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/" class="article-date">
+  <time datetime="2021-10-22T11:28:25.000Z" itemprop="datePublished">2021-10-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/redis/">redis</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/">关于redis的scan命令踩过的坑</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>产品需求：需要采集某个任务的详细数据。任务数据直接写redis。 考虑到不影响接口使用性能，所以没在接口调用时添加逻辑记录用户id。 计划使用 扫描redis的方式获取指定前缀key的所有记录。 </p>
+<h3 id="关于scan的资料-见文尾"><a href="#关于scan的资料-见文尾" class="headerlink" title="关于scan的资料 见文尾"></a>关于scan的资料 见文尾</h3><p>重点关注下 scan的缺点：</p>
+<blockquote>
+<p>同一个元素可能会被返回多次。 处理重复元素的工作交由应用程序负责， 比如说， 可以考虑将迭代返回的元素仅仅用于可以安全地重复执行多次的操作上。<br>如果一个元素是在迭代过程中被添加到数据集的， 又或者是在迭代过程中从数据集中被删除的， 那么这个元素可能会被返回， 也可能不会， 这是未定义的（undefined）。<br>SCAN 命令每次执行返回的元素数量<br>增量式迭代命令并不保证每次执行都返回某个给定数量的元素。</p>
+<p>增量式命令甚至可能会返回零个元素， 但只要命令返回的游标不是 0 ， 应用程序就不应该将迭代视作结束。</p>
+</blockquote>
+<p>结合我线上踩坑理解： </p>
+<p>​    1.线上数据会重复出现，代码要保证对幂等性的处理</p>
+<p>​    2.数据丢失问题，不能保证一定可以全量遍历所有key</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SCAN命令的保证</span><br><span class="line">    SCAN 命令， 以及其他增量式迭代命令， 在进行完整遍历的情况下可以为用户带来以下保证：</span><br><span class="line"></span><br><span class="line">    从完整遍历开始直到完整遍历结束期间， 一直存在于数据集内的所有元素都会被完整遍历返回。</span><br><span class="line">    这意味着， 如果有一个元素， 它从遍历开始直到遍历结束期间都存在于被遍历的数据集当中， 那么 SCAN 命令总会在某次迭代中将这个元素返回给用户。</span><br><span class="line">然而因为增量式命令仅仅使用游标来记录迭代状态， 所以这些命令带有以下缺点：</span><br><span class="line"></span><br><span class="line">同一个元素可能会被返回多次。 处理重复元素的工作交由应用程序负责， 比如说， 可以考虑将迭代返回的元素仅仅用于可以安全地重复执行多次的操作上。</span><br><span class="line"></span><br><span class="line">如果一个元素是在迭代过程中被添加到数据集的， 又或者是在迭代过程中从数据集中被删除的， 那么这个元素可能会被返回， 也可能不会， 这是未定义的（undefined）。</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SCAN 命令及其相关的 SSCAN 命令、 HSCAN 命令和 ZSCAN 命令都用于增量地迭代（incrementally iterate）一集元素（a collection of elements）：</span><br><span class="line"></span><br><span class="line">SCAN 命令用于迭代当前数据库中的数据库键。</span><br><span class="line">SSCAN 命令用于迭代集合键中的元素。</span><br><span class="line">HSCAN 命令用于迭代哈希键中的键值对。</span><br><span class="line">ZSCAN 命令用于迭代有序集合中的元素（包括元素成员和元素分值）。</span><br><span class="line">以上列出的四个命令都支持增量式迭代， 它们每次执行都只会返回少量元素， 所以这些命令可以用于生产环境， 而不会出现像 KEYS 命令、 SMEMBERS 命令带来的问题 —— 当 KEYS 命令被用于处理一个大的数据库时， 又或者 SMEMBERS 命令被用于处理一个大的集合键时， 它们可能会阻塞服务器达数秒之久。</span><br><span class="line"></span><br><span class="line">不过， 增量式迭代命令也不是没有缺点的： 举个例子， 使用 SMEMBERS 命令可以返回集合键当前包含的所有元素， 但是对于 SCAN 这类增量式迭代命令来说， 因为在对键进行增量式迭代的过程中， 键可能会被修改， 所以增量式迭代命令只能对被返回的元素提供有限的保证 （offer limited guarantees about the returned elements）。</span><br><span class="line"></span><br><span class="line">因为 SCAN 、 SSCAN 、 HSCAN 和 ZSCAN 四个命令的工作方式都非常相似， 所以这个文档会一并介绍这四个命令， 但是要记住：</span><br><span class="line"></span><br><span class="line">SSCAN 命令、 HSCAN 命令和 ZSCAN 命令的第一个参数总是一个数据库键。</span><br><span class="line">而 SCAN 命令则不需要在第一个参数提供任何数据库键 —— 因为它迭代的是当前数据库中的所有数据库键。</span><br><span class="line">SCAN 命令的基本用法</span><br><span class="line">SCAN 命令是一个基于游标的迭代器（cursor based iterator）： SCAN 命令每次被调用之后， 都会向用户返回一个新的游标， 用户在下次迭代时需要使用这个新游标作为 SCAN 命令的游标参数， 以此来延续之前的迭代过程。</span><br><span class="line"></span><br><span class="line">当 SCAN 命令的游标参数被设置为 0 时， 服务器将开始一次新的迭代， 而当服务器向用户返回值为 0 的游标时， 表示迭代已结束。</span><br><span class="line"></span><br><span class="line">以下是一个 SCAN 命令的迭代过程示例：</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 0</span><br><span class="line">1) &quot;17&quot;</span><br><span class="line">2)  1) &quot;key:12&quot;</span><br><span class="line">    2) &quot;key:8&quot;</span><br><span class="line">    3) &quot;key:4&quot;</span><br><span class="line">    4) &quot;key:14&quot;</span><br><span class="line">    5) &quot;key:16&quot;</span><br><span class="line">    6) &quot;key:17&quot;</span><br><span class="line">    7) &quot;key:15&quot;</span><br><span class="line">    8) &quot;key:10&quot;</span><br><span class="line">    9) &quot;key:3&quot;</span><br><span class="line">    10) &quot;key:7&quot;</span><br><span class="line">    11) &quot;key:1&quot;</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 17</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) 1) &quot;key:5&quot;</span><br><span class="line">   2) &quot;key:18&quot;</span><br><span class="line">   3) &quot;key:0&quot;</span><br><span class="line">   4) &quot;key:2&quot;</span><br><span class="line">   5) &quot;key:19&quot;</span><br><span class="line">   6) &quot;key:13&quot;</span><br><span class="line">   7) &quot;key:6&quot;</span><br><span class="line">   8) &quot;key:9&quot;</span><br><span class="line">   9) &quot;key:11&quot;</span><br><span class="line">在上面这个例子中， 第一次迭代使用 0 作为游标， 表示开始一次新的迭代。</span><br><span class="line"></span><br><span class="line">第二次迭代使用的是第一次迭代时返回的游标， 也即是命令回复第一个元素的值 —— 17 。</span><br><span class="line"></span><br><span class="line">从上面的示例可以看到， SCAN 命令的回复是一个包含两个元素的数组， 第一个数组元素是用于进行下一次迭代的新游标， 而第二个数组元素则是一个数组， 这个数组中包含了所有被迭代的元素。</span><br><span class="line"></span><br><span class="line">在第二次调用 SCAN 命令时， 命令返回了游标 0 ， 这表示迭代已经结束， 整个数据集（collection）已经被完整遍历过了。</span><br><span class="line"></span><br><span class="line">以 0 作为游标开始一次新的迭代， 一直调用 SCAN 命令， 直到命令返回游标 0 ， 我们称这个过程为一次完整遍历（full iteration）。</span><br><span class="line"></span><br><span class="line">SCAN 命令的保证（guarantees）</span><br><span class="line">SCAN 命令， 以及其他增量式迭代命令， 在进行完整遍历的情况下可以为用户带来以下保证： 从完整遍历开始直到完整遍历结束期间， 一直存在于数据集内的所有元素都会被完整遍历返回； 这意味着， 如果有一个元素， 它从遍历开始直到遍历结束期间都存在于被遍历的数据集当中， 那么 SCAN 命令总会在某次迭代中将这个元素返回给用户。</span><br><span class="line"></span><br><span class="line">然而因为增量式命令仅仅使用游标来记录迭代状态， 所以这些命令带有以下缺点：</span><br><span class="line"></span><br><span class="line">同一个元素可能会被返回多次。 处理重复元素的工作交由应用程序负责， 比如说， 可以考虑将迭代返回的元素仅仅用于可以安全地重复执行多次的操作上。</span><br><span class="line">如果一个元素是在迭代过程中被添加到数据集的， 又或者是在迭代过程中从数据集中被删除的， 那么这个元素可能会被返回， 也可能不会， 这是未定义的（undefined）。</span><br><span class="line">SCAN 命令每次执行返回的元素数量</span><br><span class="line">增量式迭代命令并不保证每次执行都返回某个给定数量的元素。</span><br><span class="line"></span><br><span class="line">增量式命令甚至可能会返回零个元素， 但只要命令返回的游标不是 0 ， 应用程序就不应该将迭代视作结束。</span><br><span class="line"></span><br><span class="line">不过命令返回的元素数量总是符合一定规则的， 在实际中：</span><br><span class="line"></span><br><span class="line">对于一个大数据集来说， 增量式迭代命令每次最多可能会返回数十个元素；</span><br><span class="line">而对于一个足够小的数据集来说， 如果这个数据集的底层表示为编码数据结构（encoded data structure，适用于是小集合键、小哈希键和小有序集合键）， 那么增量迭代命令将在一次调用中返回数据集中的所有元素。</span><br><span class="line">最后， 用户可以通过增量式迭代命令提供的 COUNT 选项来指定每次迭代返回元素的最大值。</span><br><span class="line"></span><br><span class="line">COUNT 选项</span><br><span class="line">虽然增量式迭代命令不保证每次迭代所返回的元素数量， 但我们可以使用 COUNT 选项， 对命令的行为进行一定程度上的调整。</span><br><span class="line"></span><br><span class="line">基本上， COUNT 选项的作用就是让用户告知迭代命令， 在每次迭代中应该从数据集里返回多少元素。</span><br><span class="line"></span><br><span class="line">虽然 COUNT 选项只是对增量式迭代命令的一种提示（hint）， 但是在大多数情况下， 这种提示都是有效的。</span><br><span class="line"></span><br><span class="line">COUNT 参数的默认值为 10 。</span><br><span class="line">在迭代一个足够大的、由哈希表实现的数据库、集合键、哈希键或者有序集合键时， 如果用户没有使用 MATCH 选项， 那么命令返回的元素数量通常和 COUNT 选项指定的一样， 或者比 COUNT 选项指定的数量稍多一些。</span><br><span class="line">在迭代一个编码为整数集合（intset，一个只由整数值构成的小集合）、 或者编码为压缩列表（ziplist，由不同值构成的一个小哈希或者一个小有序集合）时， 增量式迭代命令通常会无视 COUNT 选项指定的值， 在第一次迭代就将数据集包含的所有元素都返回给用户。</span><br><span class="line">并非每次迭代都要使用相同的 COUNT 值。</span><br><span class="line">用户可以在每次迭代中按自己的需要随意改变 COUNT 值， 只要记得将上次迭代返回的游标用到下次迭代里面就可以了。</span><br><span class="line"></span><br><span class="line">MATCH 选项</span><br><span class="line">和 KEYS 命令一样， 增量式迭代命令也可以通过提供一个 glob 风格的模式参数， 让命令只返回和给定模式相匹配的元素， 这一点可以通过在执行增量式迭代命令时， 通过给定 MATCH &lt;pattern&gt; 参数来实现。</span><br><span class="line"></span><br><span class="line">以下是一个使用 MATCH 选项进行迭代的示例：</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; sadd myset 1 2 3 foo foobar feelsgood</span><br><span class="line">(integer) 6</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; sscan myset 0 match f*</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) 1) &quot;foo&quot;</span><br><span class="line">   2) &quot;feelsgood&quot;</span><br><span class="line">   3) &quot;foobar&quot;</span><br><span class="line">需要注意的是， 对元素的模式匹配工作是在命令从数据集中取出元素之后， 向客户端返回元素之前的这段时间内进行的， 所以如果被迭代的数据集中只有少量元素和模式相匹配， 那么迭代命令或许会在多次执行中都不返回任何元素。</span><br><span class="line"></span><br><span class="line">以下是这种情况的一个例子：</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 0 MATCH *11*</span><br><span class="line">1) &quot;288&quot;</span><br><span class="line">2) 1) &quot;key:911&quot;</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 288 MATCH *11*</span><br><span class="line">1) &quot;224&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 224 MATCH *11*</span><br><span class="line">1) &quot;80&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 80 MATCH *11*</span><br><span class="line">1) &quot;176&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; scan 176 MATCH *11* COUNT 1000</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2)  1) &quot;key:611&quot;</span><br><span class="line">    2) &quot;key:711&quot;</span><br><span class="line">    3) &quot;key:118&quot;</span><br><span class="line">    4) &quot;key:117&quot;</span><br><span class="line">    5) &quot;key:311&quot;</span><br><span class="line">    6) &quot;key:112&quot;</span><br><span class="line">    7) &quot;key:111&quot;</span><br><span class="line">    8) &quot;key:110&quot;</span><br><span class="line">    9) &quot;key:113&quot;</span><br><span class="line">   10) &quot;key:211&quot;</span><br><span class="line">   11) &quot;key:411&quot;</span><br><span class="line">   12) &quot;key:115&quot;</span><br><span class="line">   13) &quot;key:116&quot;</span><br><span class="line">   14) &quot;key:114&quot;</span><br><span class="line">   15) &quot;key:119&quot;</span><br><span class="line">   16) &quot;key:811&quot;</span><br><span class="line">   17) &quot;key:511&quot;</span><br><span class="line">   18) &quot;key:11&quot;</span><br><span class="line">如你所见， 以上的大部分迭代都不返回任何元素。</span><br><span class="line"></span><br><span class="line">在最后一次迭代， 我们通过将 COUNT 选项的参数设置为 1000 ， 强制命令为本次迭代扫描更多元素， 从而使得命令返回的元素也变多了。</span><br><span class="line"></span><br><span class="line">并发执行多个迭代</span><br><span class="line">在同一时间， 可以有任意多个客户端对同一数据集进行迭代， 客户端每次执行迭代都需要传入一个游标， 并在迭代执行之后获得一个新的游标， 而这个游标就包含了迭代的所有状态， 因此， 服务器无须为迭代记录任何状态。</span><br><span class="line"></span><br><span class="line">中途停止迭代</span><br><span class="line">因为迭代的所有状态都保存在游标里面， 而服务器无须为迭代保存任何状态， 所以客户端可以在中途停止一个迭代， 而无须对服务器进行任何通知。</span><br><span class="line"></span><br><span class="line">即使有任意数量的迭代在中途停止， 也不会产生任何问题。</span><br><span class="line"></span><br><span class="line">使用错误的游标进行增量式迭代</span><br><span class="line">使用间断的（broken）、负数、超出范围或者其他非正常的游标来执行增量式迭代并不会造成服务器崩溃， 但可能会让命令产生未定义的行为。</span><br><span class="line"></span><br><span class="line">未定义行为指的是， 增量式命令对返回值所做的保证可能会不再为真。</span><br><span class="line"></span><br><span class="line">只有两种游标是合法的：</span><br><span class="line"></span><br><span class="line">在开始一个新的迭代时， 游标必须为 0 。</span><br><span class="line">增量式迭代命令在执行之后返回的， 用于延续（continue）迭代过程的游标。</span><br><span class="line">迭代终结的保证</span><br><span class="line">增量式迭代命令所使用的算法只保证在数据集的大小有界（bounded）的情况下， 迭代才会停止， 换句话说， 如果被迭代数据集的大小不断地增长的话， 增量式迭代命令可能永远也无法完成一次完整迭代。</span><br><span class="line"></span><br><span class="line">从直觉上可以看出， 当一个数据集不断地变大时， 想要访问这个数据集中的所有元素就需要做越来越多的工作， 能否结束一个迭代取决于用户执行迭代的速度是否比数据集增长的速度更快。</span><br><span class="line"></span><br><span class="line">可用版本：</span><br><span class="line"></span><br><span class="line">&gt;&#x3D; 2.8.0</span><br><span class="line">时间复杂度：</span><br><span class="line"></span><br><span class="line">增量式迭代命令每次执行的复杂度为 O(1) ， 对数据集进行一次完整迭代的复杂度为 O(N) ， 其中 N 为数据集中的元素数量。</span><br><span class="line">返回值：</span><br><span class="line"></span><br><span class="line">SCAN 命令、 SSCAN 命令、 HSCAN 命令和 ZSCAN 命令都返回一个包含两个元素的 multi-bulk 回复： 回复的第一个元素是字符串表示的无符号 64 位整数（游标）， 回复的第二个元素是另一个 multi-bulk 回复， 这个 multi-bulk 回复包含了本次被迭代的元素。</span><br><span class="line"></span><br><span class="line">SCAN 命令返回的每个元素都是一个数据库键。</span><br><span class="line"></span><br><span class="line">SSCAN 命令返回的每个元素都是一个集合成员。</span><br><span class="line"></span><br><span class="line">HSCAN 命令返回的每个元素都是一个键值对，一个键值对由一个键和一个值组成。</span><br><span class="line"></span><br><span class="line">ZSCAN 命令返回的每个元素都是一个有序集合元素，一个有序集合元素由一个成员（member）和一个分值（score）组成。</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/" data-id="cl74h10ym003b07n4elexdfnq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-git导出干净代码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" class="article-date">
+  <time datetime="2021-09-15T02:45:06.000Z" itemprop="datePublished">2021-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/git/">git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/">git导出干净代码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用 git archive 可以导出干净的代码，具体可以看 git</p>
+<p>help archive，简单使用如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$git archive --format zip --output &quot;.&#x2F;output.zip&quot; master -0</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" data-id="cl74h10xv001c07n40oe82oir" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-jrebel-license-server" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/09/08/jrebel-license-server/" class="article-date">
@@ -151,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/09/08/jrebel-license-server/" data-id="cl440d54o001u5jn418zh2zdf" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/09/08/jrebel-license-server/" data-id="cl74h10y1001q07n4hllucl3y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li></ul>
@@ -229,7 +338,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" data-id="cl440d54r00255jn4cvjw0ysz" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" data-id="cl74h10y7002a07n4abpe8ph4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -392,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="cl440d54i001g5jn4f9m5ef1i" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="cl74h10y2001t07n48tvia3ix" class="article-share-link">Share</a>
       
       
     </footer>
@@ -437,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="cl440d54z002k5jn4f7xj8511" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="cl74h10yh002t07n4dm2l0j7i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li></ul>
@@ -536,7 +645,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="cl440d54e00185jn445i24ye3" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="cl74h10xs001307n40oa84faj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>
@@ -589,7 +698,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="cl440d54d00165jn40om4a9zt" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="cl74h10xr001107n498099jux" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li></ul>
@@ -646,7 +755,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="cl440d53c00015jn48h984g5a" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="cl74h10x7000307n47zhk358t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
@@ -703,198 +812,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="cl440d53t000c5jn44zpt174v" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="cl74h10xc000707n41vtld6z3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-使用docker-compose部署kafka服务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" class="article-date">
-  <time datetime="2021-04-27T06:51:20.000Z" itemprop="datePublished">2021-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/Kafka/">Kafka</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/">使用docker-compose部署kafka服务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">1.安装：</span><br><span class="line"># 1. 安装docker-compose，需要预先安装好Docker</span><br><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.27.4&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line"># 增加可执行权限</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line"># 2. 创建相关文件夹</span><br><span class="line">mkdir -p &#x2F;opt&#x2F;zookeeper &amp;&amp; mkdir -p &#x2F;opt&#x2F;kafka</span><br><span class="line"># 3. 准备配置文件</span><br><span class="line">echo &#39;</span><br><span class="line">version: &#39;3.7&#39;</span><br><span class="line">services:</span><br><span class="line">  zookeeper:</span><br><span class="line">    image: wurstmeister&#x2F;zookeeper</span><br><span class="line">    volumes:</span><br><span class="line">       - &#x2F;opt&#x2F;zookeeper&#x2F;data:&#x2F;data</span><br><span class="line">    container_name: zookeeper</span><br><span class="line">    mem_limit: 1024M</span><br><span class="line">    environment:</span><br><span class="line">      ZOOKEEPER_CLIENT_PORT: 2181</span><br><span class="line">      ZOOKEEPER_TICK_TIME: 2000</span><br><span class="line">    ports:</span><br><span class="line">      - 2181:2181</span><br><span class="line">    restart: always</span><br><span class="line">  kafka_node1:</span><br><span class="line">    image: wurstmeister&#x2F;kafka</span><br><span class="line">    container_name: kafka_node1</span><br><span class="line">    mem_limit: 1024M</span><br><span class="line">    depends_on:</span><br><span class="line">      - zookeeper</span><br><span class="line">    ports: </span><br><span class="line">      - 9092:9092</span><br><span class="line">    volumes:</span><br><span class="line">      - &#x2F;opt&#x2F;kafka&#x2F;data:&#x2F;kafka</span><br><span class="line">    environment:</span><br><span class="line">      KAFKA_CREATE_TOPICS: &quot;test&quot;</span><br><span class="line">      KAFKA_BROKER_NO: 0</span><br><span class="line">      KAFKA_LISTENERS: PLAINTEXT:&#x2F;&#x2F;kafka_node1:9092</span><br><span class="line">      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT:&#x2F;&#x2F;$&#123;kafka_service_public_ip&#125;:$&#123;kafka_service_public_port&#125;</span><br><span class="line">      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT</span><br><span class="line">      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181</span><br><span class="line">      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1</span><br><span class="line">      KAFKA_HEAP_OPTS: &quot;-Xmx512M -Xms16M&quot;</span><br><span class="line">    restart: always</span><br><span class="line">  kafka_manager: </span><br><span class="line">    image: hlebalbau&#x2F;kafka-manager:stable</span><br><span class="line">    ports:</span><br><span class="line">      - 9000:9000</span><br><span class="line">    environment:</span><br><span class="line">      ZK_HOSTS: &quot;zookeeper:2181&quot;  </span><br><span class="line">    depends_on:</span><br><span class="line">      - zookeeper</span><br><span class="line">      - kafka_node1</span><br><span class="line">    restart: always&#39; &gt; &#x2F;etc&#x2F;kafka&#x2F;kafka.yml</span><br><span class="line"># 3. 启动容器服务</span><br><span class="line">docker-compose -f &#x2F;etc&#x2F;kafka&#x2F;kafka.yml up -d</span><br></pre></td></tr></table></figure>
-
-<p>PS需要注意env配置信息</p>
-<p>docker-compose的配置文件中变量配置方法</p>
-<p><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/environment-variables/">https://docs.docker.com/compose/environment-variables/</a></p>
-<p>需要在配置文件所在目录创建 .env文件，</p>
-<p>文件中添加变量既可。 </p>
-<h1 id="2-使用Kafka-Mgr管理集群"><a href="#2-使用Kafka-Mgr管理集群" class="headerlink" title="2 使用Kafka-Mgr管理集群"></a>2 使用Kafka-Mgr管理集群</h1><p>访问服务所在主机的<code>9000</code>端口，按如下图所示创建集群：</p>
-<p>​    <img src="https://segmentfault.com/img/remote/1460000039264676" alt="img"></p>
-<ul>
-<li><p>若出现 Yikes! KeeperErrorCode = Unimplemented for /kafka-manager/mutex Try again. 错误，参考此<a target="_blank" rel="noopener" href="https://github.com/yahoo/CMAK/issues/731#issuecomment-643880544">issue</a>解决，具体步骤如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># docker exec -it zookeeper bash</span><br><span class="line">root@98747a9eac65:&#x2F;zookeeper-3.4.14# .&#x2F;bin&#x2F;zkCli.sh</span><br><span class="line">[zk: localhost:2181(CONNECTED) 2] ls &#x2F;kafka-manager</span><br><span class="line">[configs, deleteClusters, clusters]</span><br><span class="line">[zk: localhost:2181(CONNECTED) 3] create &#x2F;kafka-manager&#x2F;mutex &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex</span><br><span class="line">[zk: localhost:2181(CONNECTED) 5] create &#x2F;kafka-manager&#x2F;mutex&#x2F;locks &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex&#x2F;locks</span><br><span class="line">[zk: localhost:2181(CONNECTED) 6] create &#x2F;kafka-manager&#x2F;mutex&#x2F;leases &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex&#x2F;leases</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ul>
-<p>参考文档：</p>
-<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0110/documentation.html#brokerconfigs">https://kafka.apache.org/0110/documentation.html#brokerconfigs</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/wurstmeister/kafka-docker/issues/233">https://github.com/wurstmeister/kafka-docker/issues/233</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="cl440d553002w5jn41dq61ndm" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-kafka集群监控之kafka-manager部署-ProdServerStart" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" class="article-date">
-  <time datetime="2021-04-27T06:47:17.000Z" itemprop="datePublished">2021-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/Kafka/">Kafka</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/">kafka集群监控之kafka-manager部署(ProdServerStart)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>一.\</strong>kafka manager简介****</p>
-<p><strong>1&gt;.什么是Kafka Manager</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">KafkaManager是一个用于管理Kafka的web工具，由yahoo开发并开源。</span><br><span class="line"></span><br><span class="line">雅虎官网GitHub项目：https:&#x2F;&#x2F;github.com&#x2F;yahoo&#x2F;kafka-manager。需要安装jdk1.8版本。</span><br><span class="line"></span><br><span class="line">我们可以参考官方的文档进行编译和简单配置即可使用。</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184455823-506984235.png" alt="img"></p>
-<p><strong>2&gt;.kafka manager支持功能</strong></p>
-<p>![复制代码](<a target="_blank" rel="noopener" href="https://common.cnblogs.com/images/copycode.gif">https://common.cnblogs.com/images/copycode.gif</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">　　其提供了如下管理和监控能力：</span><br><span class="line">　　　　管理多集群</span><br><span class="line">　　　　查看集群状态（topics,consumers,offsets,brokers等）</span><br><span class="line">　　　　执行倾向副本选举</span><br><span class="line">　　　　生成分区重分布计划（自动和手动）</span><br><span class="line">　　　　执行分区重分布</span><br><span class="line">　　　　多topic批量生成分区重分布计划，执行分区重分布</span><br><span class="line">　　　　使用指定参数创建topic</span><br><span class="line">　　　　删除topic（需要集群参数开启）</span><br><span class="line">　　　　现有topic增加分区</span><br><span class="line">　　　　通过JMX获取broker层面和topic层面指标</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184636385-1156560940.png" alt="img"></p>
-<p><strong>二.部署kafka manager</strong></p>
-<p><strong>1&gt;.**</strong>下载kafka-manager**</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
-
-<p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#x74;&#64;&#110;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#x65;&#110;&#x67;&#x6a;&#105;&#x65;&#x2e;&#x6f;&#114;&#103;&#x2e;&#99;&#x6e;">&#114;&#x6f;&#111;&#x74;&#64;&#110;&#x6f;&#x64;&#101;&#x31;&#x30;&#56;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#x65;&#110;&#x67;&#x6a;&#105;&#x65;&#x2e;&#x6f;&#114;&#103;&#x2e;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#x6f;&#x74;&#64;&#x6e;&#x6f;&#100;&#x65;&#49;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#122;&#104;&#x65;&#110;&#103;&#x6a;&#x69;&#x65;&#46;&#x6f;&#114;&#103;&#x2e;&#x63;&#110;">&#x72;&#111;&#x6f;&#x74;&#64;&#x6e;&#x6f;&#100;&#x65;&#49;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#122;&#104;&#x65;&#110;&#103;&#x6a;&#x69;&#x65;&#46;&#x6f;&#114;&#103;&#x2e;&#x63;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
-<p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>4&gt;.修改kafka的配置文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep kafka-manager.zkhosts &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">kafka-manager.zkhosts&#x3D;&quot;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01&quot;</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep port &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">http.port&#x3D;8888</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>5&gt;.每个kafka broker都需要开启JMX（想要看到kafka集群的读取河写入速度就必须开启JMX,），需要编辑kafka启动脚本</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node106.yinzhengjie.org.cn ~]# vi &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node107.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     1.3MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node108.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     2.0MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>6&gt;.启动kafka-manager（kafka和zookeeper也需要启动起来哟~尤其是zookeeper必须是得运行的）</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# nohup &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;bin&#x2F;kafka-manager -java-home &#x2F;home&#x2F;softwares&#x2F;jdk1.8.0_201 -Dconfig.file&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf &gt;&gt; &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log 2&gt;&amp;1 &amp;</span><br><span class="line">[1] 3753</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# jps</span><br><span class="line">3826 Jps</span><br><span class="line">3753 ProdServerStart</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br><span class="line"></span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# tail -100f &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.library.path&#x3D;&#x2F;usr&#x2F;java&#x2F;packages&#x2F;lib&#x2F;amd64:&#x2F;usr&#x2F;lib64:&#x2F;lib64:&#x2F;lib:&#x2F;usr&#x2F;lib</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.io.tmpdir&#x3D;&#x2F;tmp</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.compiler&#x3D;&lt;NA&gt;</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.name&#x3D;Linux</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.arch&#x3D;amd64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.version&#x3D;3.10.0-957.el7.x86_64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.name&#x3D;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.home&#x3D;&#x2F;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.dir&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[info] o.a.z.ZooKeeper - Initiating client connection, connectString&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01 sessionTimeout&#x3D;60000 watcher&#x3D;org.apache.curator.ConnectionState@65e0186a</span><br><span class="line">[info] o.a.z.ClientCnxn - Opening socket connection to server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">[info] o.a.z.ClientCnxn - Socket connection established to node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, initiating session</span><br><span class="line">[info] o.a.z.ClientCnxn - Session establishment complete on server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, sessionid &#x3D; 0x6a00001622cf0000, negotiated timeout &#x3D; 40000</span><br><span class="line">[info] k.m.a.KafkaManagerActor - zk&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01</span><br><span class="line">[info] k.m.a.KafkaManagerActor - baseZkPath&#x3D;&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager&#x2F;delete-cluster</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting kafka manager path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Scheduling updater for 10 seconds</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] play.api.Play - Application started (Prod)</span><br><span class="line">[info] p.c.s.NettyServer - Listening for HTTP on &#x2F;0.0.0.0:8888　　　　　　#说明我们的kafka_manager服务端口已经监听啦，我们可以直接去访问啦</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">^C</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>7&gt;.登陆webUI查看相应的信息，如果出现以下界面说明你部署成功啦！</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222634167-980310777.png" alt="img"></p>
-<p><strong>三.**</strong>WEB端配置kafka-manager**</p>
-<p><strong>1&gt;.点击添加集群</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222751230-306893281.png" alt="img"></p>
-<p><strong>2&gt;.配置集群（集群名称不支持中文，只支持ASSCI编码）</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223615520-1365827720.png" alt="img"></p>
-<p> <strong>3&gt;.其他参数保持默认，点击保存即可</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223813438-381974165.png" alt="img"></p>
-<p> <strong>4&gt;.配置成功</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224012573-8104355.png" alt="img"></p>
-<p><strong>5&gt;.点击”yinzhengjie-kafka”</strong></p>
-<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224155959-1238933143.png" alt="img"></strong></p>
-<p><strong>6&gt;.查看自定义的集群信息</strong></p>
-<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224454334-2089082832.png" alt="img"></strong></p>
-<p><strong>7&gt;.\</strong>查看broker信息****</p>
-<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225800565-1207963224.png" alt="img"></strong></p>
-<p><strong>8&gt;.\</strong>查看topic信息****</p>
-<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225909158-1472664287.png" alt="img">**</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">以上输出信息关键参数说如下：</span><br><span class="line">Operations列表参数说明：</span><br><span class="line">Generate Partition Assignments:</span><br><span class="line">　　对多个topic来进行分区重分布计划的生成，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Run Partition Assignments:</span><br><span class="line">　　对多个topic分区执行重分布计划，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Add Partitions：</span><br><span class="line">　　对多个topic来进行添加分区操作，生成环境并不建议大家这样搞，避免误操作。</span><br><span class="line"></span><br><span class="line">Topics列表参数说明：</span><br><span class="line">Topic:</span><br><span class="line">    表示topic名称。</span><br><span class="line">    __consumer_offsets是kafka内置保存consumer offset的topic.</span><br><span class="line"></span><br><span class="line">Partitions:</span><br><span class="line">    topic对应的分区数</span><br><span class="line"></span><br><span class="line">Brokers:</span><br><span class="line">    topic对应的broker数</span><br><span class="line"></span><br><span class="line">Brokers Spread%:</span><br><span class="line">    指broker的分布比例，计算公式:用topic的分区分布的broker数&#x2F;总的broker数量。</span><br><span class="line"></span><br><span class="line">Brokers Skew %:</span><br><span class="line">    Brokers的偏斜比例，计算公式:(Broker最多的分区数&#x2F;Brokers最少的分区数) -1</span><br><span class="line">    </span><br><span class="line">Brokers Leader Skew%:</span><br><span class="line">    Brokers的leader偏斜比例，计算公式:(Broker最多的leader分区数&#x2F;Brokers最少leader的分区数) -1</span><br><span class="line">    </span><br><span class="line">Replicas:</span><br><span class="line">    副本因子，即副本数。</span><br><span class="line"></span><br><span class="line">Under Replicated %:</span><br><span class="line">    副本不足的比例，计算公式:副本不足的分区数&#x2F;总分区数</span><br><span class="line"></span><br><span class="line">Producer Message&#x2F;Sec:</span><br><span class="line">    每秒产生的消息数量。</span><br><span class="line"></span><br><span class="line">Summed Recent Offsets:</span><br><span class="line">    当前总计的消费偏移量。</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong><em>\</em>9&gt;.创建topic**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230336053-574631330.png" alt="img"></p>
-<p><strong><em>\</em>10&gt;.topic创建完成**</strong></p>
-<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230422197-928459022.png" alt="img">**</strong></p>
-<p><strong><em>\</em>11&gt;.topic操作**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713233502120-1813806895.png" alt="img"></p>
-<p><strong><em>\</em>12&gt;.点击”Reassign Partitions”,查看分区重分布的进度**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234331026-440696449.png" alt="img"></p>
-<p><strong><em>\</em>13&gt;.点击”Preferred Replica Election”可以执行倾向副本选举，一般我们在配置文件配置好了就不需要在这里手动触发啦！**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234528486-1009939226.png" alt="img"></p>
-<p><strong><em>\</em>14&gt;.查看消费者组信息**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235320245-629365248.png" alt="img"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Consumer:</span><br><span class="line">    表示的是消费者组。</span><br><span class="line"></span><br><span class="line">Type:</span><br><span class="line">    ZK表示offset信息保存在zookeeper中。</span><br><span class="line">    KF表示offset信息保存在kafka中。</span><br><span class="line"></span><br><span class="line">Topic it consumes from:</span><br><span class="line">    已经消费的分区的coverage:</span><br><span class="line">        消费的覆盖率。</span><br><span class="line">    已经消费的lag:</span><br><span class="line">        消费的延迟大小。有可能会看到负值，</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong><em>\</em>15&gt;.查看已经消费者的详细信息**</strong></p>
-<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235429468-198969850.png" alt="img"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Partition    </span><br><span class="line">    分区编号。</span><br><span class="line">    </span><br><span class="line">LogSize    </span><br><span class="line">    分区大小</span><br><span class="line">    </span><br><span class="line">Consumer Offset    </span><br><span class="line">    消费的偏移量。</span><br><span class="line">    </span><br><span class="line">Lag    </span><br><span class="line">    延迟大小，改值可能是负数。</span><br><span class="line"></span><br><span class="line">Consumer Instance Owner</span><br><span class="line">    消费者实例拥有者。</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="cl440d54p001x5jn44ckv3pma" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
 
     </footer>
   </div>
@@ -947,7 +868,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -960,6 +881,14 @@
       <ul>
         
           <li>
+            <a href="/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/">mysql时间获取周日月季度起止时间</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/07/14/hive%E6%9F%A5%E8%AF%A2%E6%97%B6%E4%BD%BF%E7%94%A8%E4%B8%AD%E6%96%87%E5%88%AB%E5%90%8D/">hive查询时使用中文别名</a>
+          </li>
+        
+          <li>
             <a href="/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">使用java中的注解@see</a>
           </li>
         
@@ -969,14 +898,6 @@
         
           <li>
             <a href="/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/">mysql查询某一个字段是否包含中文汉字</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/04/21/mac%E7%AB%AF%E5%8F%A3%E5%8D%A0%E7%94%A8/">mac端口占用</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/01/05/Docker-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%90%AD%E5%BB%BA%E8%BF%90%E8%A1%8CFTP%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%88vsftpd/">Docker - 在容器中搭建运行FTP服务器（vsftpd)</a>
           </li>
         
       </ul>
