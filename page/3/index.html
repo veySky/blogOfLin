@@ -66,6 +66,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-CentOS安装oh-my-zsh并配置语法高亮和命令自动补全" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" class="article-date">
+  <time datetime="2021-05-27T01:20:21.000Z" itemprop="datePublished">2021-05-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">CentOS安装oh-my-zsh并配置语法高亮和命令自动补全 </a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="安装zsh-和-oh-my-zsh"><a href="#安装zsh-和-oh-my-zsh" class="headerlink" title="安装zsh 和 oh-my-zsh"></a>安装zsh 和 oh-my-zsh</h2><ol>
+<li>安装zsh<br><code>yum install zsh</code></li>
+<li>安装git<br><code>yum install git</code></li>
+<li>切换默认shell<br><code>chsh -s /bin/zsh</code></li>
+<li>clone from GitHub<br><code>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh</code></li>
+<li>复制默认.zshrc<br><code>cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</code></li>
+</ol>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h4 id="语法高亮插件"><a href="#语法高亮插件" class="headerlink" title="语法高亮插件"></a>语法高亮插件</h4><ol>
+<li>安装<br><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</code></li>
+<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-syntax-highlighting</code></li>
+</ol>
+<h4 id="自动补全插件"><a href="#自动补全插件" class="headerlink" title="自动补全插件"></a>自动补全插件</h4><ol>
+<li>安装<br><code>git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions</code></li>
+<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-autosuggestions</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="clac9vh0q000107n41aac0oj4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-CentOS-7-安装-JAVA环境（JDK-1-8）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" class="article-date">
@@ -111,7 +168,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="cl7u7nl5r0001ven4gowbgy3t" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="clac9vh0v000307n4d3hd2v3t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
@@ -173,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="cl7u7nl7d002yven4af1vcg2n" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="clac9vh2l003x07n4384g37dd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li></ul>
@@ -228,8 +285,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#x6f;&#x74;&#64;&#x6e;&#x6f;&#100;&#101;&#49;&#x30;&#56;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#105;&#x65;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#110;">&#x72;&#x6f;&#x6f;&#x74;&#64;&#x6e;&#x6f;&#100;&#101;&#49;&#x30;&#56;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#105;&#x65;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#110;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#46;&#121;&#105;&#x6e;&#122;&#104;&#101;&#x6e;&#x67;&#x6a;&#105;&#x65;&#46;&#x6f;&#x72;&#x67;&#46;&#99;&#110;">&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#46;&#121;&#105;&#x6e;&#122;&#104;&#101;&#x6e;&#x67;&#x6a;&#105;&#x65;&#46;&#x6f;&#x72;&#x67;&#46;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#x38;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#46;&#x6f;&#x72;&#103;&#46;&#x63;&#x6e;">&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#x38;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#46;&#x6f;&#x72;&#103;&#46;&#x63;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#116;&#64;&#110;&#111;&#100;&#x65;&#49;&#48;&#x38;&#46;&#121;&#x69;&#110;&#x7a;&#104;&#x65;&#110;&#x67;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#99;&#110;">&#114;&#x6f;&#111;&#116;&#64;&#110;&#111;&#100;&#x65;&#49;&#48;&#x38;&#46;&#121;&#x69;&#110;&#x7a;&#104;&#x65;&#110;&#x67;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -299,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="cl7u7nl6z001tven435ml3nnl" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="clac9vh2b002z07n47gg28i40" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
@@ -394,7 +451,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="cl7u7nl7k003oven40wfq50gz" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clac9vh2o004b07n4fu72560t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>
@@ -444,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="cl7u7nl6x001nven49qs08s3y" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="clac9vh26002g07n4a9bc2rs2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
@@ -546,7 +603,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="cl7u7nl7m003tven48jtg1lnq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="clac9vh2q004j07n46qgwcfbl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -639,7 +696,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="cl7u7nl69000bven44zau356b" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clac9vh17000b07n4146vdc7z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -706,7 +763,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="cl7u7nl7j003lven43wvvb3bt" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="clac9vh2p004g07n46ung19i2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
@@ -851,60 +908,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="cl7u7nl7o0040ven482k05atw" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E8%AE%A9%E4%BD%A0%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3Synchronized/" data-id="clac9vh2v005107n4d8hj26ls" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-使用性能分析工具定位Spring-Boot启动慢问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" class="article-date">
-  <time datetime="2021-04-02T11:03:53.000Z" itemprop="datePublished">2021-04-02</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/">使用性能分析工具定位Spring Boot启动慢问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>背景<br>项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。</p>
-<p>性能分析<br>VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）<br>《在windows上面启动》<a target="_blank" rel="noopener" href="https://software.intel.com/en-us/get-started-with-vtune-windows-os">https://software.intel.com/en-us/get-started-with-vtune-windows-os</a><br>《分析Java程序》<a target="_blank" rel="noopener" href="https://software.intel.com/zh-cn/vtune-help-java-code-analysis">https://software.intel.com/zh-cn/vtune-help-java-code-analysis</a><br>为了能够在VTune分析Java项目，首先创建一个启动脚本启动项目，然后在VTune创建一个性能分析项目开启性能监控。<br>start.bat脚本如下，很简单。</p>
-<p> java -jar myboot.jar<br>1</p>
-<p>项目启动后结束性能监控，VTune会自动分析监控结果，在Bottom-up Tab页可以看到哪些方法花费了大量CPU时间。<br>其中Spring的一个matches方法就占用了50秒。</p>
-<p>org.springframework.boot.bind.DefaultPropertyNamePatternsMatcher.matches<br>1</p>
-<p>性能瓶颈<br>查阅DefaultPropertyNamePatternsMatcher.matches源码及资料，matches的作用是根据我们在ConfigurationProperties中设置的prefix的值获取对应的匹配项。<br>由于分库分表后有多个主库与从库，Properties配置了大量不同的数据源。解析这些数据源配置耗费了大量时间，再加上解析后初始化数据源对象。</p>
-<p>spring.datasource.url=jdbc:mysql://127.0.0.1:3310/test<br>spring.datasource.username=root<br>spring.datasource.password=123456<br>1<br>2<br>3<br>    @Bean(name = “masterDataSource”)<br>    @ConfigurationProperties(prefix = “spring.datasource”)<br>    public DataSource masterDataSource() {<br>        return DataSourceBuilder.create().type(dataSourceType).build();<br>    }<br>1<br>2<br>3<br>4<br>5<br>根据Spring官方github，matches在匹配prefix值的过程中确实性能欠佳，尤其是prefix越短所花费的匹配时间越长。<br>详见：spring boot startup performance issue when large properties file</p>
-<p>改善<br>matches性能问题在Spring Boot 2中已经得到改善，但项目升Spring Boot 2遥遥无期。<br>既然瓶颈在过多的prefix，首先可以减少prefix配置但治标不治本。最终解决方法为本地调试绕过Spring matches方法，改用测试插件去初始化数据源，将项目启动时间从400秒压缩为100秒左右。<br>————————————————<br>版权声明：本文为CSDN博主「tom3mao」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/j16421881/article/details/105444700">https://blog.csdn.net/j16421881/article/details/105444700</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/02/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98/" data-id="cl7u7nl7j003jven44fq7bs2a" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li></ul>
 
     </footer>
   </div>
@@ -957,7 +964,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -968,6 +975,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">mac 软连接</a>
+          </li>
         
           <li>
             <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">javaList随机取值方法</a>
@@ -983,10 +994,6 @@
         
           <li>
             <a href="/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">使用java中的注解@see</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
           </li>
         
       </ul>

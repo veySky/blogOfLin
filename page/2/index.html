@@ -66,6 +66,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-spring-boot-2-0-disable-security" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/" class="article-date">
+  <time datetime="2021-12-09T01:28:58.000Z" itemprop="datePublished">2021-12-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/java/">java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/">spring boot 2.0 disable security</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-boot-Security-Disable-security"><a href="#Spring-boot-Security-Disable-security" class="headerlink" title="Spring boot Security Disable security"></a><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/23894010/spring-boot-security-disable-security">Spring boot Security Disable security</a></h1><p>In case you have spring-boot-actuator in your package, you should add the following</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableAutoConfiguration(exclude = &#123;</span></span><br><span class="line"><span class="meta">        org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,</span></span><br><span class="line"><span class="meta">        org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class&#125;)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p> spring boot 2.0 之前版本解决方法： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">security.basic.enabled=<span class="keyword">false</span></span><br><span class="line">management.security.enabled=<span class="keyword">false</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>For <strong>Spring Boot 2</strong> following properties are deprecated in <strong>application.yml</strong> configuration</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">security.basic.enabled: false</span><br><span class="line">management.security.enabled: false</span><br></pre></td></tr></table></figure>
+
+<p>To disable security for <strong>Sprint Boot 2 Basic + Actuator Security</strong> following properties can be used in <strong>application.yml</strong> file instead of annotation based exclusion <em>(@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class}))</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  autoconfigure:</span><br><span class="line">    exclude[0]: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration</span><br><span class="line">    exclude[1]: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration</span><br></pre></td></tr></table></figure>
+
+<p>For <strong>application.properties</strong> syntax would be like</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.autoconfigure.exclude[0]&#x3D;org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/12/09/spring-boot-2-0-disable-security/" data-id="clac9vh2i003k07n495h4c79z" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-关于rockteMq消息并发消费写db的小技巧" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" class="article-date">
@@ -129,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" data-id="cl7u7nl7i003gven4gnpv2fla" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" data-id="clac9vh2n004407n458k8ald5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li></ul>
@@ -188,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/" data-id="cl7u7nl7h003aven4gkcdfn2s" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/10/22/%E5%85%B3%E4%BA%8Eredis%E7%9A%84scan%E5%91%BD%E4%BB%A4%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/" data-id="clac9vh2o004807n4chd757s8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li></ul>
@@ -238,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" data-id="cl7u7nl6r001bven485hg3raw" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" data-id="clac9vh25002f07n46ijn3q60" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li></ul>
@@ -335,7 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/09/08/jrebel-license-server/" data-id="cl7u7nl6y001pven47g28b4yd" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/09/08/jrebel-license-server/" data-id="clac9vh29002o07n4aewk1s4p" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li></ul>
@@ -413,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" data-id="cl7u7nl71001zven484dkafdy" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" data-id="clac9vh2d003607n41qr43ids" class="article-share-link">Share</a>
       
       
     </footer>
@@ -576,7 +636,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="cl7u7nl6o0016ven4c63o1nrj" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/29/dnf/" data-id="clac9vh22002607n45d0081xt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -621,7 +681,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="cl7u7nl88007dven4ae0e8hap" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/" data-id="clac9vh2i003m07n4a8w3747n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li></ul>
@@ -720,7 +780,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="cl7u7nl7b002tven426tjc71x" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="clac9vh21002307n43owogk0m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>
@@ -773,67 +833,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="cl7u7nl7e0031ven4eiij2x3o" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="clac9vh1x001s07n40ng6hayw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-CentOS安装oh-my-zsh并配置语法高亮和命令自动补全" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" class="article-date">
-  <time datetime="2021-05-27T01:20:21.000Z" itemprop="datePublished">2021-05-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">CentOS安装oh-my-zsh并配置语法高亮和命令自动补全 </a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="安装zsh-和-oh-my-zsh"><a href="#安装zsh-和-oh-my-zsh" class="headerlink" title="安装zsh 和 oh-my-zsh"></a>安装zsh 和 oh-my-zsh</h2><ol>
-<li>安装zsh<br><code>yum install zsh</code></li>
-<li>安装git<br><code>yum install git</code></li>
-<li>切换默认shell<br><code>chsh -s /bin/zsh</code></li>
-<li>clone from GitHub<br><code>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh</code></li>
-<li>复制默认.zshrc<br><code>cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</code></li>
-</ol>
-<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h4 id="语法高亮插件"><a href="#语法高亮插件" class="headerlink" title="语法高亮插件"></a>语法高亮插件</h4><ol>
-<li>安装<br><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</code></li>
-<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-syntax-highlighting</code></li>
-</ol>
-<h4 id="自动补全插件"><a href="#自动补全插件" class="headerlink" title="自动补全插件"></a>自动补全插件</h4><ol>
-<li>安装<br><code>git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions</code></li>
-<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-autosuggestions</code></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="cl7u7nl5y0003ven42rkl6uqf" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
 
     </footer>
   </div>
@@ -886,7 +889,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -897,6 +900,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">mac 软连接</a>
+          </li>
         
           <li>
             <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">javaList随机取值方法</a>
@@ -912,10 +919,6 @@
         
           <li>
             <a href="/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">使用java中的注解@see</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
           </li>
         
       </ul>

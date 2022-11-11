@@ -66,6 +66,50 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-local-test-zookeeper" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2020/10/16/local-test-zookeeper/" class="article-date">
+  <time datetime="2020-10-16T13:52:55.000Z" itemprop="datePublished">2020-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2020/10/16/local-test-zookeeper/">local test zookeeper</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>$ pwd<br>/root/workspace/apache-zookeeper-3.6.2-bin/bin</p>
+<p>$ /bin/bash ./zkCli.sh -timeout 5000 -server  10.4.154.137:2181</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#docker 启动服务命令</span><br><span class="line">docker run -d -e TZ&#x3D;&quot;Asia&#x2F;Shanghai&quot; -p 8080:2181 -v $PWD&#x2F;data:&#x2F;data --name zookeeper --restart always zookeeper</span><br><span class="line">#docker client 启动 zookeeper 测试    </span><br><span class="line">docker run -it --rm --link zookeeper:zookeeper zookeeper zkCli.sh -server zookeeper</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/" data-id="clac9vh2b002v07n4h9s21c55" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ZooKeeper之zkCli-sh客户端命令使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -156,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="cl7u7nl6j000uven43rtvgn0a" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/ZooKeeper%E4%B9%8BzkCli-sh%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/" data-id="clac9vh1w001p07n4f7ei8ywd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li></ul>
@@ -399,7 +443,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="cl7u7nl7g0037ven4edm3cx42" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" data-id="clac9vh2j003q07n40ewqdgau" class="article-share-link">Share</a>
       
       
     </footer>
@@ -529,7 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="cl7u7nl6m0010ven4ggu226xl" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" data-id="clac9vh1z001w07n48hre6r8v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li></ul>
@@ -573,7 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="cl7u7nl6c000gven472s55zod" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" data-id="clac9vh38007k07n4d1g29vhn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +671,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="cl7u7nl7i003cven4htewgp0r" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" data-id="clac9vh2m004207n4gnhihb3m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +717,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="cl7u7nl6d000hven4e93faakx" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" data-id="clac9vh1o001g07n4fio7c4l8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li></ul>
@@ -739,7 +783,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="cl7u7nl6a000cven40zk720vy" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" data-id="clac9vh1s001h07n4hgx99y4y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -825,7 +869,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="cl7u7nl630006ven4git13iqz" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" data-id="clac9vh11000607n47oglajev" class="article-share-link">Share</a>
       
       
     </footer>
@@ -867,7 +911,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="cl7u7nl6n0013ven4gob14ue7" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" data-id="clac9vh20001z07n453tiepec" class="article-share-link">Share</a>
       
       
     </footer>
@@ -921,7 +965,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -932,6 +976,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">mac 软连接</a>
+          </li>
         
           <li>
             <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">javaList随机取值方法</a>
@@ -947,10 +995,6 @@
         
           <li>
             <a href="/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">使用java中的注解@see</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/05/28/java8%E8%8E%B7%E5%8F%96list%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%9F%90%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%9C%80%E5%A4%A7%E5%80%BC%E7%9A%84%E5%AF%B9%E8%B1%A1/">java8获取list对象中某个字段最大值的对象</a>
           </li>
         
       </ul>
