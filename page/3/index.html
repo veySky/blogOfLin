@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="personal blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lin&#39;s blog home">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/page/3/index.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="personal blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-centos安装python3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" class="article-date">
+  <time datetime="2021-07-08T12:57:33.000Z" itemprop="datePublished">2021-07-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/">centos安装python3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>CentOS是经常使用的Linux系统之一，特别是作为服务器使用，其只自带了Python2，但是现在使用更广泛的是Python3，因此需要自行安装，同时为了更方便地安装第三方库，还需要安装pip3。</p>
+<h2 id="一、安装相关依赖"><a href="#一、安装相关依赖" class="headerlink" title="一、安装相关依赖"></a>一、安装相关依赖</h2><p>1.安装环境依赖：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel</span><br></pre></td></tr></table></figure>
+
+<p>2.安装gcc编译器（有可能已经安装）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、安装Python3"><a href="#二、安装Python3" class="headerlink" title="二、安装Python3"></a>二、安装Python3</h2><p>以Python3.7为例讲解。</p>
+<p>1.下载Python安装包</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz</span></span><br></pre></td></tr></table></figure>
+
+<p>因为下载很慢，所以可以在本地通过更快的方式下载后再上传到服务器。</p>
+<p>2.将安装包移动到<code>/usr/local</code>文件夹下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv Python<span class="number">-3.7</span><span class="number">.4</span>.tgz /usr/local/</span><br></pre></td></tr></table></figure>
+
+<p>3.在local目录下创建Python3目录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/python3</span><br></pre></td></tr></table></figure>
+
+<p>4.进入的Python安装包压缩包所在的目录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br></pre></td></tr></table></figure>
+
+<p>5.解压安装包</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf Python<span class="number">-3.7</span><span class="number">.4</span>.tgz</span><br></pre></td></tr></table></figure>
+
+<p>6.进入解压后的目录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/Python<span class="number">-3.7</span><span class="number">.4</span>/</span><br></pre></td></tr></table></figure>
+
+<p>7.配置安装目录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=<span class="regexp">/usr/</span>local/python3</span><br></pre></td></tr></table></figure>
+
+<p>8.编译源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>9.执行源码安装</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>这一步可能会出现报错<code>ModuleNotFoundError: No module named &#39;_ctypes&#39;</code>，这是因为缺少依赖包<code>libffi-devel</code>，解决方法可参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/CUFEECR/article/details/103093951%E3%80%82">https://blog.csdn.net/CUFEECR/article/details/103093951。</a></p>
+<p>10.创建软连接</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/python3/bin/python3  /usr/bin/python3</span><br></pre></td></tr></table></figure>
+
+<p>11.测试 输入<code>python3</code>打印：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Python <span class="number">3.7</span><span class="number">.4</span> (<span class="keyword">default</span>, Sep  <span class="number">6</span> <span class="number">2020</span>, <span class="number">09</span>:<span class="number">22</span>:<span class="number">23</span>) </span><br><span class="line">[GCC <span class="number">4.8</span><span class="number">.5</span> <span class="number">20150623</span> (Red Hat <span class="number">4.8</span><span class="number">.5</span><span class="number">-39</span>)] on linux</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
+
+<p>即说明Python安装成功。</p>
+<h2 id="二、安装pip3"><a href="#二、安装pip3" class="headerlink" title="二、安装pip3"></a>二、安装pip3</h2><p>1.安装依赖（非必要）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install openssl-devel -y </span><br><span class="line">sudo yum install zlib-devel -y</span><br></pre></td></tr></table></figure>
+
+<p>2.安装setuptools</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz#md5=c607dd118eae682c44ed146367a17e26</span></span><br><span class="line"></span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf setuptools<span class="number">-19.6</span>.tar.gz </span><br><span class="line">cd setuptools<span class="number">-19.6</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">sudo python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+
+<p>3.安装pip3</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/p/pip/pip-20.2.2.tar.gz#md5=3a73c4188f8dbad6a1e6f6d44d117eeb</span></span><br><span class="line"> </span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf pip<span class="number">-20.2</span><span class="number">.2</span>.tar.gz </span><br><span class="line">cd pip<span class="number">-20.2</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+
+<p>4.测试 安装完成后，输入<code>pip3 -V</code>，打印：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="number">20.2</span><span class="number">.2</span> <span class="keyword">from</span> /usr/local/python3/lib/python3<span class="number">.7</span>/site-packages/pip (python <span class="number">3.7</span>)</span><br></pre></td></tr></table></figure>
+
+<p>则说明安装成功，可以正常安装需要的第三方库了，需要注意： 在使用时应该是<code>pip3 xxx</code>，而不是<code>pip xxx</code>，使之与Python2相区别。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="clfmk7jkl001rjun4ayml8no7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-centos7-安装-mysql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" class="article-date">
+  <time datetime="2021-06-04T02:09:00.000Z" itemprop="datePublished">2021-06-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/">centos7 安装 mysql</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.huaweicloud.com/articles/articles-A-1.html">精选文章</a> CentOS7 安装Nginx+MySQL</p>
+<h1 id="CentOS7-安装-MySQL"><a href="#CentOS7-安装-MySQL" class="headerlink" title="CentOS7 安装 MySQL"></a>CentOS7 安装 MySQL</h1><p><strong>安装MySql</strong></p>
+<p>CentOS7的yum源中默认好像是没有mysql的。为了解决这个问题，我们要先下载mysql的repo源。</p>
+<p>\1. 下载mysql的repo源</p>
+<p>$ wget <a target="_blank" rel="noopener" href="http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm">http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm</a></p>
+<p>\2. 安装mysql-community-release-el7-5.noarch.rpm包</p>
+<p>$ sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm</p>
+<p>安装这个包后，会获得两个mysql的yum repo源：/etc/yum.repos.d/mysql-community.repo，/etc/yum.repos.d/mysql-community-source.repo。</p>
+<p>\3. 安装mysql</p>
+<p>$ sudo yum install mysql-server</p>
+<p>转载于:<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tchroot/p/6551523.html">https://www.cnblogs.com/tchroot/p/6551523.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="clfmk7jkk001njun4aovbadwf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-CentOS安装oh-my-zsh并配置语法高亮和命令自动补全" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" class="article-date">
+  <time datetime="2021-05-27T01:20:21.000Z" itemprop="datePublished">2021-05-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">CentOS安装oh-my-zsh并配置语法高亮和命令自动补全 </a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="安装zsh-和-oh-my-zsh"><a href="#安装zsh-和-oh-my-zsh" class="headerlink" title="安装zsh 和 oh-my-zsh"></a>安装zsh 和 oh-my-zsh</h2><ol>
+<li>安装zsh<br><code>yum install zsh</code></li>
+<li>安装git<br><code>yum install git</code></li>
+<li>切换默认shell<br><code>chsh -s /bin/zsh</code></li>
+<li>clone from GitHub<br><code>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh</code></li>
+<li>复制默认.zshrc<br><code>cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</code></li>
+</ol>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h4 id="语法高亮插件"><a href="#语法高亮插件" class="headerlink" title="语法高亮插件"></a>语法高亮插件</h4><ol>
+<li>安装<br><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</code></li>
+<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-syntax-highlighting</code></li>
+</ol>
+<h4 id="自动补全插件"><a href="#自动补全插件" class="headerlink" title="自动补全插件"></a>自动补全插件</h4><ol>
+<li>安装<br><code>git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions</code></li>
+<li>配置<br>在~/.zshrc的plugins中加入<code>zsh-autosuggestions</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="clfmk7jjq0007jun4hl0l36s3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-CentOS-7-安装-JAVA环境（JDK-1-8）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" class="article-date">
+  <time datetime="2021-05-26T01:24:35.000Z" itemprop="datePublished">2021-05-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/">CentOS 7 安装 JAVA环境（JDK 1.8）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>文章目录</p>
+<p>1.打开url选择jdk1.8下载<br>2.下载（友情提示：如果下载链接失效，那就自己换一个，或者下载到本地在上传到安装目录解压）<br>3.安装<br>4.设置环境变量</p>
+<p>1.打开url选择jdk1.8下载</p>
+<p>官网地址</p>
+<p>2.下载（友情提示：如果下载链接失效，那就自己换一个，或者下载到本地在上传到安装目录解压）</p>
+<p>wget <a target="_blank" rel="noopener" href="https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz?AuthParam=1595227231_c973dac5c59012a4184f32776ff66778">https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz?AuthParam=1595227231_c973dac5c59012a4184f32776ff66778</a></p>
+<p>3.安装</p>
+<p>创建安装目录<br>mkdir /usr/local/java/</p>
+<p>解压至安装目录<br>tar -zxvf jdk-8u251-linux-x64.tar.gz -C /usr/local/java/</p>
+<p>4.设置环境变量</p>
+<p>打开文件<br>vim /etc/profile</p>
+<p>在末尾添加（按i编辑）<br>export JAVA_HOME=/usr/local/java/jdk1.8.0_251<br>export JRE_HOME=${JAVA_HOME}/jre<br>export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib<br>export PATH=${JAVA_HOME}/bin:$PATH</p>
+<p>使环境变量生效<br>source /etc/profile</p>
+<p>添加软链接<br>ln -s /usr/local/java/jdk1.8.0_251/bin/java /usr/bin/java</p>
+<p> 检查<br>java -version</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="clfmk7jjg0001jun4flur624k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用docker-compose部署kafka服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" class="article-date">
+  <time datetime="2021-04-27T06:51:20.000Z" itemprop="datePublished">2021-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Kafka/">Kafka</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/">使用docker-compose部署kafka服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">1.安装：</span><br><span class="line"># 1. 安装docker-compose，需要预先安装好Docker</span><br><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.27.4&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line"># 增加可执行权限</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line"># 2. 创建相关文件夹</span><br><span class="line">mkdir -p &#x2F;opt&#x2F;zookeeper &amp;&amp; mkdir -p &#x2F;opt&#x2F;kafka</span><br><span class="line"># 3. 准备配置文件</span><br><span class="line">echo &#39;</span><br><span class="line">version: &#39;3.7&#39;</span><br><span class="line">services:</span><br><span class="line">  zookeeper:</span><br><span class="line">    image: wurstmeister&#x2F;zookeeper</span><br><span class="line">    volumes:</span><br><span class="line">       - &#x2F;opt&#x2F;zookeeper&#x2F;data:&#x2F;data</span><br><span class="line">    container_name: zookeeper</span><br><span class="line">    mem_limit: 1024M</span><br><span class="line">    environment:</span><br><span class="line">      ZOOKEEPER_CLIENT_PORT: 2181</span><br><span class="line">      ZOOKEEPER_TICK_TIME: 2000</span><br><span class="line">    ports:</span><br><span class="line">      - 2181:2181</span><br><span class="line">    restart: always</span><br><span class="line">  kafka_node1:</span><br><span class="line">    image: wurstmeister&#x2F;kafka</span><br><span class="line">    container_name: kafka_node1</span><br><span class="line">    mem_limit: 1024M</span><br><span class="line">    depends_on:</span><br><span class="line">      - zookeeper</span><br><span class="line">    ports: </span><br><span class="line">      - 9092:9092</span><br><span class="line">    volumes:</span><br><span class="line">      - &#x2F;opt&#x2F;kafka&#x2F;data:&#x2F;kafka</span><br><span class="line">    environment:</span><br><span class="line">      KAFKA_CREATE_TOPICS: &quot;test&quot;</span><br><span class="line">      KAFKA_BROKER_NO: 0</span><br><span class="line">      KAFKA_LISTENERS: PLAINTEXT:&#x2F;&#x2F;kafka_node1:9092</span><br><span class="line">      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT:&#x2F;&#x2F;$&#123;kafka_service_public_ip&#125;:$&#123;kafka_service_public_port&#125;</span><br><span class="line">      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT</span><br><span class="line">      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181</span><br><span class="line">      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1</span><br><span class="line">      KAFKA_HEAP_OPTS: &quot;-Xmx512M -Xms16M&quot;</span><br><span class="line">    restart: always</span><br><span class="line">  kafka_manager: </span><br><span class="line">    image: hlebalbau&#x2F;kafka-manager:stable</span><br><span class="line">    ports:</span><br><span class="line">      - 9000:9000</span><br><span class="line">    environment:</span><br><span class="line">      ZK_HOSTS: &quot;zookeeper:2181&quot;  </span><br><span class="line">    depends_on:</span><br><span class="line">      - zookeeper</span><br><span class="line">      - kafka_node1</span><br><span class="line">    restart: always&#39; &gt; &#x2F;etc&#x2F;kafka&#x2F;kafka.yml</span><br><span class="line"># 3. 启动容器服务</span><br><span class="line">docker-compose -f &#x2F;etc&#x2F;kafka&#x2F;kafka.yml up -d</span><br></pre></td></tr></table></figure>
+
+<p>PS需要注意env配置信息</p>
+<p>docker-compose的配置文件中变量配置方法</p>
+<p><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/environment-variables/">https://docs.docker.com/compose/environment-variables/</a></p>
+<p>需要在配置文件所在目录创建 .env文件，</p>
+<p>文件中添加变量既可。 </p>
+<h1 id="2-使用Kafka-Mgr管理集群"><a href="#2-使用Kafka-Mgr管理集群" class="headerlink" title="2 使用Kafka-Mgr管理集群"></a>2 使用Kafka-Mgr管理集群</h1><p>访问服务所在主机的<code>9000</code>端口，按如下图所示创建集群：</p>
+<p>​    <img src="https://segmentfault.com/img/remote/1460000039264676" alt="img"></p>
+<ul>
+<li><p>若出现 Yikes! KeeperErrorCode = Unimplemented for /kafka-manager/mutex Try again. 错误，参考此<a target="_blank" rel="noopener" href="https://github.com/yahoo/CMAK/issues/731#issuecomment-643880544">issue</a>解决，具体步骤如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># docker exec -it zookeeper bash</span><br><span class="line">root@98747a9eac65:&#x2F;zookeeper-3.4.14# .&#x2F;bin&#x2F;zkCli.sh</span><br><span class="line">[zk: localhost:2181(CONNECTED) 2] ls &#x2F;kafka-manager</span><br><span class="line">[configs, deleteClusters, clusters]</span><br><span class="line">[zk: localhost:2181(CONNECTED) 3] create &#x2F;kafka-manager&#x2F;mutex &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex</span><br><span class="line">[zk: localhost:2181(CONNECTED) 5] create &#x2F;kafka-manager&#x2F;mutex&#x2F;locks &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex&#x2F;locks</span><br><span class="line">[zk: localhost:2181(CONNECTED) 6] create &#x2F;kafka-manager&#x2F;mutex&#x2F;leases &quot;&quot;</span><br><span class="line">Created &#x2F;kafka-manager&#x2F;mutex&#x2F;leases</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>参考文档：</p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0110/documentation.html#brokerconfigs">https://kafka.apache.org/0110/documentation.html#brokerconfigs</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wurstmeister/kafka-docker/issues/233">https://github.com/wurstmeister/kafka-docker/issues/233</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="clfmk7jlb004jjun43vlr40f1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-kafka集群监控之kafka-manager部署-ProdServerStart" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" class="article-date">
+  <time datetime="2021-04-27T06:47:17.000Z" itemprop="datePublished">2021-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Kafka/">Kafka</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/">kafka集群监控之kafka-manager部署(ProdServerStart)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>一.\</strong>kafka manager简介****</p>
+<p><strong>1&gt;.什么是Kafka Manager</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">KafkaManager是一个用于管理Kafka的web工具，由yahoo开发并开源。</span><br><span class="line"></span><br><span class="line">雅虎官网GitHub项目：https:&#x2F;&#x2F;github.com&#x2F;yahoo&#x2F;kafka-manager。需要安装jdk1.8版本。</span><br><span class="line"></span><br><span class="line">我们可以参考官方的文档进行编译和简单配置即可使用。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184455823-506984235.png" alt="img"></p>
+<p><strong>2&gt;.kafka manager支持功能</strong></p>
+<p>![复制代码](<a target="_blank" rel="noopener" href="https://common.cnblogs.com/images/copycode.gif">https://common.cnblogs.com/images/copycode.gif</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">　　其提供了如下管理和监控能力：</span><br><span class="line">　　　　管理多集群</span><br><span class="line">　　　　查看集群状态（topics,consumers,offsets,brokers等）</span><br><span class="line">　　　　执行倾向副本选举</span><br><span class="line">　　　　生成分区重分布计划（自动和手动）</span><br><span class="line">　　　　执行分区重分布</span><br><span class="line">　　　　多topic批量生成分区重分布计划，执行分区重分布</span><br><span class="line">　　　　使用指定参数创建topic</span><br><span class="line">　　　　删除topic（需要集群参数开启）</span><br><span class="line">　　　　现有topic增加分区</span><br><span class="line">　　　　通过JMX获取broker层面和topic层面指标</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184636385-1156560940.png" alt="img"></p>
+<p><strong>二.部署kafka manager</strong></p>
+<p><strong>1&gt;.**</strong>下载kafka-manager**</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+<p><strong>2&gt;.解压kafka-manager</strong></p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#110;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;">&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#110;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#x6f;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#114;&#103;&#46;&#99;&#110;">&#114;&#x6f;&#x6f;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#114;&#103;&#46;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>4&gt;.修改kafka的配置文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep kafka-manager.zkhosts &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">kafka-manager.zkhosts&#x3D;&quot;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01&quot;</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep port &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf  | head -1</span><br><span class="line">http.port&#x3D;8888</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>5&gt;.每个kafka broker都需要开启JMX（想要看到kafka集群的读取河写入速度就必须开启JMX,），需要编辑kafka启动脚本</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node106.yinzhengjie.org.cn ~]# vi &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node107.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     1.3MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp &#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh node108.yinzhengjie.org.cn:&#x2F;home&#x2F;softwares&#x2F;kafka_2.11-0.10.2.1&#x2F;bin&#x2F;kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     2.0MB&#x2F;s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>6&gt;.启动kafka-manager（kafka和zookeeper也需要启动起来哟~尤其是zookeeper必须是得运行的）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# nohup &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;bin&#x2F;kafka-manager -java-home &#x2F;home&#x2F;softwares&#x2F;jdk1.8.0_201 -Dconfig.file&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;conf&#x2F;application.conf &gt;&gt; &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log 2&gt;&amp;1 &amp;</span><br><span class="line">[1] 3753</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# jps</span><br><span class="line">3826 Jps</span><br><span class="line">3753 ProdServerStart</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br><span class="line"></span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# tail -100f &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;kafka_manager.log</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.library.path&#x3D;&#x2F;usr&#x2F;java&#x2F;packages&#x2F;lib&#x2F;amd64:&#x2F;usr&#x2F;lib64:&#x2F;lib64:&#x2F;lib:&#x2F;usr&#x2F;lib</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.io.tmpdir&#x3D;&#x2F;tmp</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.compiler&#x3D;&lt;NA&gt;</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.name&#x3D;Linux</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.arch&#x3D;amd64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.version&#x3D;3.10.0-957.el7.x86_64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.name&#x3D;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.home&#x3D;&#x2F;root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.dir&#x3D;&#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[info] o.a.z.ZooKeeper - Initiating client connection, connectString&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01 sessionTimeout&#x3D;60000 watcher&#x3D;org.apache.curator.ConnectionState@65e0186a</span><br><span class="line">[info] o.a.z.ClientCnxn - Opening socket connection to server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">[info] o.a.z.ClientCnxn - Socket connection established to node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, initiating session</span><br><span class="line">[info] o.a.z.ClientCnxn - Session establishment complete on server node106.yinzhengjie.org.cn&#x2F;172.30.1.106:2181, sessionid &#x3D; 0x6a00001622cf0000, negotiated timeout &#x3D; 40000</span><br><span class="line">[info] k.m.a.KafkaManagerActor - zk&#x3D;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181&#x2F;kafka01</span><br><span class="line">[info] k.m.a.KafkaManagerActor - baseZkPath&#x3D;&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Started actor akka:&#x2F;&#x2F;kafka-manager-system&#x2F;user&#x2F;kafka-manager&#x2F;delete-cluster</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting kafka manager path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Scheduling updater for 10 seconds</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] play.api.Play - Application started (Prod)</span><br><span class="line">[info] p.c.s.NettyServer - Listening for HTTP on &#x2F;0.0.0.0:8888　　　　　　#说明我们的kafka_manager服务端口已经监听啦，我们可以直接去访问啦</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">^C</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7&gt;.登陆webUI查看相应的信息，如果出现以下界面说明你部署成功啦！</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222634167-980310777.png" alt="img"></p>
+<p><strong>三.**</strong>WEB端配置kafka-manager**</p>
+<p><strong>1&gt;.点击添加集群</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222751230-306893281.png" alt="img"></p>
+<p><strong>2&gt;.配置集群（集群名称不支持中文，只支持ASSCI编码）</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223615520-1365827720.png" alt="img"></p>
+<p> <strong>3&gt;.其他参数保持默认，点击保存即可</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223813438-381974165.png" alt="img"></p>
+<p> <strong>4&gt;.配置成功</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224012573-8104355.png" alt="img"></p>
+<p><strong>5&gt;.点击”yinzhengjie-kafka”</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224155959-1238933143.png" alt="img"></strong></p>
+<p><strong>6&gt;.查看自定义的集群信息</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224454334-2089082832.png" alt="img"></strong></p>
+<p><strong>7&gt;.\</strong>查看broker信息****</p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225800565-1207963224.png" alt="img"></strong></p>
+<p><strong>8&gt;.\</strong>查看topic信息****</p>
+<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225909158-1472664287.png" alt="img">**</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">以上输出信息关键参数说如下：</span><br><span class="line">Operations列表参数说明：</span><br><span class="line">Generate Partition Assignments:</span><br><span class="line">　　对多个topic来进行分区重分布计划的生成，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Run Partition Assignments:</span><br><span class="line">　　对多个topic分区执行重分布计划，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Add Partitions：</span><br><span class="line">　　对多个topic来进行添加分区操作，生成环境并不建议大家这样搞，避免误操作。</span><br><span class="line"></span><br><span class="line">Topics列表参数说明：</span><br><span class="line">Topic:</span><br><span class="line">    表示topic名称。</span><br><span class="line">    __consumer_offsets是kafka内置保存consumer offset的topic.</span><br><span class="line"></span><br><span class="line">Partitions:</span><br><span class="line">    topic对应的分区数</span><br><span class="line"></span><br><span class="line">Brokers:</span><br><span class="line">    topic对应的broker数</span><br><span class="line"></span><br><span class="line">Brokers Spread%:</span><br><span class="line">    指broker的分布比例，计算公式:用topic的分区分布的broker数&#x2F;总的broker数量。</span><br><span class="line"></span><br><span class="line">Brokers Skew %:</span><br><span class="line">    Brokers的偏斜比例，计算公式:(Broker最多的分区数&#x2F;Brokers最少的分区数) -1</span><br><span class="line">    </span><br><span class="line">Brokers Leader Skew%:</span><br><span class="line">    Brokers的leader偏斜比例，计算公式:(Broker最多的leader分区数&#x2F;Brokers最少leader的分区数) -1</span><br><span class="line">    </span><br><span class="line">Replicas:</span><br><span class="line">    副本因子，即副本数。</span><br><span class="line"></span><br><span class="line">Under Replicated %:</span><br><span class="line">    副本不足的比例，计算公式:副本不足的分区数&#x2F;总分区数</span><br><span class="line"></span><br><span class="line">Producer Message&#x2F;Sec:</span><br><span class="line">    每秒产生的消息数量。</span><br><span class="line"></span><br><span class="line">Summed Recent Offsets:</span><br><span class="line">    当前总计的消费偏移量。</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>\</em>9&gt;.创建topic**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230336053-574631330.png" alt="img"></p>
+<p><strong><em>\</em>10&gt;.topic创建完成**</strong></p>
+<p><strong><em>\</em><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230422197-928459022.png" alt="img">**</strong></p>
+<p><strong><em>\</em>11&gt;.topic操作**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713233502120-1813806895.png" alt="img"></p>
+<p><strong><em>\</em>12&gt;.点击”Reassign Partitions”,查看分区重分布的进度**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234331026-440696449.png" alt="img"></p>
+<p><strong><em>\</em>13&gt;.点击”Preferred Replica Election”可以执行倾向副本选举，一般我们在配置文件配置好了就不需要在这里手动触发啦！**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234528486-1009939226.png" alt="img"></p>
+<p><strong><em>\</em>14&gt;.查看消费者组信息**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235320245-629365248.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Consumer:</span><br><span class="line">    表示的是消费者组。</span><br><span class="line"></span><br><span class="line">Type:</span><br><span class="line">    ZK表示offset信息保存在zookeeper中。</span><br><span class="line">    KF表示offset信息保存在kafka中。</span><br><span class="line"></span><br><span class="line">Topic it consumes from:</span><br><span class="line">    已经消费的分区的coverage:</span><br><span class="line">        消费的覆盖率。</span><br><span class="line">    已经消费的lag:</span><br><span class="line">        消费的延迟大小。有可能会看到负值，</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>\</em>15&gt;.查看已经消费者的详细信息**</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235429468-198969850.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Partition    </span><br><span class="line">    分区编号。</span><br><span class="line">    </span><br><span class="line">LogSize    </span><br><span class="line">    分区大小</span><br><span class="line">    </span><br><span class="line">Consumer Offset    </span><br><span class="line">    消费的偏移量。</span><br><span class="line">    </span><br><span class="line">Lag    </span><br><span class="line">    延迟大小，改值可能是负数。</span><br><span class="line"></span><br><span class="line">Consumer Instance Owner</span><br><span class="line">    消费者实例拥有者。</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="clfmk7jkx002zjun4aadhcj3r" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-开发中常见的redis异常总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2021-04-27T01:52:38.000Z" itemprop="datePublished">2021-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/">开发中常见的redis异常总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用redis也有端时间了，现在讲开发中遇到的几个常见异常总结如下：</p>
+<h2 id="一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。"><a href="#一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。" class="headerlink" title="一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。"></a>一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool</p>
+<p>at redis.clients.util.Pool.getResource(Pool.java:22)</p>
+<p>分析：</p>
+<p>redis.clients.util.Pool.getResource会从JedisPool实例池中返回一个可用的redis连接。分析源码可知JedisPool extends redis.clients.util.Pool .而Pool是通过</p>
+<p>commons-pool开源工具包中的org.apache.commons.pool2.impl.GenericObjectPool来实现对Jedis实例的管理的。所以我们分析一下GenericObjectPool或许能找到答案。</p>
+<p>其中三个重要个几个属性是：</p>
+<p><strong>MaxActive</strong>: 最大连接数。</p>
+<p><strong>MaxIdle</strong>: 最大空闲数。</p>
+<p><strong>MaxWait</strong>: 最大等待时间，单位毫秒（million seconds）。</p>
+<p>当连接池中无可用连接时会会进行等待maxWait时间，若超出泽抛Could not get a resource from the pool异常。</p>
+<p>所以应根据程序实际情况合理设置这三个参数的值，尽量避免这个异常。</p>
+<h2 id="二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。"><a href="#二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。" class="headerlink" title="二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。"></a>二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out</p>
+<p>at redis.clients.jedis.Protocol.process(Protocol.java:79)</p>
+<p>at redis.clients.jedis.Protocol.read(Protocol.java:131)</p>
+<p>at redis.clients.jedis.Connection.getIntegerReply(Connection.java:188)</p>
+<p>at redis.clients.jedis.Jedis.sismember(Jedis.java:1266)</p>
+<p>分析：</p>
+<p>Redis是对内存进行操作，速度应该都在毫秒级，这是我们通常的认识，</p>
+<p>那么Redis操作怎么会出现几秒的超时时间？</p>
+<p>我们还是先分析一下Jedis的源代码吧，以sadd操作为例：</p>
+<p><em>public Long sadd(final String key, final String… members) {</em></p>
+<p><em>checkIsInMulti();</em></p>
+<p><em>client.sadd(key, members);</em></p>
+<p><em>return client.getIntegerReply();</em></p>
+<p><em>}</em></p>
+<p>client是redis.clients.jedis.Client.java的实例，继承关系如下：</p>
+<p>public class Client extends BinaryClient implements Commands；</p>
+<p>public class BinaryClient extends Connection；</p>
+<p>Connection包装了对Redis server的socket操作，命令写操作通过socket.getOutputStream()输出流将命令信息发送到redis server，当写完命令后要通过socket.getInputStream()的到的输入流将</p>
+<p>命令执行结果返回，这中间必然会有一个命令执行到结果返回的延时时间，这就是一个Jedis调用redis命令操作所用的时间。</p>
+<p>需要说明的是，Redis server是单线程执行所有连接发送过来的命令的，也就是说不管并发中有多少个client在发送命令，redis-server端是单线程处理的，并按照默认的FIFO方式处理请求，</p>
+<p>这个可在redis.conf配置文件中配置。关于redis server的详细运行机制参见：<a target="_blank" rel="noopener" href="http://redis.io/documentation">http://redis.io/documentation</a></p>
+<p>所以client.sadd(key, members);调用完后只是将命令信息发送到了redis server端，具体有没有执行要看redis server的负载情况。然后，通过client.getIntegerReply();等待（time out)返回结果。</p>
+<p>Connection初始化socket时有多种选择，其中设置socket time out 的方法如下：</p>
+<p>public void rollbackTimeout() {</p>
+<p>​      try {</p>
+<p>​       socket.setSoTimeout(timeout);</p>
+<p>​       socket.setKeepAlive(false);</p>
+<p>​      } catch (SocketException ex) {</p>
+<p>​       throw new JedisException(ex);</p>
+<p>​      }</p>
+<p>​    }</p>
+<p>由redis.clients.jedis.Protocol.DEFAULT_TIMEOUT = 2000 我们知道默认的超时时间是2秒，这个时间相对于redis操作内存毫秒级的速度来说已经很长，那我们为什么还会遇到</p>
+<p>ava.net.SocketTimeoutException: Read timed out异常呢？redis操作内存虽然平均毫秒级的，但当数据量很大时未必都如此快速。在我的开发过程中就遇到过一个集合到了</p>
+<p>千万级数据量，一次操作超时时间在秒级是很正常的，而且机器性能很好的情况下已经如此。</p>
+<p>所以在初始化JedisPool时应该根据实际</p>
+<p>情况通过redis.clients.jedis.JedisPoolConfig合理设置连接池参数，通过edisPool构造方法，合理设置socket读取输入InputStream的超时时间。</p>
+<p>pool = new JedisPool(config, host, port, 100000);</p>
+<p>注意第四个参数time out，设置成我们能容忍的超时时间，单位是毫秒。</p>
+<p>设置第四个参数后，问题基本解决。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clfmk7jlg0057jun4cdv58t37" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-idea多Module出现依赖循环问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2021-04-25T12:02:40.000Z" itemprop="datePublished">2021-04-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">idea多Module出现依赖循环问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>idea循环依赖aAnnotation processing is not supported for module cycles. </p>
+<ol>
+<li>错误现象<br>Error:java: Annotation processing is not supported for module cycles. Please ensure that all modules from cycle [book-rpc,book-api] are excluded from annotation processing  </li>
+</ol>
+<p>通过Analyze-&gt;Analyze Module Dependencies…发现是循环依赖。  </p>
+<p> 2.解决办法<br>先是找到这个依赖，删掉相关的（右击第一个module选中open module setting–&gt;Dependencies） </p>
+<p>然后在book-api中的pom.xml找到第二个这个依赖，删掉，重新import Changes need to be imported </p>
+<p>如果仅仅删除module中的Dependencies中的相关依赖，有可能没有解决根本性的问题，所以要看一下pom.xml中是否已经存在了相关依赖</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="clfmk7jkt002jjun4446s1bti" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-理解-Kafka-消费者属性的-enable-auto-commit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" class="article-date">
+  <time datetime="2021-04-21T09:01:34.000Z" itemprop="datePublished">2021-04-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/">理解 Kafka 消费者属性的 enable.auto.commit</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理解一下Kafka的读的自动提交功能。</p>
+<p>找到了一篇专门介绍这个功能的文章，选择主要的内容进行一下翻译和做笔记。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property"><a href="#Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property" class="headerlink" title="Understanding the ‘enable.auto.commit’ Kafka Consumer property"></a>Understanding the ‘enable.auto.commit’ Kafka Consumer property</h2><p><img src="https://img-blog.csdnimg.cn/20190731195532220.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<blockquote>
+<p>Kafka Consumers read messages from a Kafka topic, its not a hard concept to get your head around. But behind the scenes there’s a lot more going on than meets the eye.</p>
+<p>Say we’re consuming messages from a Topic and our Consumer crashes. Once we realise that the world isn’t ending, we recover from the crash and we start consuming again. We start receiving messages exactly where we left off from, its kinda neat.</p>
+<p>假设我们正在从一个 Topic 中消费消息，这个时候我们的这个消费者（客户端）宕机了。我们意识到这不是世界的末日，我们可以从宕机中恢复，重新开始消费。我们可以从我们上一次离开的地方重新接收消息，这非常灵巧。</p>
+<p>There’s two reasons as to why this happens. One is something referred to as the “Offset” and the other is a couple of default Consumer values.</p>
+<p>发生这样的事情是因为两个原因。一个是一个叫 “Offset” 的东西，另外一个是一些 Consumer 的默认的值。</p>
+<p>So whats an Offset?</p>
+<p>The Offset is a piece of metadata, an integer value that continually increases for each message that is received in a partition. Each message will have a unique Offset value in a partition.</p>
+<p>Offset 是一块元数据，一个整数，会针对每一个 partition 上接收到的消息而持续增长。每一个消息在一个 partition 上将会有唯一的一个Offset。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190731200310945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>I use Keys in some of my projects, some of them I don’t ;)</p>
+<p>So as you can see here, each message has a unique Offset, and that Offset represents the position of that message in that particular partition.</p>
+</blockquote>
+<p>上面介绍了一下Kafka的offset是什么，offset是记录每条消息在partition里面的位置的。</p>
+<blockquote>
+<p>When a Consumer reads the messages from the Partition it lets Kafka know the Offset of the last consumed message. This Offset is stored in a Topic named <strong>_consumer_offsets</strong>, in doing this a consumer can stop and restart without forgetting which messages it has consumed.</p>
+</blockquote>
+<p>这里讲，offset会被存在一个叫做<strong>_consumer_offsets</strong>的主题中，这样来帮助消费者记录处理到哪里了。</p>
+<blockquote>
+<p>When we create our Consumers, they have a set of default properties which we can override or we can just leave the default values in effect.</p>
+<p>There are two properties that are driving this behaviour.</p>
+<p>有两个属性需要关注。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">auto.commit.interval.ms</span><br></pre></td></tr></table></figure>
+
+<p>The first property <strong>enable.auto.commit</strong> has a default value of <strong>true</strong> and the second property <strong>auto.commit.interval.ms</strong> has a default value of <strong>5000</strong>. These values are correct for Blizzards node-rdkafka client and the Java KafkaConsumer client but other libraries may differ.</p>
+</blockquote>
+<p><strong>enable.auto.commit</strong> 的默认值是 true；就是默认采用自动提交的机制。</p>
+<p><strong>auto.commit.interval.ms</strong> 的默认值是 5000，单位是毫秒。</p>
+<blockquote>
+<p>So by default every 5 seconds a Consumer is going to commit its Offset to Kafka or every time data is fetched from the specified Topic it will commit the latest Offset.</p>
+<p>这样，默认5秒钟，一个 Consumer 将会提交它的 Offset 给 Kafka，或者每一次数据从指定的 Topic 取回时，将会提交最后一次的 Offset。</p>
+<p>Now in some scenarios this is the ideal behaviour but on other scenarios its not.</p>
+<p>这样，在某些场景下，这是理想的表现，但是在其他场景下，并不是。</p>
+<p>Say our Consumer is processing a message with an Offset of 100 and whilst processing it the Consumer fetches some more data, the Offset is commit and then the Consumer crashes. Upon coming back up it will start consuming messages from the most recent committed Offset, but how can we safely say that we haven’t lost messages and the Offset of the new message isn’t later then the one of the message been processed?</p>
+<p>这么说，我们的 Consumer 正在消费一个 Offset 是100的消息，同时这个 Consumer 取回了一些数据，这个 Offset 提交了，然后 Consumer 崩溃了。在我们回来的时候，我们会重新从最新提交的 Offset 去进行消息的消费，但是我们如何能安全地说，我们没有丢失消息，并且这个新消息的 Offset 不会比刚刚被处理的那个消息靠后呢？</p>
+<p>What we can do is commit the Offset of messages manually after processing them. This give us full control over when we consider a message dealt with, processed and ready to let Kafka know that.</p>
+<p>解决这个问题的方案就是我们手动地提交这个 Offset，在处理完这些消息之后。这给与了我们完全的控制，什么时候去处理一个消息，什么时候去让 Kafka 知道这个。</p>
+<p>Firstly we have to change the value of the <strong>enable.auto.commit</strong> property.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit: false</span><br></pre></td></tr></table></figure>
+
+<p>When we change this property the <strong>auto.commit.interval.ms</strong> value isnt taken into consideration.</p>
+<p>So now we can commit our Offset manually after the processing has taken place and if the Consumer crashes whilst processing a message it will start consuming from that same Offset, no messages lost.</p>
+<p>我们把这个参数设置为 false ，就会由我们自己手动地来处理这个事情。</p>
+<p>Both the clients mentioned earlier in this article have methods exposed to commit the Offset.</p>
+<p>For further reading on the clients check out the links below.</p>
+</blockquote>
+<p>如果 <strong>enable.auto.commit</strong> 设置成 false，那么 <strong>auto.commit.interval.ms</strong> 也就不被再考虑了<strong>。</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blizzard.github.io/node-rdkafka/current/KafkaConsumer.html"><strong>JSDoc: Class: KafkaConsumer</strong><br><em>KafkaConsumer class for reading messages from Kafka This is the main entry point for reading data from Kafka. You…</em>blizzard.github.io</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html"><strong>KafkaConsumer (kafka 0.10.2.1 API)</strong><br><em>To avoid this, we will manually commit the offsets only after the corresponding records have been inserted into the…</em>kafka.apache.org</a></p>
+<p>If anyone wants any more information on Kafka or Consumers get in touch on Twitter.</p>
+<p>Cheers,</p>
+<p>Danny</p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/danieljameskay">https://twitter.com/danieljameskay</a></p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65">https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html">https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html</a> 这里是官网介绍如何使用consumer</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="clfmk7jlm005tjun43f56asrh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Kafka几个重要的配置总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2021-04-21T08:51:53.000Z" itemprop="datePublished">2021-04-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/">Kafka几个重要的配置总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>注意：配置基于Kafka 0.8.2.1</p>
+<h2 id="broker配置"><a href="#broker配置" class="headerlink" title="broker配置"></a>broker配置</h2><p>#非负整数，用于唯一标识broker<br>broker.id 0</p>
+<p>#kafka持久化数据存储的路径，可以指定多个，以逗号分隔<br>log.dirs /tmp/kafka-logs</p>
+<p>#broker接收连接请求的端口<br>port 9092</p>
+<p>#指定zk连接字符串，[hostname:port]以逗号分隔<br>zookeeper.connect</p>
+<p>#单条消息最大大小控制，消费端的最大拉取大小需要略大于该值<br>message.max.bytes 1000000</p>
+<p>#接收网络请求的线程数<br>num.network.threads 3</p>
+<p>#用于执行请求的I/O线程数<br>num.io.threads 8</p>
+<p>#用于各种后台处理任务（如文件删除）的线程数<br>background.threads 10</p>
+<p>#待处理请求最大可缓冲的队列大小<br>queued.max.requests 500</p>
+<p>#配置该机器的IP地址<br>host.name </p>
+<p>#默认分区个数<br>num.partitions  1</p>
+<p>#分段文件大小，超过后会轮转<br>log.segment.bytes 1024 * 1024 * 1024</p>
+<p>#日志没达到大小，如果达到这个时间也会轮转<br>log.roll.{ms,hours}  168</p>
+<p>#日志保留时间<br>log.retention.{ms,minutes,hours}</p>
+<p>#不存在topic的时候是否自动创建<br>auto.create.topics.enable true</p>
+<p>#partition默认的备份因子<br>default.replication.factor 1</p>
+<p>#如果这个时间内follower没有发起fetch请求，被认为dead，从ISR移除<br>replica.lag.time.max.ms  10000</p>
+<p>#如果follower相比leader落后这么多以上消息条数，会被从ISR移除<br>replica.lag.max.messages  4000</p>
+<p>#从leader可以拉取的消息最大大小<br>replica.fetch.max.bytes 1024 * 1024</p>
+<p>#从leader拉取消息的fetch线程数<br>num.replica.fetchers 1</p>
+<p>#zk会话超时时间<br>zookeeper.session.timeout.ms  6000</p>
+<p>#zk连接所用时间<br>zookeeper.connection.timeout.ms</p>
+<p>#zk follower落后leader的时间<br>zookeeper.sync.time.ms 2000</p>
+<p>#是否开启topic可以被删除的方式<br>delete.topic.enable false</p>
+<h2 id="producer配置"><a href="#producer配置" class="headerlink" title="producer配置"></a>producer配置</h2><p>#参与消息确认的broker数量控制，0代表不需要任何确认 1代表需要leader replica确认 -1代表需要ISR中所有进行确认<br>request.required.acks 0</p>
+<p>#从发送请求到收到ACK确认等待的最长时间（超时时间）<br>request.timeout.ms  10000</p>
+<p>#设置消息发送模式，默认是同步方式， async异步模式下允许消息累计到一定量或一段时间又另外线程批量发送，吞吐量好但丢失数据风险增大<br>producer.type sync</p>
+<p>#消息序列化类实现方式，默认是byte[]数组形式<br>serializer.class kafka.serializer.DefaultEncoder</p>
+<p>#kafka消息分区策略实现方式，默认是对key进行hash<br>partitioner.class kafka.producer.DefaultPartitioner</p>
+<p>#对发送的消息采取的压缩编码方式，有none|gzip|snappy<br>compression.codec none</p>
+<p>#指定哪些topic的message需要压缩<br>compressed.topics  null</p>
+<p>#消息发送失败的情况下，重试发送的次数 存在消息发送是成功的，只是由于网络导致ACK没收到的重试，会出现消息被重复发送的情况<br>message.send.max.retries 3</p>
+<p>#在开始重新发起metadata更新操作需要等待的时间<br>retry.backoff.ms 100</p>
+<p>#metadata刷新间隔时间，如果负值则失败的时候才会刷新，如果0则每次发送后都刷新，正值则是一种周期行为<br>topic.metadata.refresh.interval.ms 600 * 1000</p>
+<p>#异步发送模式下，缓存数据的最长时间，之后便会被发送到broker<br>queue.buffering.max.ms 5000</p>
+<p>#producer端异步模式下最多缓存的消息条数<br>queue.buffering.max.messages 10000</p>
+<p>#0代表队列没满的时候直接入队，满了立即扔弃，-1代表无条件阻塞且不丢弃<br>queue.enqueue.timeout.ms -1</p>
+<p>#一次批量发送需要达到的消息条数，当然如果queue.buffering.max.ms达到的时候也会被发送<br>batch.num.messages 200</p>
+<h2 id="consumer配置"><a href="#consumer配置" class="headerlink" title="consumer配置"></a>consumer配置</h2><p>#指明当前消费进程所属的消费组，一个partition只能被同一个消费组的一个消费者消费<br>group.id</p>
+<p>#针对一个partition的fetch request所能拉取的最大消息字节数，必须大于等于Kafka运行的最大消息<br>fetch.message.max.bytes  1024 * 1024</p>
+<p>#是否自动周期性提交已经拉取到消费端的消息offset<br>auto.commit.enable true</p>
+<p>#自动提交offset到zookeeper的时间间隔<br>auto.commit.interval.ms  60 * 1000</p>
+<p>#消费均衡的重试次数<br>rebalance.max.retries  4</p>
+<p>#消费均衡两次重试之间的时间间隔<br>rebalance.backoff.ms 2000</p>
+<p>#当重新去获取partition的leader前需要等待的时间<br>refresh.leader.backoff.ms  200</p>
+<p>#如果zookeeper上没有offset合理的初始值情况下获取第一条消息开始的策略smallest|largeset<br>auto.offset.reset largest</p>
+<p>#如果其超时，将会可能触发rebalance并认为已经死去<br>zookeeper.session.timeout.ms  6000</p>
+<p>#确认zookeeper连接建立操作客户端能等待的最长时间<br>zookeeper.connection.timeout.ms 6000</p>
+<p>参考连接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/huanggang028/article/details/47830529">https://blog.csdn.net/huanggang028/article/details/47830529</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clfmk7jjz000hjun42d5f54uv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><a class="page-number" href="/blogOfLin/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/7/">7</a><a class="extend next" rel="next" href="/blogOfLin/page/4/">Next &amp;raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Mysq/">Mysq</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/redis/">redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/tool/">tool</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli-sh/" rel="tag">ZkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/jrebel/" rel="tag">jrebel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/list/" rel="tag">list</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mac/" rel="tag">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/random/" rel="tag">random</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/see/" rel="tag">see</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/vsftpd/" rel="tag">vsftpd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%8A%80%E5%B7%A7/" rel="tag">技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/blogOfLin/tags/0-8-2/" style="font-size: 10px;">0.8.2</a> <a href="/blogOfLin/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/ZkCli-sh/" style="font-size: 10px;">ZkCli.sh</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 13.33px;">centos</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 13.33px;">config</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/ftp/" style="font-size: 10px;">ftp</a> <a href="/blogOfLin/tags/git/" style="font-size: 16.67px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/java/" style="font-size: 10px;">java</a> <a href="/blogOfLin/tags/jrebel/" style="font-size: 10px;">jrebel</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 16.67px;">kafka</a> <a href="/blogOfLin/tags/list/" style="font-size: 10px;">list</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/mac/" style="font-size: 13.33px;">mac</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/maven/" style="font-size: 10px;">maven</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 10px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/random/" style="font-size: 10px;">random</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/rocketMq/" style="font-size: 10px;">rocketMq</a> <a href="/blogOfLin/tags/scan/" style="font-size: 10px;">scan</a> <a href="/blogOfLin/tags/security/" style="font-size: 10px;">security</a> <a href="/blogOfLin/tags/see/" style="font-size: 10px;">see</a> <a href="/blogOfLin/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blogOfLin/tags/sql/" style="font-size: 10px;">sql</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/vsftpd/" style="font-size: 10px;">vsftpd</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 10px;">客户端</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 13.33px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E6%8A%80%E5%B7%A7/" style="font-size: 10px;">技巧</a> <a href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" style="font-size: 10px;">消费</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2022/12/05/%E8%81%8A%E4%B8%BB%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%85%B3/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/11/18/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map/">How to find the Entry with largest Value in a Java Map</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">mac 软连接</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">javaList随机取值方法</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/">mysql时间获取周日月季度起止时间</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
