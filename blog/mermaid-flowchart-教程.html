@@ -1,500 +1,77 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+{% extends '_layout.swig' %}
+{% import '_macro/sidebar.swig' as sidebar_template with context %}
 
-  
-  <title>mermaid-flowchart-教程 | lin&#39;s blog home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). 12graph TD    Start --&gt; Stop  StartSt">
-<meta property="og:type" content="website">
-<meta property="og:title" content="mermaid-flowchart-教程">
-<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/mermaid-flowchart-%E6%95%99%E7%A8%8B.html">
-<meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). 12graph TD    Start --&gt; Stop  StartSt">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-10-29T11:41:27.000Z">
-<meta property="article:modified_time" content="2020-10-29T12:11:25.141Z">
-<meta property="article:author" content="baishuanglin">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/blogOfLin/css/style.css">
+{% block title %}
+  {%- set page_title_suffix = ' | ' + title %}
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+  {%- if page.type === 'categories' and not page.title %}
+    {{- __('title.category') + page_title_suffix }}
+  {%- elif page.type === 'tags' and not page.title %}
+    {{- __('title.tag') + page_title_suffix }}
+  {%- elif page.type === 'schedule' and not page.title %}
+    {{- __('title.schedule') + page_title_suffix }}
+  {%- else %}
+    {{- page.title + page_title_suffix }}
+  {%- endif %}
+{% endblock %}
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/blogOfLin/">Home</a>
-        
-          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+{% block class %}page posts-expand{% endblock %}
+
+{% block content %}
+
+    {##################}
+    {### PAGE BLOCK ###}
+    {##################}
+    <div class="post-block" lang="{{ page.lang or config.language }}">
+      {% include '_partials/page/page-header.swig' %}
+      {#################}
+      {### PAGE BODY ###}
+      {#################}
+      <div class="post-body{%- if page.direction and page.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}">
+        {%- if page.type === 'tags' %}
+          <div class="tag-cloud">
+            <div class="tag-cloud-title">
+              {{ _p('counter.tag_cloud', site.tags.length) }}
+            </div>
+            <div class="tag-cloud-tags">
+              {{ tagcloud({
+                min_font   : theme.tagcloud.min,
+                max_font   : theme.tagcloud.max,
+                amount     : theme.tagcloud.amount,
+                color      : true,
+                start_color: theme.tagcloud.start,
+                end_color  : theme.tagcloud.end})
+              }}
+            </div>
+          </div>
+        {% elif page.type === 'categories' %}
+          <div class="category-all-page">
+            <div class="category-all-title">
+              {{ _p('counter.categories', site.categories.length) }}
+            </div>
+            <div class="category-all">
+              {{ list_categories() }}
+            </div>
+          </div>
+        {% elif page.type === 'schedule' %}
+          <div class="event-list">
+          </div>
+          {% include '_scripts/pages/schedule.swig' %}
+        {% else %}
+          {{ page.content }}
+        {%- endif %}
       </div>
+      {#####################}
+      {### END PAGE BODY ###}
+      {#####################}
     </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/blog/mermaid-flowchart-%E6%95%99%E7%A8%8B.html" class="article-date">
-  <time datetime="2020-10-29T11:41:27.000Z" itemprop="datePublished">2020-10-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      mermaid-flowchart-教程
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Flowcharts-Basic-Syntax"><a href="#Flowcharts-Basic-Syntax" class="headerlink" title="Flowcharts - Basic Syntax"></a>Flowcharts - Basic Syntax</h1><p><a target="_blank" rel="noopener" href="https://mermaid-js.github.io/mermaid/diagrams-and-syntax-and-examples/flowchart.html">source</a></p>
-<h2 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h2><p>This statement declares the direction of the Flowchart.</p>
-<p>This declares the graph is oriented from top to bottom (<code>TD</code> or <code>TB</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<p>This declares the graph is oriented from left to right (<code>LR</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<h2 id="Flowchart-Orientation"><a href="#Flowchart-Orientation" class="headerlink" title="Flowchart Orientation"></a>Flowchart Orientation</h2><p>Possible FlowChart orientations are:</p>
-<ul>
-<li>TB - top to bottom</li>
-<li>TD - top-down&#x2F; same as top to bottom</li>
-<li>BT - bottom to top</li>
-<li>RL - right to left</li>
-<li>LR - left to right</li>
-</ul>
-<h2 id="Flowcharts"><a href="#Flowcharts" class="headerlink" title="Flowcharts"></a>Flowcharts</h2><p>This renders a flowchart that allows for features such as: more arrow types, multi directional arrows, and linking to and from subgraphs.</p>
-<p>Apart from the graph type, the syntax is the same. This is currently experimental but when the beta period is over, both the graph and flowchart keywords will render in the new way. This means it is ok to start beta testing flowcharts.</p>
-<blockquote>
-<p><strong>Important note</strong> Do not type the word “end” as a Flowchart node. Capitalize all or any one the letters to keep the flowchart from breaking, i.e, “End” or “END”. Or you can apply this <a target="_blank" rel="noopener" href="https://github.com/mermaid-js/mermaid/issues/1444#issuecomment-639528897">workaround</a>.**</p>
-</blockquote>
-<h2 id="Nodes-amp-shapes"><a href="#Nodes-amp-shapes" class="headerlink" title="Nodes &amp; shapes"></a>Nodes &amp; shapes</h2><h3 id="A-node-default"><a href="#A-node-default" class="headerlink" title="A node (default)"></a>A node (default)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id</span><br></pre></td></tr></table></figure>
-
-<p>id</p>
-<blockquote>
-<p><strong>Note</strong> The id is what is displayed in the box.</p>
-</blockquote>
-<h3 id="A-node-with-text"><a href="#A-node-with-text" class="headerlink" title="A node with text"></a>A node with text</h3><p>It is also possible to set text in the box that differs from the id. If this is done several times, it is the last text found for the node that will be used. Also if you define edges for the node later on, you can omit text definitions. The one previously defined will be used when rendering the box.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[This is the text in the box]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h2 id="Node-Shapes"><a href="#Node-Shapes" class="headerlink" title="Node Shapes"></a>Node Shapes</h2><h3 id="A-node-with-round-edges"><a href="#A-node-with-round-edges" class="headerlink" title="A node with round edges"></a>A node with round edges</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(This is the text in the box)</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-stadium-shaped-node"><a href="#A-stadium-shaped-node" class="headerlink" title="A stadium-shaped node"></a>A stadium-shaped node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1([This is the text in the box])</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-node-in-a-subroutine-shape"><a href="#A-node-in-a-subroutine-shape" class="headerlink" title="A node in a subroutine shape"></a>A node in a subroutine shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[[This is the text in the box]]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-node-in-a-cylindrical-shape"><a href="#A-node-in-a-cylindrical-shape" class="headerlink" title="A node in a cylindrical shape"></a>A node in a cylindrical shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[(Database)]</span><br></pre></td></tr></table></figure>
-
-<p>Database</p>
-<h3 id="A-node-in-the-form-of-a-circle"><a href="#A-node-in-the-form-of-a-circle" class="headerlink" title="A node in the form of a circle"></a>A node in the form of a circle</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1((This is the text in the circle))</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the circle</p>
-<h3 id="A-node-in-an-asymetric-shape"><a href="#A-node-in-an-asymetric-shape" class="headerlink" title="A node in an asymetric shape"></a>A node in an asymetric shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&gt;This is the text in the box]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<p>Currently only the shape above is possible and not its mirror. <em>This might change with future releases.</em></p>
-<h3 id="A-node-rhombus"><a href="#A-node-rhombus" class="headerlink" title="A node (rhombus)"></a>A node (rhombus)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;This is the text in the box&#125;</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-hexagon-node"><a href="#A-hexagon-node" class="headerlink" title="A hexagon node"></a>A hexagon node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;&#123;This is the text in the box&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Parallelogram"><a href="#Parallelogram" class="headerlink" title="Parallelogram"></a>Parallelogram</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[/This is the text in the box/]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Parallelogram-alt"><a href="#Parallelogram-alt" class="headerlink" title="Parallelogram alt"></a>Parallelogram alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[\This is the text in the box\]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Trapezoid"><a href="#Trapezoid" class="headerlink" title="Trapezoid"></a>Trapezoid</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[/Christmas\]</span><br></pre></td></tr></table></figure>
-
-<p>Christmas</p>
-<h3 id="Trapezoid-alt"><a href="#Trapezoid-alt" class="headerlink" title="Trapezoid alt"></a>Trapezoid alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[\Go shopping/]</span><br></pre></td></tr></table></figure>
-
-<p>Go shopping</p>
-<h2 id="Links-between-nodes"><a href="#Links-between-nodes" class="headerlink" title="Links between nodes"></a>Links between nodes</h2><p>Nodes can be connected with links&#x2F;edges. It is possible to have different types of links or attach a text string to a link.</p>
-<h3 id="A-link-with-arrow-head"><a href="#A-link-with-arrow-head" class="headerlink" title="A link with arrow head"></a>A link with arrow head</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="An-open-link"><a href="#An-open-link" class="headerlink" title="An open link"></a>An open link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A --- B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Text-on-links"><a href="#Text-on-links" class="headerlink" title="Text on links"></a>Text on links</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- This is the text! ---B</span><br></pre></td></tr></table></figure>
-
-<p>This is the textAB</p>
-<p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A---|This is the text|B</span><br></pre></td></tr></table></figure>
-
-<p>This is the textAB</p>
-<h3 id="A-link-with-arrow-head-and-text"><a href="#A-link-with-arrow-head-and-text" class="headerlink" title="A link with arrow head and text"></a>A link with arrow head and text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;|text|B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- text --&gt;B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Dotted-link"><a href="#Dotted-link" class="headerlink" title="Dotted link"></a>Dotted link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">   A-.-&gt;B;</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Dotted-link-with-text"><a href="#Dotted-link-with-text" class="headerlink" title="Dotted link with text"></a>Dotted link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A-. text .-&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Thick-link"><a href="#Thick-link" class="headerlink" title="Thick link"></a>Thick link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A ==&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Thick-link-with-text"><a href="#Thick-link-with-text" class="headerlink" title="Thick link with text"></a>Thick link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A == text ==&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Chaining-of-links"><a href="#Chaining-of-links" class="headerlink" title="Chaining of links"></a>Chaining of links</h3><p>It is possible declare many links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
-
-<p>texttext2ABC</p>
-<p>It is also possible to declare multiple nodes links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   a --&gt; b &amp; c--&gt; d</span><br></pre></td></tr></table></figure>
-
-<p>abcd</p>
-<p>You can then describe dependencies in a very expressive way. Like the one-liner below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A &amp; B--&gt; C &amp; D</span><br></pre></td></tr></table></figure>
-
-<p>ABCD</p>
-<p>If you describe the same diagram using the the basic syntax, it will take four lines. A word of warning, one could go overboard with this making the graph harder to read in markdown form. The Swedish word <code>lagom</code> comes to mind. It means, not too much and not too little. This goes for expressive syntaxes as well.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A --&gt; C</span><br><span class="line">    A --&gt; D</span><br><span class="line">    B --&gt; C</span><br><span class="line">    B --&gt; D</span><br></pre></td></tr></table></figure>
-
-<h3 id="Beta-New-arrow-types"><a href="#Beta-New-arrow-types" class="headerlink" title="Beta: New arrow types"></a>Beta: New arrow types</h3><p>When using flowchart instead of graph there are new types of arrows supported as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A --o B</span><br><span class="line">    B --x C</span><br></pre></td></tr></table></figure>
-
-<p>ABC</p>
-<h3 id="Beta-Multi-directional-arrows"><a href="#Beta-Multi-directional-arrows" class="headerlink" title="Beta: Multi directional arrows"></a>Beta: Multi directional arrows</h3><p>When using flowchart instead of graph there is the possibility to use multidirectional arrows.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A o--o B</span><br><span class="line">    B &lt;--&gt; C</span><br><span class="line">    C x--x D</span><br></pre></td></tr></table></figure>
-
-<p>ABCD</p>
-<h3 id="Minimum-length-of-a-link"><a href="#Minimum-length-of-a-link" class="headerlink" title="Minimum length of a link"></a>Minimum length of a link</h3><p>Each node in the flowchart is ultimately assigned to a rank in the rendered graph, i.e. to a vertical or horizontal level (depending on the flowchart orientation), based on the nodes to which it is linked. By default, links can span any number of ranks, but you can ask for any link to be longer than the others by adding extra dashes in the link definition.</p>
-<p>In the following example, two extra dashes are added in the link from node <em>B</em> to node <em>E</em>, so that it spans two more ranks than regular links:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B --&gt;|Yes| C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B ----&gt;|No| E[End];</span><br></pre></td></tr></table></figure>
-
-<p>YesNoStartIs it?OKRethinkEnd</p>
-<blockquote>
-<p><strong>Note</strong> Links may still be made longer than the requested number of ranks by the rendering engine to accommodate other requests.</p>
-</blockquote>
-<p>When the link label is written in the middle of the link, the extra dashes must be added on the right side of the link. The following example is equivalent to the previous one:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B -- Yes --&gt; C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B -- No ----&gt; E[End];</span><br></pre></td></tr></table></figure>
-
-<p>YesNoStartIs it?OKRethinkEnd</p>
-<p>For dotted or thick links, the characters to add are equals signs or dots, as summed up in the following table:</p>
-<table>
-<thead>
-<tr>
-<th>Length</th>
-<th align="center">1</th>
-<th align="center">2</th>
-<th align="center">3</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Normal</td>
-<td align="center"><code>---</code></td>
-<td align="center"><code>----</code></td>
-<td align="center"><code>-----</code></td>
-</tr>
-<tr>
-<td>Normal with arrow</td>
-<td align="center"><code>--&gt;</code></td>
-<td align="center"><code>---&gt;</code></td>
-<td align="center"><code>----&gt;</code></td>
-</tr>
-<tr>
-<td>Thick</td>
-<td align="center"><code>===</code></td>
-<td align="center"><code>====</code></td>
-<td align="center"><code>=====</code></td>
-</tr>
-<tr>
-<td>Thick with arrow</td>
-<td align="center"><code>==&gt;</code></td>
-<td align="center"><code>===&gt;</code></td>
-<td align="center"><code>====&gt;</code></td>
-</tr>
-<tr>
-<td>Dotted</td>
-<td align="center"><code>-.-</code></td>
-<td align="center"><code>-..-</code></td>
-<td align="center"><code>-...-</code></td>
-</tr>
-<tr>
-<td>Dotted with arrow</td>
-<td align="center"><code>-.-&gt;</code></td>
-<td align="center"><code>-..-&gt;</code></td>
-<td align="center"><code>-...-&gt;</code></td>
-</tr>
-</tbody></table>
-<h2 id="Special-characters-that-break-syntax"><a href="#Special-characters-that-break-syntax" class="headerlink" title="Special characters that break syntax"></a>Special characters that break syntax</h2><p>It is possible to put text within quotes in order to render more troublesome characters. As in the example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[&quot;This is the (text) in the box&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>This is the (text) in the box</p>
-<h3 id="Entity-codes-to-escape-characters"><a href="#Entity-codes-to-escape-characters" class="headerlink" title="Entity codes to escape characters"></a>Entity codes to escape characters</h3><p>It is possible to escape characters using the syntax examplified here.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[&quot;A double quote:#quot;&quot;] --&gt;B[&quot;A dec char:#9829;&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>A double quote:”A dec char:♥</p>
-<h2 id="Subgraphs"><a href="#Subgraphs" class="headerlink" title="Subgraphs"></a>Subgraphs</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subgraph title</span><br><span class="line">    graph definition</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-
-<p>An example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-
-<p>threetwoonec2c1b2b1a2a1</p>
-<p>You can also set an excplicit id for the subgraph.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph ide1 [one]</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-
-<p>onea2a1c1</p>
-<h2 id="Beta-flowcharts"><a href="#Beta-flowcharts" class="headerlink" title="Beta: flowcharts"></a>Beta: flowcharts</h2><p>With the graphtype flowcharts it is also possible to set edges to and from subgraphs as in the graph below.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br><span class="line">    one --&gt; two</span><br><span class="line">    three --&gt; two</span><br><span class="line">    two --&gt; c2</span><br></pre></td></tr></table></figure>
-
-<p>threeonec2c1twob2b1a2a1</p>
-<h2 id="Interaction"><a href="#Interaction" class="headerlink" title="Interaction"></a>Interaction</h2><p>It is possible to bind a click event to a node, the click can lead to either a javascript callback or to a link which will be opened in a new browser tab. <strong>Note</strong>: This functionality is disabled when using <code>securityLevel=&#39;strict&#39;</code> and enabled when using <code>securityLevel=&#39;loose&#39;</code>.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">click nodeId callback</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>nodeId is the id of the node</li>
-<li>callback is the name of a javascript function defined on the page displaying the graph, the function will be called with the nodeId as parameter.</li>
-</ul>
-<p>Examples of tooltip usage below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  var callback = function()&#123;</span><br><span class="line">      alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    click A callback &quot;Tooltip for a callback&quot;</span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;This is a tooltip for a link&quot;</span><br></pre></td></tr></table></figure>
-
-<p>The tooltip text is surrounded in double quotes. The styles of the tooltip are set by the class .mermaidTooltip.</p>
-<p>A<a target="_blank" rel="noopener" href="http://www.github.com/">B</a></p>
-<blockquote>
-<p><strong>Success</strong> The tooltip functionality and the ability to link to urls are available from version 0.5.2.</p>
-</blockquote>
-<p>?&gt; Due to limitations with how Docsify handles JavaScript callback functions, an alternate working demo for the above code can be viewed at <a target="_blank" rel="noopener" href="https://jsfiddle.net/s37cjoau/3/">this jsfiddle</a>.</p>
-<p>Links are opened in the same browser tab&#x2F;window by default. It is possible to change this by adding a link target to the click definition (<code>_self</code>, <code>_blank</code>, <code>_parent</code> and <code>_top</code> are supported):</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    B--&gt;C;</span><br><span class="line">    click A &quot;http://www.github.com&quot; </span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;Open this in a new tab&quot; _blank</span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="http://www.github.com/">A</a><a target="_blank" rel="noopener" href="http://www.github.com/">B</a>C</p>
-<p>Beginners tip, a full example using interactive links in a html context:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div class=&quot;mermaid&quot;&gt;</span><br><span class="line">    graph LR;</span><br><span class="line">        A--&gt;B;</span><br><span class="line">        click A callback &quot;Tooltip&quot;</span><br><span class="line">        click B &quot;http://www.github.com&quot; &quot;This is a link&quot;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    var callback = function()&#123;</span><br><span class="line">        alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    var config = &#123;</span><br><span class="line">        startOnLoad:true,</span><br><span class="line">        flowchart:&#123;</span><br><span class="line">            useMaxWidth:true,</span><br><span class="line">            htmlLabels:true,</span><br><span class="line">            curve:&#x27;cardinal&#x27;,</span><br><span class="line">        &#125;,</span><br><span class="line">        securityLevel:&#x27;loose&#x27;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    mermaid.initialize(config);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><p>Comments can be entered within a flow diagram, which will be ignored by the parser. Comments need to be on their own line, and must be prefaced with <code>%%</code> (double percent signs). Any text after the start of the comment to the next newline will be treated as a comment, including any flow syntax</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">%% this is a comment A -- text --&gt; B&#123;node&#125;</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
-
-<h2 id="Styling-and-classes"><a href="#Styling-and-classes" class="headerlink" title="Styling and classes"></a>Styling and classes</h2><h3 id="Styling-links"><a href="#Styling-links" class="headerlink" title="Styling links"></a>Styling links</h3><p>It is possible to style links. For instance you might want to style a link that is going backwards in the flow. As links have no ids in the same way as nodes, some other way of deciding what style the links should be attached to is required. Instead of ids, the order number of when the link was defined in the graph is used. In the example below the style defined in the linkStyle statement will belong to the fourth link in the graph:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linkStyle 3 stroke:#ff3,stroke-width:4px,color:red;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Styling-a-node"><a href="#Styling-a-node" class="headerlink" title="Styling a node"></a>Styling a node</h3><p>It is possible to apply specific styles such as a thicker border or a different background color to a node.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(Start)--&gt;id2(Stop)</span><br><span class="line">    style id1 fill:#f9f,stroke:#333,stroke-width:4px</span><br><span class="line">    style id2 fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<h4 id="Classes"><a href="#Classes" class="headerlink" title="Classes"></a>Classes</h4><p>More convenient then defining the style every time is to define a class of styles and attach this class to the nodes that should have a different look.</p>
-<p>a class definition looks like the example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classDef className fill:#f9f,stroke:#333,stroke-width:4px;</span><br></pre></td></tr></table></figure>
-
-<p>Attachment of a class to a node is done as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class nodeId1 className;</span><br></pre></td></tr></table></figure>
-
-<p>It is also possible to attach a class to a list of nodes in one statement:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class nodeId1,nodeId2 className;</span><br></pre></td></tr></table></figure>
-
-<p>A shorter form of adding a class is to attach the classname to the node using the <code>:::</code>operator as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A:::someclass --&gt; B</span><br><span class="line">    classDef someclass fill:#f96;</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Css-classes"><a href="#Css-classes" class="headerlink" title="Css classes"></a>Css classes</h3><p>It is also possible to predefine classes in css styles that can be applied from the graph definition as in the example below:</p>
-<p><strong>Example style</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .cssClass &gt; rect&#123;</span><br><span class="line">        fill:#FF0000;</span><br><span class="line">        stroke:#FFFF00;</span><br><span class="line">        stroke-width:4px;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example definition</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B[AAA&lt;span&gt;BBB&lt;/span&gt;];</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    class A cssClass;</span><br></pre></td></tr></table></figure>
-
-<p>AAAA<span>BBB</span>D</p>
-<h3 id="Default-class"><a href="#Default-class" class="headerlink" title="Default class"></a>Default class</h3><p>If a class is named default it will be assigned to all classes without specific class definitions.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classDef default fill:#f9f,stroke:#333,stroke-width:4px;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Basic-support-for-fontawesome"><a href="#Basic-support-for-fontawesome" class="headerlink" title="Basic support for fontawesome"></a>Basic support for fontawesome</h2><p>It is possible to add icons from fontawesome.</p>
-<p>The icons are acessed via the syntax fa:#icon class name#.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[&quot;fa:fa-twitter for peace&quot;]</span><br><span class="line">    B--&gt;C[fa:fa-ban forbidden]</span><br><span class="line">    B--&gt;D(fa:fa-spinner);</span><br><span class="line">    B--&gt;E(A fa:fa-camera-retro perhaps?);</span><br></pre></td></tr></table></figure>
-
-<p> for peace forbiddenA perhaps?</p>
-<h2 id="Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon"><a href="#Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon" class="headerlink" title="Graph declarations with spaces between vertices and link and without semicolon"></a>Graph declarations with spaces between vertices and link and without semicolon</h2><ul>
-<li>In graph declarations, the statements also can now end without a semicolon. After release 0.2.16, ending a graph statement with semicolon is just optional. So the below graph declaration is also valid along with the old declarations of the graph.</li>
-<li>A single space is allowed between vertices and the link. However there should not be any space between a vertex and its text and a link and its text. The old syntax of graph declaration will also work and hence this new feature is optional and is introduce to improve readability.</li>
-</ul>
-<p>Below is the new declaration of the graph edges which is also valid along with the old declaration of the graph edges.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[Hard edge] --&gt;|Link text| B(Round edge)</span><br><span class="line">    B --&gt; C&#123;Decision&#125;</span><br><span class="line">    C --&gt;|One| D[Result one]</span><br><span class="line">    C --&gt;|Two| E[Result two]</span><br></pre></td></tr></table></figure>
-
-<p>Link textOneTwoHard edgeRound edgeDecisionResult oneResult two</p>
-<h2 id="Configuration…"><a href="#Configuration…" class="headerlink" title="Configuration…"></a>Configuration…</h2><p>Is it possible to adjust the width of the rendered flowchart.</p>
-<p>This is done by defining <strong>mermaid.flowchartConfig</strong> or by the CLI to use a json file with the configuration. How to use the CLI is described in the mermaidCLI page. mermaid.flowchartConfig can be set to a JSON string with config parameters or the corresponding object.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mermaid.flowchartConfig = &#123;</span><br><span class="line">    width: 100%</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/blog/mermaid-flowchart-%E6%95%99%E7%A8%8B.html" data-id="clfmmpdq60049fan40kei7ei4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-    
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Docker/">Docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Kafka/">Kafka</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/ZooKeeper/">ZooKeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/Zookeeper/">Zookeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/docker/">docker</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/redis/">redis</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/zookeeper/">zookeeper</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></li><li class="category-list-item"><a class="category-list-link" href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/">杂项</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Autowried/" rel="tag">Autowried</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/EasyApi/" rel="tag">EasyApi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Fedora/" rel="tag">Fedora</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Future/" rel="tag">Future</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Optional/" rel="tag">Optional</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RestfulToolkit/" rel="tag">RestfulToolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/Spring-boot/" rel="tag">Spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZkCli/" rel="tag">ZkCli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ZooKeeper/" rel="tag">ZooKeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/archive/" rel="tag">archive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/compare/" rel="tag">compare</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/completable/" rel="tag">completable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/curator/" rel="tag">curator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date/" rel="tag">date</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/date-format/" rel="tag">date_format</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/dnf/" rel="tag">dnf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/double/" rel="tag">double</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/dump/" rel="tag">dump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/entry/" rel="tag">entry</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/fastApi/" rel="tag">fastApi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/float/" rel="tag">float</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/flowcharts/" rel="tag">flowcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/from-unixtime/" rel="tag">from_unixtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/gunzip/" rel="tag">gunzip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/list/" rel="tag">list</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j/" rel="tag">log4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/log4j2/" rel="tag">log4j2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/logback/" rel="tag">logback</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mac/" rel="tag">mac</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/map/" rel="tag">map</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/max/" rel="tag">max</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mermaid/" rel="tag">mermaid</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mirror/" rel="tag">mirror</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module/" rel="tag">module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mvn/" rel="tag">mvn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/mysqldump/" rel="tag">mysqldump</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/okhttp/" rel="tag">okhttp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElse/" rel="tag">orElse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/orElseGet/" rel="tag">orElseGet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/profiles/" rel="tag">profiles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/pureFtpd/" rel="tag">pureFtpd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/random/" rel="tag">random</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rdb/" rel="tag">rdb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/request/" rel="tag">request</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rm/" rel="tag">rm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/rpm/" rel="tag">rpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/scan/" rel="tag">scan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/security/" rel="tag">security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/see/" rel="tag">see</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/shuffle/" rel="tag">shuffle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/skip/" rel="tag">skip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/slf4j/" rel="tag">slf4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/sonar/" rel="tag">sonar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/spring/" rel="tag">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/synchronized/" rel="tag">synchronized</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/unix-timestamp/" rel="tag">unix_timestamp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/vsftpd/" rel="tag">vsftpd</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zkCli-sh/" rel="tag">zkCli.sh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zookeeper/" rel="tag">zookeeper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E4%BB%A3%E7%90%86/" rel="tag">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%87%BD%E6%95%B0/" rel="tag">函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%88%AB%E5%90%8D/" rel="tag">别名</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" rel="tag">启动慢排查</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="tag">客户端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%AE%B9%E5%99%A8%E5%88%A0%E9%99%A4/" rel="tag">容器删除</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="tag">异常处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%8A%80%E5%B7%A7/" rel="tag">技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%8A%93%E5%8C%85/" rel="tag">抓包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E8%A7%A3%E5%8E%8B/" rel="tag">解压</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E8%B7%B3%E9%94%AE/" rel="tag">跳键</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%83%A8%E7%BD%B2/" rel="tag">部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%81/" rel="tag">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" rel="tag">错误码</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/blogOfLin/tags/Autowried/" style="font-size: 10px;">Autowried</a> <a href="/blogOfLin/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/blogOfLin/tags/EasyApi/" style="font-size: 10px;">EasyApi</a> <a href="/blogOfLin/tags/Fedora/" style="font-size: 10px;">Fedora</a> <a href="/blogOfLin/tags/Future/" style="font-size: 10px;">Future</a> <a href="/blogOfLin/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blogOfLin/tags/Jdk/" style="font-size: 10px;">Jdk</a> <a href="/blogOfLin/tags/Kafka-Manager/" style="font-size: 10px;">Kafka Manager</a> <a href="/blogOfLin/tags/MySql/" style="font-size: 10px;">MySql</a> <a href="/blogOfLin/tags/Optional/" style="font-size: 10px;">Optional</a> <a href="/blogOfLin/tags/RestfulToolkit/" style="font-size: 10px;">RestfulToolkit</a> <a href="/blogOfLin/tags/RingBuffer/" style="font-size: 10px;">RingBuffer</a> <a href="/blogOfLin/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/blogOfLin/tags/Spring-boot/" style="font-size: 10px;">Spring boot</a> <a href="/blogOfLin/tags/ZkCli/" style="font-size: 10px;">ZkCli</a> <a href="/blogOfLin/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/blogOfLin/tags/archive/" style="font-size: 10px;">archive</a> <a href="/blogOfLin/tags/autoCommit/" style="font-size: 10px;">autoCommit</a> <a href="/blogOfLin/tags/centos/" style="font-size: 13.33px;">centos</a> <a href="/blogOfLin/tags/compare/" style="font-size: 10px;">compare</a> <a href="/blogOfLin/tags/completable/" style="font-size: 10px;">completable</a> <a href="/blogOfLin/tags/config/" style="font-size: 13.33px;">config</a> <a href="/blogOfLin/tags/curator/" style="font-size: 10px;">curator</a> <a href="/blogOfLin/tags/date/" style="font-size: 13.33px;">date</a> <a href="/blogOfLin/tags/date-format/" style="font-size: 10px;">date_format</a> <a href="/blogOfLin/tags/dnf/" style="font-size: 10px;">dnf</a> <a href="/blogOfLin/tags/docker/" style="font-size: 20px;">docker</a> <a href="/blogOfLin/tags/double/" style="font-size: 10px;">double</a> <a href="/blogOfLin/tags/dump/" style="font-size: 10px;">dump</a> <a href="/blogOfLin/tags/entry/" style="font-size: 10px;">entry</a> <a href="/blogOfLin/tags/exception/" style="font-size: 10px;">exception</a> <a href="/blogOfLin/tags/fastApi/" style="font-size: 10px;">fastApi</a> <a href="/blogOfLin/tags/float/" style="font-size: 10px;">float</a> <a href="/blogOfLin/tags/flowcharts/" style="font-size: 10px;">flowcharts</a> <a href="/blogOfLin/tags/from-unixtime/" style="font-size: 10px;">from_unixtime</a> <a href="/blogOfLin/tags/ftp/" style="font-size: 13.33px;">ftp</a> <a href="/blogOfLin/tags/git/" style="font-size: 16.67px;">git</a> <a href="/blogOfLin/tags/github/" style="font-size: 10px;">github</a> <a href="/blogOfLin/tags/gunzip/" style="font-size: 10px;">gunzip</a> <a href="/blogOfLin/tags/idea/" style="font-size: 10px;">idea</a> <a href="/blogOfLin/tags/kafka/" style="font-size: 16.67px;">kafka</a> <a href="/blogOfLin/tags/list/" style="font-size: 10px;">list</a> <a href="/blogOfLin/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/blogOfLin/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/blogOfLin/tags/logback/" style="font-size: 10px;">logback</a> <a href="/blogOfLin/tags/mac/" style="font-size: 13.33px;">mac</a> <a href="/blogOfLin/tags/manager/" style="font-size: 10px;">manager</a> <a href="/blogOfLin/tags/map/" style="font-size: 10px;">map</a> <a href="/blogOfLin/tags/maven/" style="font-size: 16.67px;">maven</a> <a href="/blogOfLin/tags/max/" style="font-size: 13.33px;">max</a> <a href="/blogOfLin/tags/mermaid/" style="font-size: 10px;">mermaid</a> <a href="/blogOfLin/tags/mirror/" style="font-size: 10px;">mirror</a> <a href="/blogOfLin/tags/module/" style="font-size: 10px;">module</a> <a href="/blogOfLin/tags/module-cycles/" style="font-size: 10px;">module cycles</a> <a href="/blogOfLin/tags/mvn/" style="font-size: 13.33px;">mvn</a> <a href="/blogOfLin/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/blogOfLin/tags/mysqldump/" style="font-size: 10px;">mysqldump</a> <a href="/blogOfLin/tags/oh-my-zsh/" style="font-size: 10px;">oh-my-zsh</a> <a href="/blogOfLin/tags/okhttp/" style="font-size: 10px;">okhttp</a> <a href="/blogOfLin/tags/orElse/" style="font-size: 10px;">orElse</a> <a href="/blogOfLin/tags/orElseGet/" style="font-size: 10px;">orElseGet</a> <a href="/blogOfLin/tags/profiles/" style="font-size: 10px;">profiles</a> <a href="/blogOfLin/tags/pureFtpd/" style="font-size: 10px;">pureFtpd</a> <a href="/blogOfLin/tags/python/" style="font-size: 10px;">python</a> <a href="/blogOfLin/tags/python3/" style="font-size: 10px;">python3</a> <a href="/blogOfLin/tags/random/" style="font-size: 10px;">random</a> <a href="/blogOfLin/tags/rdb/" style="font-size: 10px;">rdb</a> <a href="/blogOfLin/tags/redis/" style="font-size: 10px;">redis</a> <a href="/blogOfLin/tags/reflog/" style="font-size: 10px;">reflog</a> <a href="/blogOfLin/tags/request/" style="font-size: 10px;">request</a> <a href="/blogOfLin/tags/rm/" style="font-size: 10px;">rm</a> <a href="/blogOfLin/tags/rocketMq/" style="font-size: 10px;">rocketMq</a> <a href="/blogOfLin/tags/rpm/" style="font-size: 10px;">rpm</a> <a href="/blogOfLin/tags/scan/" style="font-size: 13.33px;">scan</a> <a href="/blogOfLin/tags/security/" style="font-size: 10px;">security</a> <a href="/blogOfLin/tags/see/" style="font-size: 10px;">see</a> <a href="/blogOfLin/tags/shuffle/" style="font-size: 10px;">shuffle</a> <a href="/blogOfLin/tags/skip/" style="font-size: 10px;">skip</a> <a href="/blogOfLin/tags/slf4j/" style="font-size: 10px;">slf4j</a> <a href="/blogOfLin/tags/sonar/" style="font-size: 10px;">sonar</a> <a href="/blogOfLin/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blogOfLin/tags/sql/" style="font-size: 10px;">sql</a> <a href="/blogOfLin/tags/synchronized/" style="font-size: 10px;">synchronized</a> <a href="/blogOfLin/tags/time-out/" style="font-size: 10px;">time out</a> <a href="/blogOfLin/tags/unix-timestamp/" style="font-size: 10px;">unix_timestamp</a> <a href="/blogOfLin/tags/vsftpd/" style="font-size: 10px;">vsftpd</a> <a href="/blogOfLin/tags/zkCli-sh/" style="font-size: 10px;">zkCli.sh</a> <a href="/blogOfLin/tags/zookeeper/" style="font-size: 13.33px;">zookeeper</a> <a href="/blogOfLin/tags/zsh/" style="font-size: 10px;">zsh</a> <a href="/blogOfLin/tags/%E4%BB%A3%E7%90%86/" style="font-size: 10px;">代理</a> <a href="/blogOfLin/tags/%E5%87%BD%E6%95%B0/" style="font-size: 10px;">函数</a> <a href="/blogOfLin/tags/%E5%88%AB%E5%90%8D/" style="font-size: 10px;">别名</a> <a href="/blogOfLin/tags/%E5%90%AF%E5%8A%A8%E6%85%A2%E6%8E%92%E6%9F%A5/" style="font-size: 10px;">启动慢排查</a> <a href="/blogOfLin/tags/%E5%91%BD%E4%BB%A4/" style="font-size: 13.33px;">命令</a> <a href="/blogOfLin/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 13.33px;">客户端</a> <a href="/blogOfLin/tags/%E5%AE%B9%E5%99%A8%E5%88%A0%E9%99%A4/" style="font-size: 10px;">容器删除</a> <a href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 16.67px;">并发</a> <a href="/blogOfLin/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 10px;">异常处理</a> <a href="/blogOfLin/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/blogOfLin/tags/%E6%8A%80%E5%B7%A7/" style="font-size: 10px;">技巧</a> <a href="/blogOfLin/tags/%E6%8A%93%E5%8C%85/" style="font-size: 10px;">抓包</a> <a href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" style="font-size: 10px;">消费</a> <a href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">环境搭建</a> <a href="/blogOfLin/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/blogOfLin/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/blogOfLin/tags/%E8%A7%A3%E5%8E%8B/" style="font-size: 10px;">解压</a> <a href="/blogOfLin/tags/%E8%B7%B3%E9%94%AE/" style="font-size: 10px;">跳键</a> <a href="/blogOfLin/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 10px;">部署</a> <a href="/blogOfLin/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/blogOfLin/tags/%E9%94%99%E8%AF%AF%E7%A0%81/" style="font-size: 10px;">错误码</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/blogOfLin/2022/11/18/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map/">How to find the Entry with largest Value in a Java Map</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">mac 软连接</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">javaList随机取值方法</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/">mysql时间获取周日月季度起止时间</a>
-          </li>
-        
-          <li>
-            <a href="/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">使用java中的注解@see</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2023 baishuanglin<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
-  
-    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  
-<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
-
-  
-<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/blogOfLin/js/script.js"></script>
-
-
-
-
-  </div>
-</body>
-</html>
+    {% include '_partials/page/breadcrumb.swig' %}
+    {######################}
+    {### END PAGE BLOCK ###}
+    {######################}
+
+{% endblock %}
+
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
