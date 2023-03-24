@@ -32,7 +32,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -103,11 +103,11 @@
 
 <h2 id="二、安装Python3"><a href="#二、安装Python3" class="headerlink" title="二、安装Python3"></a>二、安装Python3</h2><p>以Python3.7为例讲解。</p>
 <p>1.下载Python安装包</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="attr">https</span>:<span class="comment">//www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz</span></span><br></pre></td></tr></table></figure>
 
 <p>因为下载很慢，所以可以在本地通过更快的方式下载后再上传到服务器。</p>
 <p>2.将安装包移动到<code>/usr/local</code>文件夹下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv Python<span class="number">-3.7</span><span class="number">.4</span>.tgz /usr/local/</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv <span class="title class_">Python</span>-<span class="number">3.7</span><span class="number">.4</span>.<span class="property">tgz</span> /usr/local/</span><br></pre></td></tr></table></figure>
 
 <p>3.在local目录下创建Python3目录</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/python3</span><br></pre></td></tr></table></figure>
@@ -116,10 +116,10 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br></pre></td></tr></table></figure>
 
 <p>5.解压安装包</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf Python<span class="number">-3.7</span><span class="number">.4</span>.tgz</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf <span class="title class_">Python</span>-<span class="number">3.7</span><span class="number">.4</span>.<span class="property">tgz</span></span><br></pre></td></tr></table></figure>
 
 <p>6.进入解压后的目录</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/Python<span class="number">-3.7</span><span class="number">.4</span>/</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/<span class="title class_">Python</span>-<span class="number">3.7</span><span class="number">.4</span>/</span><br></pre></td></tr></table></figure>
 
 <p>7.配置安装目录</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=<span class="regexp">/usr/</span>local/python3</span><br></pre></td></tr></table></figure>
@@ -135,17 +135,17 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/python3/bin/python3  /usr/bin/python3</span><br></pre></td></tr></table></figure>
 
 <p>11.测试 输入<code>python3</code>打印：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Python <span class="number">3.7</span><span class="number">.4</span> (<span class="keyword">default</span>, Sep  <span class="number">6</span> <span class="number">2020</span>, <span class="number">09</span>:<span class="number">22</span>:<span class="number">23</span>) </span><br><span class="line">[GCC <span class="number">4.8</span><span class="number">.5</span> <span class="number">20150623</span> (Red Hat <span class="number">4.8</span><span class="number">.5</span><span class="number">-39</span>)] on linux</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Python</span> <span class="number">3.7</span><span class="number">.4</span> (<span class="keyword">default</span>, <span class="title class_">Sep</span>  <span class="number">6</span> <span class="number">2020</span>, <span class="number">09</span>:<span class="number">22</span>:<span class="number">23</span>) </span><br><span class="line">[<span class="variable constant_">GCC</span> <span class="number">4.8</span><span class="number">.5</span> <span class="number">20150623</span> (<span class="title class_">Red</span> <span class="title class_">Hat</span> <span class="number">4.8</span><span class="number">.5</span>-<span class="number">39</span>)] on linux</span><br><span class="line"><span class="title class_">Type</span> <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
 
 <p>即说明Python安装成功。</p>
 <h2 id="二、安装pip3"><a href="#二、安装pip3" class="headerlink" title="二、安装pip3"></a>二、安装pip3</h2><p>1.安装依赖（非必要）</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install openssl-devel -y </span><br><span class="line">sudo yum install zlib-devel -y</span><br></pre></td></tr></table></figure>
 
 <p>2.安装setuptools</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz#md5=c607dd118eae682c44ed146367a17e26</span></span><br><span class="line"></span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf setuptools<span class="number">-19.6</span>.tar.gz </span><br><span class="line">cd setuptools<span class="number">-19.6</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">sudo python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate <span class="attr">https</span>:<span class="comment">//pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz#md5=c607dd118eae682c44ed146367a17e26</span></span><br><span class="line"></span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf setuptools-<span class="number">19.6</span>.<span class="property">tar</span>.<span class="property">gz</span> </span><br><span class="line">cd setuptools-<span class="number">19.6</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">sudo python3 setup.<span class="property">py</span> build </span><br><span class="line">sudo python3 setup.<span class="property">py</span> install</span><br></pre></td></tr></table></figure>
 
 <p>3.安装pip3</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/p/pip/pip-20.2.2.tar.gz#md5=3a73c4188f8dbad6a1e6f6d44d117eeb</span></span><br><span class="line"> </span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf pip<span class="number">-20.2</span><span class="number">.2</span>.tar.gz </span><br><span class="line">cd pip<span class="number">-20.2</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate <span class="attr">https</span>:<span class="comment">//pypi.python.org/packages/source/p/pip/pip-20.2.2.tar.gz#md5=3a73c4188f8dbad6a1e6f6d44d117eeb</span></span><br><span class="line"> </span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf pip-<span class="number">20.2</span><span class="number">.2</span>.<span class="property">tar</span>.<span class="property">gz</span> </span><br><span class="line">cd pip-<span class="number">20.2</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">python3 setup.<span class="property">py</span> build </span><br><span class="line">sudo python3 setup.<span class="property">py</span> install</span><br></pre></td></tr></table></figure>
 
 <p>4.测试 安装完成后，输入<code>pip3 -V</code>，打印：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="number">20.2</span><span class="number">.2</span> <span class="keyword">from</span> /usr/local/python3/lib/python3<span class="number">.7</span>/site-packages/pip (python <span class="number">3.7</span>)</span><br></pre></td></tr></table></figure>
@@ -155,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="clfmmdh3k001ucvn4akb61zp7" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="clfmmpdpm001ufan45zrwhfd1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>

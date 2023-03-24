@@ -32,7 +32,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -89,24 +89,24 @@
 <p><a target="_blank" rel="noopener" href="https://s5.51cto.com/oss/202006/04/6020256f19e58bc4c74ba17778455cae.jpg-wh_651x-s_472077657.jpg"><img src="https://s5.51cto.com/oss/202006/04/6020256f19e58bc4c74ba17778455cae.jpg-wh_651x-s_472077657.jpg" alt="使用Python FastAPI构建Web服务"></a></p>
 <p><a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI</a> 是一个使用 Python 编写的 Web 框架，还应用了 Python asyncio 库中最新的优化。本文将会介绍如何搭建基于容器的开发环境，还会展示如何使用 FastAPI 实现一个小型 Web 服务。</p>
 <h3 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h3><p>我们将使用 Fedora 作为基础镜像来搭建开发环境，并使用 Dockerfile 为镜像注入 FastAPI、<a target="_blank" rel="noopener" href="https://www.uvicorn.org/">Uvicorn</a> 和 <a target="_blank" rel="noopener" href="https://github.com/Tinche/aiofiles">aiofiles</a> 这几个包。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM fedora:32RUN dnf install -y python-pip \    &amp;&amp; dnf clean all \    &amp;&amp; pip install fastapi uvicorn aiofilesWORKDIR &#x2F;srvCMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--reload&quot;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM fedora:32RUN dnf install -y python-pip \    &amp;&amp; dnf clean all \    &amp;&amp; pip install fastapi uvicorn aiofilesWORKDIR /srvCMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--reload&quot;]</span><br></pre></td></tr></table></figure>
 
 <p>在工作目录下保存 <code>Dockerfile</code> 之后，执行 <code>podman</code> 命令构建容器镜像。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman build -t fastapi .$ podman imagesREPOSITORY TAG IMAGE ID CREATED SIZElocalhost&#x2F;fastapi latest 01e974cabe8b 18 seconds ago 326 MB</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman build -t fastapi .$ podman imagesREPOSITORY TAG IMAGE ID CREATED SIZElocalhost/fastapi latest 01e974cabe8b 18 seconds ago 326 MB</span><br></pre></td></tr></table></figure>
 
 <p>下面我们可以开始创建一个简单的 FastAPI 应用程序，并通过容器镜像运行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPI app &#x3D; FastAPI() @app.get(&quot;&#x2F;&quot;)async def root():    return &#123;&quot;message&quot;: &quot;Hello Fedora Magazine!&quot;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPI app = FastAPI() @app.get(&quot;/&quot;)async def root():    return &#123;&quot;message&quot;: &quot;Hello Fedora Magazine!&quot;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>将上面的代码保存到 <code>main.py</code> 文件中，然后执行以下命令开始运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman run --rm -v $PWD:&#x2F;srv:z -p 8000:8000 --name fastapi -d fastapi$ curl http:&#x2F;&#x2F;127.0.0.1:8000&#123;&quot;message&quot;:&quot;Hello Fedora Magazine!&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman run --rm -v $PWD:/srv:z -p 8000:8000 --name fastapi -d fastapi$ curl http://127.0.0.1:8000&#123;&quot;message&quot;:&quot;Hello Fedora Magazine!&quot;</span><br></pre></td></tr></table></figure>
 
 <p>这样，一个基于 FastAPI 的 Web 服务就跑起来了。由于指定了 <code>--reload</code> 参数，一旦 <code>main.py</code> 文件发生了改变，整个应用都会自动重新加载。你可以尝试将返回信息 <code>&quot;Hello Fedora Magazine!&quot;</code> 修改为其它内容，然后观察效果。</p>
 <p>可以使用以下命令停止应用程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman stop fastapi</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman stop fastapi</span><br></pre></td></tr></table></figure>
 
-<h3 id="构建一个小型-Web-服务"><a href="#构建一个小型-Web-服务" class="headerlink" title="构建一个小型 Web 服务"></a>构建一个小型 Web 服务</h3><p>接下来我们会构建一个需要 I/O 操作的应用程序，通过这个应用程序，我们可以看到 FastAPI 自身的特点，以及它在性能上有什么优势（可以在<a target="_blank" rel="noopener" href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=composite&l=z8kflr-v&a=2&f=jz8cg-0-3s-0-3k-6bo-0-0-18y74-8s5c-0">这里</a>参考 FastAPI 和其它 Python Web 框架的对比）。为简单起见，我们直接使用 <code>dnf history</code> 命令的输出来作为这个应用程序使用的数据。</p>
+<h3 id="构建一个小型-Web-服务"><a href="#构建一个小型-Web-服务" class="headerlink" title="构建一个小型 Web 服务"></a>构建一个小型 Web 服务</h3><p>接下来我们会构建一个需要 I&#x2F;O 操作的应用程序，通过这个应用程序，我们可以看到 FastAPI 自身的特点，以及它在性能上有什么优势（可以在<a target="_blank" rel="noopener" href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=composite&l=z8kflr-v&a=2&f=jz8cg-0-3s-0-3k-6bo-0-0-18y74-8s5c-0">这里</a>参考 FastAPI 和其它 Python Web 框架的对比）。为简单起见，我们直接使用 <code>dnf history</code> 命令的输出来作为这个应用程序使用的数据。</p>
 <p>首先将 <code>dnf history</code> 命令的输出保存到文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dnf history | tail --lines&#x3D;+3 &gt; history.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dnf history | tail --lines=+3 &gt; history.txt</span><br></pre></td></tr></table></figure>
 
 <p>在上面的命令中，我们使用 <code>tail</code> 去除了 <code>dnf history</code> 输出内容中无用的表头信息。剩余的每一条 <code>dnf</code> 事务都包括了以下信息：</p>
 <ul>
@@ -115,18 +115,18 @@
 <li><code>date</code>：执行事务的日期和时间</li>
 </ul>
 <p>然后修改 <code>main.py</code> 文件将相关的数据结构添加进去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPIfrom pydantic import BaseModel app &#x3D; FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPIfrom pydantic import BaseModel app = FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str</span><br></pre></td></tr></table></figure>
 
 <p>FastAPI 自带的 <a target="_blank" rel="noopener" href="https://pydantic-docs.helpmanual.io/">pydantic</a> 库让你可以轻松定义一个数据类，其中的类型注释对数据的验证也提供了方便。</p>
 <p>再增加一个函数，用于从 <code>history.txt</code> 文件中读取数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import aiofiles from fastapi import FastAPIfrom pydantic import BaseModel app &#x3D; FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str  async def read_history():    transactions &#x3D; []    async with aiofiles.open(&quot;history.txt&quot;) as f:        async for line in f:            transactions.append(DnfTransaction(                id&#x3D;line.split(&quot;|&quot;)[0].strip(&quot; &quot;),                command&#x3D;line.split(&quot;|&quot;)[1].strip(&quot; &quot;),                date&#x3D;line.split(&quot;|&quot;)[2].strip(&quot; &quot;)))    return transactions</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import aiofiles from fastapi import FastAPIfrom pydantic import BaseModel app = FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str  async def read_history():    transactions = []    async with aiofiles.open(&quot;history.txt&quot;) as f:        async for line in f:            transactions.append(DnfTransaction(                id=line.split(&quot;|&quot;)[0].strip(&quot; &quot;),                command=line.split(&quot;|&quot;)[1].strip(&quot; &quot;),                date=line.split(&quot;|&quot;)[2].strip(&quot; &quot;)))    return transactions</span><br></pre></td></tr></table></figure>
 
 <p>这个函数中使用了 <code>aiofiles</code> 库，这个库提供了一个异步 API 来处理 Python 中的文件，因此打开文件或读取文件的时候不会阻塞其它对服务器的请求。</p>
 <p>最后，修改 <code>root</code> 函数，让它返回事务列表中的数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@app.get(&quot;&#x2F;&quot;)async def read_root():    return await read_history()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@app.get(&quot;/&quot;)async def read_root():    return await read_history()</span><br></pre></td></tr></table></figure>
 
 <p>执行以下命令就可以看到应用程序的输出内容了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http:&#x2F;&#x2F;127.0.0.1:8000 | python -m json.tool[&#123;&quot;id&quot;: 103,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-25 08:35&quot;&#125;,&#123;&quot;id&quot;: 102,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-23 15:46&quot;&#125;,&#123;&quot;id&quot;: 101,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-22 11:32&quot;&#125;,....]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://127.0.0.1:8000 | python -m json.tool[&#123;&quot;id&quot;: 103,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-25 08:35&quot;&#125;,&#123;&quot;id&quot;: 102,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-23 15:46&quot;&#125;,&#123;&quot;id&quot;: 101,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-22 11:32&quot;&#125;,....]</span><br></pre></td></tr></table></figure>
 
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>FastAPI 提供了一种使用 asyncio 构建 Web 服务的简单方法，因此它在 Python Web 框架的生态中日趋流行。要了解 FastAPI 的更多信息，欢迎查阅 <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI 文档</a>。</p>
 <p>本文中的代码可以在 <a target="_blank" rel="noopener" href="https://github.com/cverna/fastapi_app">GitHub</a> 上找到。</p>
@@ -134,7 +134,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/blog/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1.html" data-id="clfmmdh3z003rcvn493a0fmzp" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/blog/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1.html" data-id="clfmmpdq3003rfan4d9428d67" class="article-share-link">Share</a>
       
       
     </footer>

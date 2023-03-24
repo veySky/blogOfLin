@@ -32,7 +32,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -95,7 +95,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在使用mysql时候，某些字段会存储中文字符，或是包含中文字符的串，查询出来的方法是：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">column</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> <span class="keyword">length</span>(<span class="keyword">column</span>)!=<span class="keyword">char_length</span>(<span class="keyword">column</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">column</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> length(<span class="keyword">column</span>)<span class="operator">!=</span><span class="keyword">char_length</span>(<span class="keyword">column</span>)</span><br></pre></td></tr></table></figure>
 
 <p>　　</p>
 <p>原理其实很简单，当字符集为UTF-8，并且字符为中文时，length() 和 char_length() 两个方法返回的结果是不相同的。</p>
@@ -104,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/" data-id="clfmmdh430046cvn47h1yfs1m" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/" data-id="clfmmpdq60046fan4572u91ln" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/sql/" rel="tag">sql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%8A%80%E5%B7%A7/" rel="tag">技巧</a></li></ul>

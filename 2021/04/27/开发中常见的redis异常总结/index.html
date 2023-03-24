@@ -33,7 +33,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -140,19 +140,19 @@
 <p>​       throw new JedisException(ex);</p>
 <p>​      }</p>
 <p>​    }</p>
-<p>由redis.clients.jedis.Protocol.DEFAULT_TIMEOUT = 2000 我们知道默认的超时时间是2秒，这个时间相对于redis操作内存毫秒级的速度来说已经很长，那我们为什么还会遇到</p>
+<p>由redis.clients.jedis.Protocol.DEFAULT_TIMEOUT &#x3D; 2000 我们知道默认的超时时间是2秒，这个时间相对于redis操作内存毫秒级的速度来说已经很长，那我们为什么还会遇到</p>
 <p>ava.net.SocketTimeoutException: Read timed out异常呢？redis操作内存虽然平均毫秒级的，但当数据量很大时未必都如此快速。在我的开发过程中就遇到过一个集合到了</p>
 <p>千万级数据量，一次操作超时时间在秒级是很正常的，而且机器性能很好的情况下已经如此。</p>
 <p>所以在初始化JedisPool时应该根据实际</p>
 <p>情况通过redis.clients.jedis.JedisPoolConfig合理设置连接池参数，通过edisPool构造方法，合理设置socket读取输入InputStream的超时时间。</p>
-<p>pool = new JedisPool(config, host, port, 100000);</p>
+<p>pool &#x3D; new JedisPool(config, host, port, 100000);</p>
 <p>注意第四个参数time out，设置成我们能容忍的超时时间，单位是毫秒。</p>
 <p>设置第四个参数后，问题基本解决。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clfmmdh4f005rcvn42l7a9cvq" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clfmmpdql005rfan42n0ubovl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>

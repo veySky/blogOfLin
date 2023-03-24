@@ -32,7 +32,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -96,14 +96,14 @@
       
         <h1 id="救命用的-git-reflog（恢复-git-reset-–hard）"><a href="#救命用的-git-reflog（恢复-git-reset-–hard）" class="headerlink" title="救命用的 git reflog（恢复 git reset –hard）"></a>救命用的 git reflog（恢复 git reset –hard）</h1><p>今天不小心手贱没有 push 到 remote 就执行了 git reset –hard xxxx，然后新提交的代码都没了。。。。。<br>两天的工作量啊！！</p>
 <p>在万能的度娘的帮助下找到了 git reflog 这个救命用的命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dcf7d96 HEAD@&#123;5&#125;: reset: moving to dcf7d96a348faa49e892b4f2d67c2b1dff342b50</span><br><span class="line">402f567 HEAD@&#123;6&#125;: pull origin master: Merge made by the &#39;recursive&#39; strategy.</span><br><span class="line">eaef723 HEAD@&#123;7&#125;: commit (initial): init project</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dcf7d96 HEAD@&#123;5&#125;: reset: moving to dcf7d96a348faa49e892b4f2d67c2b1dff342b50</span><br><span class="line">402f567 HEAD@&#123;6&#125;: pull origin master: Merge made by the &#x27;recursive&#x27; strategy.</span><br><span class="line">eaef723 HEAD@&#123;7&#125;: commit (initial): init project</span><br></pre></td></tr></table></figure>
 
 <p>执行 git reset –hard eaef723 就可以恢复到需要恢复的 commit 了</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="clfmmdh3q002gcvn4420d0l4s" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2020/11/20/git-reflog-%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95/" data-id="clfmmpdpr002bfan45ulr4c2b" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/reflog/" rel="tag">reflog</a></li></ul>

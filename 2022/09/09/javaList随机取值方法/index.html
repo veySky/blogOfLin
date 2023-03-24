@@ -33,7 +33,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -100,20 +100,23 @@
 <p>这里关键是要记住，不得使用超过列表大小的索引。</p>
 <h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法 1"></a>方法 1</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
  int index = (int) (Math.random()* list.size());
- System.out.println(list.get(index));</code></pre>
+ System.out.println(list.get(index));
+</code></pre>
 <h2 id="方法-2"><a href="#方法-2" class="headerlink" title="方法 2"></a>方法 2</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
  int index = new Random().nextInt(list.size());
- System.out.println(list.get(index));</code></pre>
+ System.out.println(list.get(index));
+</code></pre>
 <h2 id="方法-3"><a href="#方法-3" class="headerlink" title="方法 3"></a>方法 3</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
 
  // shuffle 打乱顺序 
  Collections.shuffle(list);
- System.out.println(list.get(0));</code></pre>
+ System.out.println(list.get(0));
+</code></pre>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/" data-id="clfmmdh3t002ycvn4999vddci" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/" data-id="clfmmpdpv002ufan4fdei2f2h" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/list/" rel="tag">list</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/random/" rel="tag">random</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/shuffle/" rel="tag">shuffle</a></li></ul>

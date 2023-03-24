@@ -33,7 +33,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -101,7 +101,7 @@
 <li>消息处理耗时 如果耗时过长，会导致消息积压。</li>
 <li>幂等性，一般rocketMq消息不会重复，但是还是存在这种可能性。 所以需要对重复消息进行幂等处理<ol>
 <li>幂等的处理逻辑： 需要保证重复消息只处理一次，或者处理效果等效。 一般的处理方案是丢弃重复消息。 </li>
-<li>消息消费是记录消息的唯一id，每次消费消息时检查以下是否已经消费过，是的话直接标记消息已消费。 </li>
+<li>消息消费是记录消息的唯一id，每次消费消息时检查以下是否已经消费过，是的话直接标记消息已消费。</li>
 </ol>
 </li>
 <li>并发问题的控制。 <ol>
@@ -111,14 +111,14 @@
 <li>例子： 通过消费支付消息，统计用户月度累计消费金额。 <ol>
 <li>更新数据，基于用户id和月份，如果更新结果是0，表示记录不存在</li>
 <li>进行数据插入操作。 如果插入失败，则说明由于并发其他线程已经插入数据。直接返回失败，待后续消息重新消费。 </li>
-<li>如果插入成功则直接继续后续流程。 </li>
+<li>如果插入成功则直接继续后续流程。</li>
 </ol>
 </li>
 </ol>
 </li>
 </ol>
 <p>最佳实践： </p>
-<p>​    新增&amp;更新记录防并发策略：</p>
+<p>​	新增&amp;更新记录防并发策略：</p>
 <ol>
 <li>先更新<ol>
 <li>成功直接返回</li>
@@ -132,7 +132,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" data-id="clfmmdh4e005ncvn4bpof4ug1" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" data-id="clfmmpdqk005nfan472ojggbx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/rocketMq/" rel="tag">rocketMq</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E6%B6%88%E8%B4%B9/" rel="tag">消费</a></li></ul>

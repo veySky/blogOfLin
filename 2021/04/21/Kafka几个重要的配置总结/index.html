@@ -7,12 +7,12 @@
   
   <title>Kafka几个重要的配置总结 | lin&#39;s blog home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="注意：配置基于Kafka 0.8.2.1 broker配置#非负整数，用于唯一标识brokerbroker.id 0 #kafka持久化数据存储的路径，可以指定多个，以逗号分隔log.dirs &#x2F;tmp&#x2F;kafka-logs #broker接收连接请求的端口port 9092 #指定zk连接字符串，[hostname:port]以逗号分隔zookeeper.connect #单条消息最大大小控制，">
+  <meta name="description" content="注意：配置基于Kafka 0.8.2.1 broker配置#非负整数，用于唯一标识brokerbroker.id 0 #kafka持久化数据存储的路径，可以指定多个，以逗号分隔log.dirs &#x2F;tmp&#x2F;kafka-logs #broker接收连接请求的端口port 9092 #指定zk连接字符串，[hostname:port]以逗号分隔zookeeper.connect #单">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka几个重要的配置总结">
 <meta property="og:url" content="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="注意：配置基于Kafka 0.8.2.1 broker配置#非负整数，用于唯一标识brokerbroker.id 0 #kafka持久化数据存储的路径，可以指定多个，以逗号分隔log.dirs &#x2F;tmp&#x2F;kafka-logs #broker接收连接请求的端口port 9092 #指定zk连接字符串，[hostname:port]以逗号分隔zookeeper.connect #单条消息最大大小控制，">
+<meta property="og:description" content="注意：配置基于Kafka 0.8.2.1 broker配置#非负整数，用于唯一标识brokerbroker.id 0 #kafka持久化数据存储的路径，可以指定多个，以逗号分隔log.dirs &#x2F;tmp&#x2F;kafka-logs #broker接收连接请求的端口port 9092 #指定zk连接字符串，[hostname:port]以逗号分隔zookeeper.connect #单">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-21T08:51:53.000Z">
 <meta property="article:modified_time" content="2023-03-24T13:32:43.593Z">
@@ -32,7 +32,7 @@
   
 <link rel="stylesheet" href="/blogOfLin/css/style.css">
 
-<meta name="generator" content="Hexo 5.0.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
   <div id="container">
@@ -96,12 +96,12 @@
       
         <p>注意：配置基于Kafka 0.8.2.1</p>
 <h2 id="broker配置"><a href="#broker配置" class="headerlink" title="broker配置"></a>broker配置</h2><p>#非负整数，用于唯一标识broker<br>broker.id 0</p>
-<p>#kafka持久化数据存储的路径，可以指定多个，以逗号分隔<br>log.dirs /tmp/kafka-logs</p>
+<p>#kafka持久化数据存储的路径，可以指定多个，以逗号分隔<br>log.dirs &#x2F;tmp&#x2F;kafka-logs</p>
 <p>#broker接收连接请求的端口<br>port 9092</p>
 <p>#指定zk连接字符串，[hostname:port]以逗号分隔<br>zookeeper.connect</p>
 <p>#单条消息最大大小控制，消费端的最大拉取大小需要略大于该值<br>message.max.bytes 1000000</p>
 <p>#接收网络请求的线程数<br>num.network.threads 3</p>
-<p>#用于执行请求的I/O线程数<br>num.io.threads 8</p>
+<p>#用于执行请求的I&#x2F;O线程数<br>num.io.threads 8</p>
 <p>#用于各种后台处理任务（如文件删除）的线程数<br>background.threads 10</p>
 <p>#待处理请求最大可缓冲的队列大小<br>queued.max.requests 500</p>
 <p>#配置该机器的IP地址<br>host.name </p>
@@ -149,7 +149,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clfmmdh32000hcvn41ja02yrn" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clfmmpdp5000hfan4d6qs151z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
