@@ -1,77 +1,373 @@
-{% extends '_layout.swig' %}
-{% import '_macro/sidebar.swig' as sidebar_template with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blogOfLin/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blogOfLin/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blogOfLin/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blogOfLin/images/logo.svg" color="#222">
 
-{% block title %}
-  {%- set page_title_suffix = ' | ' + title %}
+<link rel="stylesheet" href="/blogOfLin/css/main.css">
 
-  {%- if page.type === 'categories' and not page.title %}
-    {{- __('title.category') + page_title_suffix }}
-  {%- elif page.type === 'tags' and not page.title %}
-    {{- __('title.tag') + page_title_suffix }}
-  {%- elif page.type === 'schedule' and not page.title %}
-    {{- __('title.schedule') + page_title_suffix }}
-  {%- else %}
-    {{- page.title + page_title_suffix }}
-  {%- endif %}
-{% endblock %}
 
-{% block class %}page posts-expand{% endblock %}
+<link rel="stylesheet" href="/blogOfLin/lib/font-awesome/css/all.min.css">
 
-{% block content %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-    {##################}
-    {### PAGE BLOCK ###}
-    {##################}
-    <div class="post-block" lang="{{ page.lang or config.language }}">
-      {% include '_partials/page/page-header.swig' %}
-      {#################}
-      {### PAGE BODY ###}
-      {#################}
-      <div class="post-body{%- if page.direction and page.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}">
-        {%- if page.type === 'tags' %}
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-              {{ _p('counter.tag_cloud', site.tags.length) }}
-            </div>
-            <div class="tag-cloud-tags">
-              {{ tagcloud({
-                min_font   : theme.tagcloud.min,
-                max_font   : theme.tagcloud.max,
-                amount     : theme.tagcloud.amount,
-                color      : true,
-                start_color: theme.tagcloud.start,
-                end_color  : theme.tagcloud.end})
-              }}
-            </div>
-          </div>
-        {% elif page.type === 'categories' %}
-          <div class="category-all-page">
-            <div class="category-all-title">
-              {{ _p('counter.categories', site.categories.length) }}
-            </div>
-            <div class="category-all">
-              {{ list_categories() }}
-            </div>
-          </div>
-        {% elif page.type === 'schedule' %}
-          <div class="event-list">
-          </div>
-          {% include '_scripts/pages/schedule.swig' %}
-        {% else %}
-          {{ page.content }}
-        {%- endif %}
-      </div>
-      {#####################}
-      {### END PAGE BODY ###}
-      {#####################}
+  <meta name="description" content="一、简介1、循环缓冲区的实现原理环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须">
+<meta property="og:type" content="website">
+<meta property="og:title" content="循环缓冲区（RingBuffer）">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="一、简介1、循环缓冲区的实现原理环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp">
+<meta property="article:published_time" content="2021-04-06T10:43:14.000Z">
+<meta property="article:modified_time" content="2021-04-06T10:44:38.593Z">
+<meta property="article:author" content="baishuanglin">
+<meta property="article:tag" content="RingBuffer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp">
+
+<link rel="canonical" href="https://veysky.github.io/blogOfLin/blog/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>循环缓冲区（RingBuffer） | lin's blog home
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    {% include '_partials/page/breadcrumb.swig' %}
-    {######################}
-    {### END PAGE BLOCK ###}
-    {######################}
+  </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/blogOfLin/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lin's blog home</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blogOfLin/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blogOfLin/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">循环缓冲区（RingBuffer）
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><h2 id="1、循环缓冲区的实现原理"><a href="#1、循环缓冲区的实现原理" class="headerlink" title="1、循环缓冲区的实现原理"></a>1、循环缓冲区的实现原理</h2><p>环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须添加互斥保护机制来确保多个用户互斥访问环形缓冲区。</p>
+<h2 id="2、概念"><a href="#2、概念" class="headerlink" title="2、概念"></a>2、概念</h2><p>关于循环缓冲区（Ring Buffer）的概念，其实来自于Linux内核（Maybe），是为解决某些特殊情况下的竞争问题提供了一种免锁的方法。这种特殊的情况就是当生产者和消费者都只有一个，而在其它情况下使用它也是必须要加锁的。对应在Linux内核中有对它的定义：</p>
+<p>struct kfifo { </p>
+<p>​     unsigned char *buffer; </p>
+<p>​     unsigned int size; </p>
+<p>​     unsigned int in; </p>
+<p>​     unsigned int out; </p>
+<p>​     spinlock_t *lock; </p>
+<p>}; </p>
+<p>其中buffer指向存放数据的缓冲区，size是缓冲区的大小，in是写指针下标，out是读指针下标，lock是加到struct kfifo上的自旋锁（上面说不加锁不是这里的锁），防止多个进程并发访问此数据结构。当in&#x3D;&#x3D;out时，说明缓冲区为空；当(in-out)&#x3D;&#x3D;size时，说明缓冲区已满。 </p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp" alt="img"></p>
+<p> 注：我们保有对应的读写指针，当第一批数据（蓝色）完成，第二批数据（红色）会根据当前的写指针位置继续我们的数据操作，当达到最大的Buffer_Size时，会重新回到Buffer的开始端。</p>
+<p>我们更多要说的是Ring Buffer关于在我们在日志处理方面的一个应用，我们知道对于Program来说日志记录提供了故障前应用程序状态的详细信息，在一段时间的运行过程中，会将不断地产生大量的跟踪数据，以及调试信息并持续地将其写入到磁盘上的文本文件中。多亿进行有效的日志记录，需要使用大量的磁盘空间，并且在多线程环境中，所需的磁盘空间会成倍地增加。常规的日志处理来说存在一些问题，比如硬盘空间的可用性，以及在对一个文件写入数据时磁盘 I&#x2F;O 的速度较慢。持续地对磁盘进行写入操作可能会极大地降低程序的性能，导致其运行速度缓慢。通常，可以通过使用日志轮换策略来解决空间问题，将日志保存在几个文件中，当这些文件大小达到某个预定义的字节数时，对它们进行截断和覆盖。</p>
+<p>  所以要克服空间问题并实现磁盘 I&#x2F;O 的最小化，某些程序可以将它们的跟踪数据记录在内存中，仅当请求时才转储这些数据。这个循环的、内存中的缓冲区称为循环缓冲区。它可以将相关的数据保存在内存中，而不是每次都将其写入到磁盘上的文件中。在需要的时候（比如当用户请求将内存数据转储到文件中时、程序检测到一个错误时，或者由于非法的操作或者接收到的信号而引起程序崩溃时）可以将内存中的数据转储到磁盘。循环缓冲区日志记录由一个固定大小的内存缓冲区构成，进程使用这个内存缓冲区进行日志记录。</p>
+<p>  当然现在我们面对的大多是多线程的协同工作，对于日志记录来说，倘若采取传统的加锁机制访问我们的存储文件，这些线程将在获得和释放锁上花费了大部分的时间，所以采取循环缓冲区会是一个不错的办法。通过使得每个线程将数据写入到它自己的内存块，就可以完全避免同步问题。当收到来自用户的转储数据的请求时，每个线程获得一个锁，并将其转储到中心位置。或者分配一个很大的全局内存块，并将其划分为较小的槽位，其中每个槽位都可由一个线程用来进行日志记录。每个线程只能够读写它自己的槽位，而不是整个缓冲区。当每个线程第一次尝试写入数据时，它会尝试寻找一个空的内存槽位，并将其标记为忙碌。当线程获得了一个特定的槽位时，可以将跟踪槽位使用情况的位图中相应的位设置为1，当该线程退出时，重新将这个位设置为 0。在这里需要同时需要维护当前使用的槽位编号的全局列表，以及正在使用它的线程的线程信息。</p>
+<p>  但是这里需要注意的是当一个线程已经死亡，却没有释放相应的槽位，并在垃圾收集器释放该槽位之前，再次使用了这个线程 ID 并为其分配一个新的槽位。对于新的线程来说，检查全局列表并且重用相同的槽位（如果以前的实例使用了它的话），这是非常重要的。因为垃圾收集器线程和写入者线程可能同时尝试修改全局列表，所以同样也需要使用某种锁定机制。</p>
+<p>二、Ring Buffer的优点</p>
+<p>  我们使用 Ring Buffer 这种数据结构，是因为它给我们提供了可靠的消息传递特性。这个理由就足够了，不过它还有一些其他的优点。</p>
+<p>首先，Ring Buffer 比链表要快，因为它是数组，而且有一个容易预测的访问模式。这很不错，对 CPU 高速缓存友好 （CPU-cache-friendly）－数据可以在硬件层面预加载到高速缓存，因此 CPU 不需要经常回到主内存 RAM 里去寻找 Ring Buffer 的下一条数据。</p>
+<p>第二点，Ring Buffer 是一个数组，你可以预先分配内存，并保持数组元素永远有效。这意味着内存垃圾收集（GC）在这种情况下几乎什么也不用做。此外，也不像链表那样每增加一条数据都要创建对象－当这些数据从链表里删除时，这些对象都要被清理掉。</p>
+<p>参考网址：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/sim_szm/article/details/17011545">https://blog.csdn.net/sim_szm&#x2F;article&#x2F;details&#x2F;17011545</a></p>
+<p>图片说明：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/u011046042/article/details/51853535">环形缓冲区的应用ringbuffer - CSDN博客</a></p>
+<p>作者：萧修<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8499d9603544">https://www.jianshu.com/p/8499d9603544</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">1、循环缓冲区的实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">2、概念</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">baishuanglin</p>
+  <div class="site-description" itemprop="description">personal blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blogOfLin/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blogOfLin/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">108</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuanglin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blogOfLin/lib/anime.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blogOfLin/js/utils.js"></script>
+
+<script src="/blogOfLin/js/motion.js"></script>
+
+
+<script src="/blogOfLin/js/schemes/muse.js"></script>
+
+
+<script src="/blogOfLin/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

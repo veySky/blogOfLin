@@ -1,20 +1,1631 @@
-{% extends '_layout.swig' %}
-{% import '_macro/sidebar.swig' as sidebar_template with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blogOfLin/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blogOfLin/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blogOfLin/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blogOfLin/images/logo.svg" color="#222">
 
-{% block title %}{{ title }}{%- if theme.index_with_subtitle and subtitle %} - {{ subtitle }}{%- endif %}{% endblock %}
+<link rel="stylesheet" href="/blogOfLin/css/main.css">
 
-{% block class %}index posts-expand{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/blogOfLin/lib/font-awesome/css/all.min.css">
 
-  {%- for post in page.posts.toArray() %}
-    {{ partial('_macro/post.swig', {post: post, is_index: true}) }}
-  {%- endfor %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-  {% include '_partials/pagination.swig' %}
+  <meta name="description" content="personal blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lin&#39;s blog home">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/page/6/index.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="personal blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="baishuanglin">
+<meta name="twitter:card" content="summary">
 
-{% endblock %}
+<link rel="canonical" href="https://veysky.github.io/blogOfLin/page/6/">
 
-{% block sidebar %}
-  {{ sidebar_template.render(false) }}
-{% endblock %}
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>lin's blog home</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blogOfLin/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lin's blog home</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blogOfLin/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blogOfLin/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/10/16/zookeeper-%E5%AE%A2%E6%88%B7%E7%AB%AFCurator%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">zookeeper 客户端Curator使用详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-16 20:59:15" itemprop="dateCreated datePublished" datetime="2020-10-16T20:59:15+08:00">2020-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:42:21" itemprop="dateModified" datetime="2023-03-24T21:42:21+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Zookeeper/" itemprop="url" rel="index"><span itemprop="name">Zookeeper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。Patrixck Hunt（Zookeeper）以一句“Guava is to Java that Curator to Zookeeper”给Curator予高度评价。<br><strong>引子和趣闻：</strong><br>Zookeeper名字的由来是比较有趣的，下面的片段摘抄自《从PAXOS到ZOOKEEPER分布式一致性原理与实践》一书：<br>Zookeeper最早起源于雅虎的研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型的系统需要依赖一个类似的系统进行分布式协调，但是这些系统往往存在分布式单点问题。所以雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架。在立项初期，考虑到很多项目都是用动物的名字来命名的(例如著名的Pig项目)，雅虎的工程师希望给这个项目也取一个动物的名字。时任研究院的首席科学家Raghu Ramakrishnan开玩笑说：再这样下去，我们这儿就变成动物园了。此话一出，大家纷纷表示就叫动物园管理员吧——因为各个以动物命名的分布式组件放在一起，雅虎的整个分布式系统看上去就像一个大型的动物园了，而Zookeeper正好用来进行分布式环境的协调——于是，Zookeeper的名字由此诞生了。</p>
+<p>Curator无疑是Zookeeper客户端中的瑞士军刀，它译作”馆长”或者’’管理者’’，不知道是不是开发小组有意而为之，笔者猜测有可能这样命名的原因是说明Curator就是Zookeeper的馆长(脑洞有点大：Curator就是动物园的园长)。<br>Curator包含了几个包：<br><strong>curator-framework：</strong>对zookeeper的底层api的一些封装<br><strong>curator-client：</strong>提供一些客户端的操作，例如重试策略等<br><strong>curator-recipes：</strong>封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式计数器、分布式Barrier等<br>Maven依赖(使用curator的版本：2.12.0，对应Zookeeper的版本为：3.4.x，<strong>如果跨版本会有兼容性问题，很有可能导致节点操作失败</strong>)：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Curator的基本Api"><a href="#Curator的基本Api" class="headerlink" title="Curator的基本Api"></a>Curator的基本Api</h1><h2 id="创建会话"><a href="#创建会话" class="headerlink" title="创建会话"></a>创建会话</h2><h3 id="1-使用静态工程方法创建客户端"><a href="#1-使用静态工程方法创建客户端" class="headerlink" title="1.使用静态工程方法创建客户端"></a>1.使用静态工程方法创建客户端</h3><p>一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">RetryPolicy</span> <span class="variable">retryPolicy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExponentialBackoffRetry</span>(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line"><span class="type">CuratorFramework</span> <span class="variable">client</span> <span class="operator">=</span></span><br><span class="line">CuratorFrameworkFactory.newClient(</span><br><span class="line">                        connectionInfo,</span><br><span class="line">                        <span class="number">5000</span>,</span><br><span class="line">                        <span class="number">3000</span>,</span><br><span class="line">                        retryPolicy);</span><br></pre></td></tr></table></figure>
+
+<p>newClient静态工厂方法包含四个主要参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">connectionString</td>
+<td align="center">服务器列表，格式host1:port1,host2:port2,…</td>
+</tr>
+<tr>
+<td align="left">retryPolicy</td>
+<td align="center">重试策略,内建有四种重试策略,也可以自行实现RetryPolicy接口</td>
+</tr>
+<tr>
+<td align="left">sessionTimeoutMs</td>
+<td align="center">会话超时时间，单位毫秒，默认60000ms</td>
+</tr>
+<tr>
+<td align="left">connectionTimeoutMs</td>
+<td align="center">连接创建超时时间，单位毫秒，默认60000ms</td>
+</tr>
+</tbody></table>
+<h3 id="2-使用Fluent风格的Api创建会话"><a href="#2-使用Fluent风格的Api创建会话" class="headerlink" title="2.使用Fluent风格的Api创建会话"></a>2.使用Fluent风格的Api创建会话</h3><p>核心参数变为流式设置，一个列子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">RetryPolicy</span> <span class="variable">retryPolicy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExponentialBackoffRetry</span>(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line"><span class="type">CuratorFramework</span> <span class="variable">client</span> <span class="operator">=</span></span><br><span class="line">CuratorFrameworkFactory.builder()</span><br><span class="line">        .connectString(connectionInfo)</span><br><span class="line">        .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .retryPolicy(retryPolicy)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-创建包含隔离命名空间的会话"><a href="#3-创建包含隔离命名空间的会话" class="headerlink" title="3.创建包含隔离命名空间的会话"></a>3.创建包含隔离命名空间的会话</h3><p>为了实现不同的Zookeeper业务之间的隔离，需要为每个业务分配一个独立的命名空间（<strong>NameSpace</strong>），即指定一个Zookeeper的根路径（官方术语：***为Zookeeper添加“Chroot”特性***）。例如（下面的例子）当客户端指定了独立命名空间为“&#x2F;base”，那么该客户端对Zookeeper上的数据节点的操作都是基于该目录进行的。通过设置Chroot可以将客户端应用与Zookeeper服务端的一课子树相对应，在多个应用共用一个Zookeeper集群的场景下，这对于实现不同应用之间的相互隔离十分有意义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">RetryPolicy</span> <span class="variable">retryPolicy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExponentialBackoffRetry</span>(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">        <span class="type">CuratorFramework</span> <span class="variable">client</span> <span class="operator">=</span></span><br><span class="line">        CuratorFrameworkFactory.builder()</span><br><span class="line">                .connectString(connectionInfo)</span><br><span class="line">                .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">                .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">                .retryPolicy(retryPolicy)</span><br><span class="line">                .namespace(<span class="string">&quot;base&quot;</span>)</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动客户端"><a href="#启动客户端" class="headerlink" title="启动客户端"></a>启动客户端</h2><p>当创建会话成功，得到client的实例然后可以直接调用其start( )方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.start();</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据节点操作"><a href="#数据节点操作" class="headerlink" title="数据节点操作"></a>数据节点操作</h2><h3 id="创建数据节点"><a href="#创建数据节点" class="headerlink" title="创建数据节点"></a>创建数据节点</h3><p><strong>Zookeeper的节点创建模式：</strong></p>
+<ul>
+<li>PERSISTENT：持久化</li>
+<li>PERSISTENT_SEQUENTIAL：持久化并且带序列号</li>
+<li>EPHEMERAL：临时</li>
+<li>EPHEMERAL_SEQUENTIAL：临时并且带序列号</li>
+</ul>
+<p>**创建一个节点，初始内容为空 **</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.create</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果没有设置节点属性，节点创建模式默认为持久化节点，内容默认为空</p>
+<p><strong>创建一个节点，附带初始化内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.create</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;,&quot;init&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），内容为空</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.create</span>()<span class="selector-class">.withMode</span>(CreateMode<span class="selector-class">.EPHEMERAL</span>)<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.create</span>()<span class="selector-class">.withMode</span>(CreateMode<span class="selector-class">.EPHEMERAL</span>)<span class="selector-class">.forPath</span>(&quot;path&quot;,&quot;init&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容，并且自动递归创建父节点</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">client.create()</span><br><span class="line">      .creatingParentContainersIfNeeded()</span><br><span class="line">      .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">      .forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;init&quot;</span>.getBytes());</span><br></pre></td></tr></table></figure>
+
+<p>这个creatingParentContainersIfNeeded()接口非常有用，因为一般情况开发人员在创建一个子节点必须判断它的父节点是否存在，如果不存在直接创建会抛出NoNodeException，使用creatingParentContainersIfNeeded()之后Curator能够自动递归创建所有所需的父节点。</p>
+<h3 id="删除数据节点"><a href="#删除数据节点" class="headerlink" title="删除数据节点"></a>删除数据节点</h3><p><strong>删除一个节点</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.<span class="built_in">delete</span>().forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意，此方法只能删除<strong>叶子节点</strong>，否则会抛出异常。</p>
+<p><strong>删除一个节点，并且递归删除其所有的子节点</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.delete</span>()<span class="selector-class">.deletingChildrenIfNeeded</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除一个节点，强制指定版本进行删除</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.delete</span>()<span class="selector-class">.withVersion</span>(<span class="number">10086</span>)<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除一个节点，强制保证删除</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.delete</span>()<span class="selector-class">.guaranteed</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>guaranteed()接口是一个保障措施，只要客户端会话有效，那么Curator会在后台持续进行删除操作，直到删除节点成功。</p>
+<p><strong>注意：</strong>上面的多个流式接口是可以自由组合的，例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.delete</span>()<span class="selector-class">.guaranteed</span>()<span class="selector-class">.deletingChildrenIfNeeded</span>()<span class="selector-class">.withVersion</span>(<span class="number">10086</span>)<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取数据节点数据"><a href="#读取数据节点数据" class="headerlink" title="读取数据节点数据"></a>读取数据节点数据</h3><p><strong>读取一个节点的数据内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.getData</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意，此方法返的返回值是byte[ ];</p>
+<p><strong>读取一个节点的数据内容，同时获取到该节点的stat</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Stat <span class="built_in">stat</span> = new Stat();</span><br><span class="line">client.getData().storingStatIn(<span class="built_in">stat</span>).forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新数据节点数据"><a href="#更新数据节点数据" class="headerlink" title="更新数据节点数据"></a>更新数据节点数据</h3><p><strong>更新一个节点的数据内容</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.setData</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;,&quot;data&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<p>注意：该接口会返回一个Stat实例</p>
+<p><strong>更新一个节点的数据内容，强制指定版本进行更新</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.setData</span>()<span class="selector-class">.withVersion</span>(<span class="number">10086</span>)<span class="selector-class">.forPath</span>(&quot;path&quot;,&quot;data&quot;<span class="selector-class">.getBytes</span>());</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查节点是否存在"><a href="#检查节点是否存在" class="headerlink" title="检查节点是否存在"></a>检查节点是否存在</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.checkExists</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：该方法返回一个Stat实例，用于检查ZNode是否存在的操作. 可以调用额外的方法(监控或者后台处理)并在最后调用forPath( )指定要操作的ZNode</p>
+<h3 id="获取某个节点的所有子节点路径"><a href="#获取某个节点的所有子节点路径" class="headerlink" title="获取某个节点的所有子节点路径"></a>获取某个节点的所有子节点路径</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client<span class="selector-class">.getChildren</span>()<span class="selector-class">.forPath</span>(&quot;path&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>注意：该方法的返回值为List<String>,获得ZNode的子节点Path列表。 可以调用额外的方法(监控、后台处理或者获取状态watch, background or get stat) 并在最后调用forPath()指定要操作的父ZNode</p>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>CuratorFramework的实例包含inTransaction( )接口方法，调用此方法开启一个ZooKeeper事务. 可以复合create, setData, check, and&#x2F;or delete 等操作然后调用commit()作为一个原子操作提交。一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">client.inTransaction().check().forPath(<span class="string">&quot;path&quot;</span>)</span><br><span class="line">      .and()</span><br><span class="line">      .create().withMode(CreateMode.EPHEMERAL).forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;data&quot;</span>.getBytes())</span><br><span class="line">      .and()</span><br><span class="line">      .setData().withVersion(<span class="number">10086</span>).forPath(<span class="string">&quot;path&quot;</span>,<span class="string">&quot;data2&quot;</span>.getBytes())</span><br><span class="line">      .and()</span><br><span class="line">      .commit();</span><br></pre></td></tr></table></figure>
+
+<h3 id="异步接口"><a href="#异步接口" class="headerlink" title="异步接口"></a>异步接口</h3><p>上面提到的创建、删除、更新、读取等方法都是同步的，Curator提供异步接口，引入了<strong>BackgroundCallback</strong>接口用于处理异步接口调用之后服务端返回的结果信息。<strong>BackgroundCallback</strong>接口中一个重要的回调值为CuratorEvent，里面包含事件类型、响应吗和节点的详细信息。</p>
+<p><strong>CuratorEventType</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">事件类型</th>
+<th align="center">对应CuratorFramework实例的方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CREATE</td>
+<td align="center">#create()</td>
+</tr>
+<tr>
+<td align="center">DELETE</td>
+<td align="center">#delete()</td>
+</tr>
+<tr>
+<td align="center">EXISTS</td>
+<td align="center">#checkExists()</td>
+</tr>
+<tr>
+<td align="center">GET_DATA</td>
+<td align="center">#getData()</td>
+</tr>
+<tr>
+<td align="center">SET_DATA</td>
+<td align="center">#setData()</td>
+</tr>
+<tr>
+<td align="center">CHILDREN</td>
+<td align="center">#getChildren()</td>
+</tr>
+<tr>
+<td align="center">SYNC</td>
+<td align="center">#sync(String,Object)</td>
+</tr>
+<tr>
+<td align="center">GET_ACL</td>
+<td align="center">#getACL()</td>
+</tr>
+<tr>
+<td align="center">SET_ACL</td>
+<td align="center">#setACL()</td>
+</tr>
+<tr>
+<td align="center">WATCHED</td>
+<td align="center">#Watcher(Watcher)</td>
+</tr>
+<tr>
+<td align="center">CLOSING</td>
+<td align="center">#close()</td>
+</tr>
+</tbody></table>
+<p><strong>响应码(#getResultCode())</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">响应码</th>
+<th align="center">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">OK，即调用成功</td>
+</tr>
+<tr>
+<td align="center">-4</td>
+<td align="center">ConnectionLoss，即客户端与服务端断开连接</td>
+</tr>
+<tr>
+<td align="center">-110</td>
+<td align="center">NodeExists，即节点已经存在</td>
+</tr>
+<tr>
+<td align="center">-112</td>
+<td align="center">SessionExpired，即会话过期</td>
+</tr>
+</tbody></table>
+<p>一个异步创建节点的例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Executor</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">2</span>);</span><br><span class="line">client.create()</span><br><span class="line">      .creatingParentsIfNeeded()</span><br><span class="line">      .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">      .inBackground((curatorFramework, curatorEvent) -&gt; &#123;      System.out.println(String.format(<span class="string">&quot;eventType:%s,resultCode:%s&quot;</span>,curatorEvent.getType(),curatorEvent.getResultCode()));</span><br><span class="line">      &#125;,executor)</span><br><span class="line">      .forPath(<span class="string">&quot;path&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果#inBackground()方法不指定executor，那么会默认使用Curator的EventThread去进行异步处理。</p>
+<h2 id="Curator食谱-高级特性"><a href="#Curator食谱-高级特性" class="headerlink" title="Curator食谱(高级特性)"></a>Curator食谱(高级特性)</h2><p><strong>提醒：首先你必须添加curator-recipes依赖，下文仅仅对recipes一些特性的使用进行解释和举例，不打算进行源码级别的探讨</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重要提醒：强烈推荐使用ConnectionStateListener监控连接的状态，当连接状态为LOST，curator-recipes下的所有Api将会失效或者过期，尽管后面所有的例子都没有使用到ConnectionStateListener。</strong></p>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>Zookeeper原生支持通过注册Watcher来进行事件监听，但是开发者需要反复注册(Watcher只能单次注册单次使用)。Cache是Curator中对事件监听的包装，可以看作是对事件监听的本地缓存视图，能够自动为开发者处理反复注册监听。Curator提供了三种Watcher(Cache)来监听结点的变化。</p>
+<h4 id="Path-Cache"><a href="#Path-Cache" class="headerlink" title="Path Cache"></a>Path Cache</h4><p>Path Cache用来监控一个ZNode的子节点. 当一个子节点增加， 更新，删除时， Path Cache会改变它的状态， 会包含最新的子节点， 子节点的数据和状态，而状态的更变将通过PathChildrenCacheListener通知。</p>
+<p>实际使用时会涉及到四个类：</p>
+<ul>
+<li>PathChildrenCache</li>
+<li>PathChildrenCacheEvent</li>
+<li>PathChildrenCacheListener</li>
+<li>ChildData</li>
+</ul>
+<p>通过下面的构造函数创建Path Cache:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">PathChildrenCache</span><span class="params">(CuratorFramework client, String path, <span class="type">boolean</span> cacheData)</span></span><br></pre></td></tr></table></figure>
+
+<p>想使用cache，必须调用它的<code>start</code>方法，使用完后调用<code>close</code>方法。 可以设置StartMode来实现启动的模式</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/10/16/Zookeeper-Docker%E4%B8%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">Zookeeper  Docker下安装部署</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-16 20:27:46" itemprop="dateCreated datePublished" datetime="2020-10-16T20:27:46+08:00">2020-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:45:53" itemprop="dateModified" datetime="2023-03-24T21:45:53+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="单节点安装"><a href="#单节点安装" class="headerlink" title="单节点安装"></a>单节点安装</h1><h2 id="一、-环境说明"><a href="#一、-环境说明" class="headerlink" title="一、 环境说明"></a>一、 环境说明</h2><ul>
+<li>docker: 18.09.9-ce</li>
+<li>zookeeper: 3.5.6</li>
+</ul>
+<h2 id="二、-拉取-zookeeper-镜像"><a href="#二、-拉取-zookeeper-镜像" class="headerlink" title="二、 拉取 zookeeper 镜像"></a>二、 拉取 zookeeper 镜像</h2><ul>
+<li><strong>拉取镜像</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>默认是摘取最新版本 <strong>zookeeper:latest</strong>。</p>
+<ul>
+<li><strong>查看当前镜像</strong></li>
+</ul>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110311103-1391656531.png" alt="img"></p>
+<h2 id="三、-准备工作"><a href="#三、-准备工作" class="headerlink" title="三、 准备工作"></a>三、 准备工作</h2><p>将它部署在 &#x2F;usr&#x2F;local&#x2F;zookeeper 目录下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local &amp;&amp; mkdir zookeeper &amp;&amp; cd zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>创建data目录，用于挂载容器中的数据目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir data</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218110633631-1450938810.png" alt="img"></p>
+<h2 id="四、-正式部署"><a href="#四、-正式部署" class="headerlink" title="四、 正式部署"></a>四、 正式部署</h2><ul>
+<li><strong>部署命令：</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -e TZ=&quot;Asia/Shanghai&quot; -p 2181:2181 -v $PWD/data:/data --name zookeeper --restart always zookeeper</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>命令详细说明：</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-e TZ=&quot;Asia/Shanghai&quot; # 指定上海时区 </span><br><span class="line">-d # 表示在一直在后台运行容器</span><br><span class="line">-p 2181:2181 # 对端口进行映射，将本地2181端口映射到容器内部的2181端口</span><br><span class="line">--name # 设置创建的容器名称</span><br><span class="line">-v # 将本地目录(文件)挂载到容器指定目录；</span><br><span class="line">--restart always #始终重新启动zookeeper</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>查看容器启动情况：</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111223382-266770946.png" alt="img"></p>
+<p>注：状态（STATUS）为Up，说明容器已经启动成功。</p>
+<h2 id="五、-测试"><a href="#五、-测试" class="headerlink" title="五、 测试"></a>五、 测试</h2><ul>
+<li><strong>使用zk命令行客户端连接zk</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --rm --link zookeeper:zookeeper zookeeper zkCli.sh -server zookeeper</span><br></pre></td></tr></table></figure>
+
+<p>说明：<code>-server zookeeper</code>是启动<code>zkCli.sh</code>的参数</p>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111608512-516451599.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/i-beta/1577453/202002/1577453-20200218111735060-225718424.png" alt="img"></p>
+<h2 id="六、-其它命令"><a href="#六、-其它命令" class="headerlink" title="六、 其它命令"></a>六、 其它命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 查看zookeeper容器实例进程信息</span><br><span class="line">docker top zookeeper</span><br><span class="line"></span><br><span class="line"># 停止zookeeper实例进程</span><br><span class="line">docker stop zookeeper</span><br><span class="line"></span><br><span class="line"># 启动zookeeper实例进程</span><br><span class="line">docker start zookeeper</span><br><span class="line"></span><br><span class="line"># 重启zookeeper实例进程</span><br><span class="line">docker restart zookeeper</span><br><span class="line"></span><br><span class="line"># 查看zookeeper进程日志</span><br><span class="line">docker logs -f zookeeper</span><br><span class="line"></span><br><span class="line"># 杀死zookeeper实例进程</span><br><span class="line">docker kill -s KILL zookeeper</span><br><span class="line"></span><br><span class="line"># 移除zookeeper实例</span><br><span class="line">docker rm -f -v zookeeper</span><br></pre></td></tr></table></figure>
+
+<h1 id="集群方式安装"><a href="#集群方式安装" class="headerlink" title="集群方式安装"></a>集群方式安装</h1><p>集群方式选择使用<code>docker-compose</code>来完成。</p>
+<h2 id="一、安装docker-compose"><a href="#一、安装docker-compose" class="headerlink" title="一、安装docker-compose"></a>一、安装docker-compose</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose</span><br><span class="line">chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、配置docker-compose"><a href="#二、配置docker-compose" class="headerlink" title="二、配置docker-compose"></a>二、配置docker-compose</h2><p>编写配置文件，并将其命名为：<code>docker-compose.yml</code>（<code>docker-compose</code>默认配置文件名）<br>配置文件内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;2&#x27;</span><br><span class="line">services:</span><br><span class="line">    zoo1:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo1</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2181:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 1</span><br><span class="line">            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo2:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo2</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2182:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 2</span><br><span class="line">            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">    zoo3:</span><br><span class="line">        image: zookeeper</span><br><span class="line">        restart: always</span><br><span class="line">        container_name: zoo3</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;2183:2181&quot;</span><br><span class="line">        environment:</span><br><span class="line">            ZOO_MY_ID: 3</span><br><span class="line">            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888</span><br></pre></td></tr></table></figure>
+
+<p>此配置文件表示，Docker需要启动三个zookeeper实例，并将2181，2182，2183三个端口号映射到容器内的2181这个端口上。<br><code>ZOO_MY_ID</code>：表示zk服务的ID, 取值为1-255之间的整数，且必须唯一<br><code>ZOO_SERVERS</code>：表示zk集群的主机列表</p>
+<h2 id="三、启动zookeeper集群"><a href="#三、启动zookeeper集群" class="headerlink" title="三、启动zookeeper集群"></a>三、启动zookeeper集群</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>该命令执行需要在<code>docker-compose</code>配置文件的目录下执行，结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker-compose up -d </span><br><span class="line">Starting zoo1 ... done</span><br><span class="line">Starting zoo2 ... done</span><br><span class="line">Starting zoo3 ... done</span><br><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# </span><br></pre></td></tr></table></figure>
+
+<h2 id="四、查看zookeeper集群实例"><a href="#四、查看zookeeper集群实例" class="headerlink" title="四、查看zookeeper集群实例"></a>四、查看zookeeper集群实例</h2><ul>
+<li><strong>通过<code>docker ps</code>查看</strong></li>
+</ul>
+<p>[root@izbp13xko46hud9vfr5s94z ~]# docker ps<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>e53b4c838001 zookeeper “&#x2F;docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888&#x2F;tcp, 0.0.0.0:2181-&gt;2181&#x2F;tcp, 3888&#x2F;tcp zoo1<br>19282fb6f9b4 zookeeper “&#x2F;docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888&#x2F;tcp, 3888&#x2F;tcp, 0.0.0.0:2182-&gt;2181&#x2F;tcp zoo2<br>099b926fa2d3 zookeeper “&#x2F;docker-entrypoint.…” 4 minutes ago Up 44 seconds 2888&#x2F;tcp, 3888&#x2F;tcp, 0.0.0.0:2183-&gt;2181&#x2F;tcp zoo3</p>
+<ul>
+<li><strong>通过<code>docker-compose ps</code>查看</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker-compose ps </span><br><span class="line">Name              Command               State                     Ports                   </span><br><span class="line">------------------------------------------------------------------------------------------</span><br><span class="line">zoo1   /docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2181-&gt;2181/tcp, 2888/tcp, 3888/tcp</span><br><span class="line">zoo2   /docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2182-&gt;2181/tcp, 2888/tcp, 3888/tcp</span><br><span class="line">zoo3   /docker-entrypoint.sh zkSe ...   Up      0.0.0.0:2183-&gt;2181/tcp, 2888/tcp, 3888/tcp</span><br><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# </span><br></pre></td></tr></table></figure>
+
+
+
+<p>注：这个命令需要在<code>docker-compose</code>配置文件下执行。 </p>
+<h2 id="五、管理docker-compose服务"><a href="#五、管理docker-compose服务" class="headerlink" title="五、管理docker-compose服务"></a>五、管理docker-compose服务</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 停止docker-compose服务</span><br><span class="line">docker-compose stop</span><br><span class="line"></span><br><span class="line"># 启动docker-compose服务</span><br><span class="line">docker-compose start </span><br><span class="line"># 重启docker-compose服务</span><br><span class="line">docker-compose restart </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="六、查看zookeeper集群节点主从关系"><a href="#六、查看zookeeper集群节点主从关系" class="headerlink" title="六、查看zookeeper集群节点主从关系"></a>六、查看zookeeper集群节点主从关系</h2><p>使用<code>docker exec -it zoo1 /bin/bash</code>这个命令进入<code>zoo1</code>节点中，之后输入<code>./bin/zkServer.sh statu</code>来查看节点主从关系</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@izbp13xko46hud9vfr5s94z conf]# docker exec -it zoo1 /bin/bash </span><br><span class="line">bash-4.4# ./bin/zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /conf/zoo.cfg</span><br><span class="line">Mode: follower</span><br><span class="line">bash-4.4# </span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/09/28/MySQL-%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%B7%B3%E9%94%AE/" class="post-title-link" itemprop="url">MySQL 主键自增，会出现跳键</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-28 16:49:38" itemprop="dateCreated datePublished" datetime="2020-09-28T16:49:38+08:00">2020-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:38:15" itemprop="dateModified" datetime="2023-03-24T21:38:15+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="https://img-blog.csdnimg.cn/20190124110818112.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTI5NzMxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190124111024876.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTI5NzMxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这个表记录的是设备的心跳数据,记录设备第一次上传心跳的时间和最后一次上传数据的时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	我的sql:</span><br><span class="line">		insert into tb_ap_heart (ap_id, create_time, update_time)</span><br><span class="line">		values (#&#123;apId,jdbcType=VARCHAR&#125;, #&#123;createTime,jdbcType=TIMESTAMP&#125;,</span><br><span class="line">		#&#123;updateTime,jdbcType=TIMESTAMP&#125;)</span><br><span class="line">		ON DUPLICATE KEY UPDATE </span><br><span class="line">		update_time=values(update_time)</span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+
+<p>根据主键只修改更新时间</p>
+<p>通过查找资料发现on duplicate key update有一个特性就是每次是更新的情况下id也是会自增加1的，比如说现在id最大值的153889，然后进行了一次更新操作再进行一次插入操作时，id的值就变成了153891而不是153890。<br>再进行一次插入更新操作,id值就变成了153892<br>我是经过自己测试的,</p>
+<p>我自用的解决方法: 先查询 再更新有改变的数据</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/09/16/%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92/" class="post-title-link" itemprop="url">值传递还是引用传递?</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-16 10:31:47" itemprop="dateCreated datePublished" datetime="2020-09-16T10:31:47+08:00">2020-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:22:38" itemprop="dateModified" datetime="2023-03-24T21:22:38+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>简介：</strong> 答：是值传递。Java编程语言只有值传递参数。 当一个对象实例作为一个参数被传递到方法中时，参数的值就是该对象的引用一个副本。指向同一个对象，对象的内容可以在被调用的方法中改变，但对象的引用(不是引用的副本)是永远不会改变的。</p>
+<p>答：是值传递。<strong>Java编程语言只有值传递参数</strong>。</p>
+<p>当一个对象实例作为一个参数被传递到方法中时，<strong>参数的值</strong>就是该对象的引用一个副本。指向同一个对象，<strong>对象的内容</strong>可以在被调用的方法中<strong>改变</strong>，但<strong>对象的引用</strong>(不是引用的副本)是永远不会改变的。</p>
+<ol>
+<li><p>Java中没有指针，所以也没有引用传递了，仅仅有值传递。不过，可以通过对象的方式来实现引用传递。类似java没有多继承，但可以用多次implements接口实现多继承的功能。</p>
+</li>
+<li><p>在Java应用程序中永远不会传递对象，而只<strong>传递对象的引用</strong>。因此是按<strong>引用传递对象</strong>。但重要的是要区分参数是如何传递的。</p>
+</li>
+<li><p>Java应用程序<strong>按引用传递对象</strong>这一事实并不意味着 Java 应用程序按引用传递参数。参数可以是对象引用，而 Java应用程序是<strong>按值传递对象引用的。</strong></p>
+</li>
+<li><p>Java应用程序中的变量可以为以下两种类型之一：引用类型或基本类型。当作为参数传递给一个方法时，处理这两种类型的方式是相同的。<strong>两种类型都是按值传递的，</strong>没有一种按引用传递。</p>
+</li>
+</ol>
+<p>　　<strong>按值传递</strong>意味着当将一个参数传递给一个函数时，<strong>函数接收的是原始值的一个副本</strong>。因此，如果函数修改了该参数，仅改变副本，而原始值保持不变。</p>
+<p>　　<strong>按引用传递</strong>意味着当将一个参数传递给一个函数时，<strong>函数接收的是原始值的内存地址</strong>，而不是值的副本。因此，如果函数修改了该参数的值，调用代码中的原始值也随之改变。如果函数修改了该参数的地址，调用代码中的原始值不会改变。</p>
+<p>　　<strong>值传递：</strong>方法调用时，实际参数把它的值传递给对应的形式参数，方法执行中，对形式参数值的改变不影响实际参数的值。</p>
+<p>　　<strong>引用传递：</strong>也称为传地址。方法调用时，实际参数的引用(地址，而不是参数的值)被传递给方法中相对应的形式参数，在方法执行中，对形式参数的操作实际上就是对实际参数的操作，方法执行中形式参数值的改变将会影响实际参数的值。</p>
+<p>示例代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">// 在函数中传递的是基本数据类型</span><br><span class="line">public class Test &#123;  </span><br><span class="line">    public static void main(String[] args) &#123;  </span><br><span class="line">        int a = 3;  </span><br><span class="line">        int b = 4;  </span><br><span class="line">        change(a, b);  </span><br><span class="line">  </span><br><span class="line">        System.out.println(&quot;a=&quot; + a); // 3</span><br><span class="line">        System.out.println(&quot;b=&quot; + b); // 4  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    public static void change(int i, int j) &#123;  </span><br><span class="line">        int temp = i;  </span><br><span class="line">        i = j;  </span><br><span class="line">        j = temp;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">结果为:  </span><br><span class="line"></span><br><span class="line">a=3  </span><br><span class="line">b=4  </span><br><span class="line"></span><br><span class="line">原因：参数中传递的是基本数据类型a和b的拷贝，在函数中交换的也是那份拷贝的值，而不是数据本身。</span><br><span class="line">// 在函数中传的是引用数据类型  </span><br><span class="line">public class Test &#123;  </span><br><span class="line">    public static void main(String[] args) &#123;  </span><br><span class="line">        int[] count = &#123; 1, 2, 3, 4, 5 &#125;;  </span><br><span class="line">        change(count);  // 6</span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line">    public static void change(int[] counts) &#123;  </span><br><span class="line">        counts[0] = 6;  </span><br><span class="line">        System.out.println(counts[0]);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125; </span><br><span class="line">  </span><br><span class="line">结果为：</span><br><span class="line"></span><br><span class="line">6</span><br><span class="line">  </span><br><span class="line">原因：在方法中，传递引用数据类型int数组，实际上传递的是该数组的地址值，他们都指向数组对象，在方法中可以改变数组对象的内容。</span><br><span class="line">传递的是对象的引用  </span><br><span class="line">class A &#123;  </span><br><span class="line">    int i = 0;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">public class Test &#123;      </span><br><span class="line">    public static void main(String args[]) &#123;  </span><br><span class="line">        A a = new A();  </span><br><span class="line">        add(a); // 1  </span><br><span class="line">        System.out.println(a.i);  // 0</span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    public static void add(A a) &#123;  </span><br><span class="line">        a = new A();   //如果注释这行，则原值会被修改。</span><br><span class="line">        a.i++;</span><br><span class="line">        System.out.println(a.i); </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果为：</span><br><span class="line"></span><br><span class="line">1</span><br><span class="line">0  </span><br><span class="line"></span><br><span class="line">原因：在该程序中，对象的引用指向的是A，而在add方法中，传递的引用的一份副本则指向了一个新的对象，并对新的对象进行操作。而原来的A对象并没有发生任何变化。引用指向的是还是原来的A对象。 </span><br><span class="line">// String 不改变，数组改变</span><br><span class="line">public class Example &#123;  </span><br><span class="line">    public static void main(String args[]) &#123;  </span><br><span class="line">        Example ex = new Example();  </span><br><span class="line">        ex.change(ex.str, ex.ch);  </span><br><span class="line">        System.out.print(ex.str + &quot; and &quot;); // good and</span><br><span class="line">        System.out.println(ex.ch); // gbc</span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    String str = new String(&quot;good&quot;); // good 是常量，不能改</span><br><span class="line">    </span><br><span class="line">    char[] ch = &#123; &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27; &#125;;  </span><br><span class="line">  </span><br><span class="line">    public void change(String str, char ch[]) &#123;  </span><br><span class="line">        str = &quot;test ok&quot;; // test ok 又是一个常量，也不能改 　　等价于 String str1 = new String(&quot;test ok&quot;);</span><br><span class="line">        ch[0] = &#x27;g&#x27;;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">结果为：</span><br><span class="line"></span><br><span class="line">good and gbc </span><br><span class="line"></span><br><span class="line">原因：String类比较特别，看过String类代码的都知道，String类是final修饰的。所以值是不变的。 </span><br><span class="line">函数中String对象引用的副本指向了另外一个新String对象，而数组对象引用的副本没有改变，而是改变对象中数据的内容。</span><br><span class="line">对于对象类型，也就是Object的子类，如果你在方法中修改了它的成员的值，那个修改是生效的，方法调用结束后，它的成员是新的值；但是如果你把它指向一个其它的对象，方法调用结束后，原来对它的引用并没用指向新的对象。</span><br></pre></td></tr></table></figure>
+
+<p>转载：<a target="_blank" rel="noopener" href="https://github.com/heizemingjun">https://github.com/heizemingjun</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/09/04/Maven-deploy%E6%97%B6%E6%8E%92%E9%99%A4%E6%8C%87%E5%AE%9A%E7%9A%84%E6%9F%90%E4%B8%AAmodule/" class="post-title-link" itemprop="url">Maven deploy时排除指定的某个module</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-04 19:06:35" itemprop="dateCreated datePublished" datetime="2020-09-04T19:06:35+08:00">2020-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:36:16" itemprop="dateModified" datetime="2023-03-24T21:36:16+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在某个module的pom.xml中添加如下配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-deploy-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">skip</span>&gt;</span>true<span class="tag">&lt;/<span class="name">skip</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后在项目根目录执行命令：（强制更新）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean deploy   -U</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/09/02/Maven%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">Maven实用技巧</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-02 10:32:10" itemprop="dateCreated datePublished" datetime="2020-09-02T10:32:10+08:00">2020-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:36:43" itemprop="dateModified" datetime="2023-03-24T21:36:43+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>  Maven是Java项目的实时标准，掌握其使用技巧，可以提高工作效率 </p>
+<h2 id="配置阿里巴巴源"><a href="#配置阿里巴巴源" class="headerlink" title="配置阿里巴巴源"></a>配置阿里巴巴源</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">settings.xml</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">    &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    &lt;url&gt;</span><br><span class="line">        http://maven.aliyun.com/nexus/content/groups/public/</span><br><span class="line">    &lt;/url&gt;</span><br><span class="line">    &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置本地存储位置"><a href="#配置本地存储位置" class="headerlink" title="配置本地存储位置"></a>配置本地存储位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">settings.xml</span><br><span class="line">&lt;localRepository&gt;E:\m2_repository&lt;/localRepository&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="只发布子模块"><a href="#只发布子模块" class="headerlink" title="只发布子模块"></a>只发布子模块</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">maven.deploy.skip</span>&gt;</span>true<span class="tag">&lt;/<span class="name">maven.deploy.skip</span>&gt;</span></span></span><br><span class="line">&lt;/properties&gt;</span><br></pre></td></tr></table></figure>
+
+<p>因为子模块会继承属性，所以需要发布的模块就要修改为<code>true</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">maven.deploy.skip</span>&gt;</span>false<span class="tag">&lt;/<span class="name">maven.deploy.skip</span>&gt;</span></span></span><br><span class="line">&lt;/properties&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="只编译子模块"><a href="#只编译子模块" class="headerlink" title="只编译子模块"></a>只编译子模块</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean package -pl mybaits-util</span><br></pre></td></tr></table></figure>
+
+<h2 id="只发布父Pom"><a href="#只发布父Pom" class="headerlink" title="只发布父Pom"></a>只发布父Pom</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maven deploy -N（不会发布子<span class="variable language_">module</span>）</span><br></pre></td></tr></table></figure>
+
+<h2 id="分析Jar包使用情况"><a href="#分析Jar包使用情况" class="headerlink" title="分析Jar包使用情况"></a>分析Jar包使用情况</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="attr">dependency</span>:analyze</span><br><span class="line">[<span class="variable constant_">WARNING</span>] <span class="title class_">Used</span> undeclared dependencies <span class="attr">found</span>:</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">swagger</span>:swagger-<span class="attr">annotations</span>:<span class="attr">jar</span>:<span class="number">1.5</span><span class="number">.20</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">springfox</span>:springfox-<span class="attr">schema</span>:<span class="attr">jar</span>:<span class="number">2.9</span><span class="number">.2</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">springfox</span>:springfox-swagger-<span class="attr">common</span>:<span class="attr">jar</span>:<span class="number">2.9</span><span class="number">.2</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">springfox</span>:springfox-<span class="attr">spi</span>:<span class="attr">jar</span>:<span class="number">2.9</span><span class="number">.2</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    com.<span class="property">google</span>.<span class="property">guava</span>:<span class="attr">guava</span>:<span class="attr">jar</span>:<span class="number">27.0</span><span class="number">.1</span>-<span class="attr">jre</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    com.<span class="property">fasterxml</span>:<span class="attr">classmate</span>:<span class="attr">jar</span>:<span class="number">1.4</span><span class="number">.0</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">springfox</span>:springfox-<span class="attr">core</span>:<span class="attr">jar</span>:<span class="number">2.9</span><span class="number">.2</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>] <span class="title class_">Unused</span> declared dependencies <span class="attr">found</span>:</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    io.<span class="property">springfox</span>:springfox-<span class="attr">swagger2</span>:<span class="attr">jar</span>:<span class="number">2.9</span><span class="number">.2</span>:provided</span><br><span class="line">[<span class="variable constant_">WARNING</span>]    <span class="attr">junit</span>:<span class="attr">junit</span>:<span class="attr">jar</span>:<span class="number">4.12</span>:compile</span><br></pre></td></tr></table></figure>
+
+<h2 id="分析Jar包传递依赖"><a href="#分析Jar包传递依赖" class="headerlink" title="分析Jar包传递依赖"></a>分析Jar包传递依赖</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="attr">dependency</span>:tree -X</span><br><span class="line">[<span class="variable constant_">INFO</span>] +- org.<span class="property">reflections</span>:<span class="attr">reflections</span>:<span class="attr">jar</span>:<span class="number">0.9</span><span class="number">.11</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  +- com.<span class="property">google</span>.<span class="property">guava</span>:<span class="attr">guava</span>:<span class="attr">jar</span>:<span class="number">27.0</span><span class="number">.1</span>-<span class="attr">jre</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- com.<span class="property">google</span>.<span class="property">guava</span>:<span class="attr">failureaccess</span>:<span class="attr">jar</span>:<span class="number">1.0</span><span class="number">.1</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- com.<span class="property">google</span>.<span class="property">guava</span>:<span class="attr">listenablefuture</span>:<span class="attr">jar</span>:<span class="number">9999.0</span>-empty-to-avoid-conflict-<span class="keyword">with</span>-<span class="attr">guava</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- com.<span class="property">google</span>.<span class="property">code</span>.<span class="property">findbugs</span>:<span class="attr">jsr305</span>:<span class="attr">jar</span>:<span class="number">3.0</span><span class="number">.2</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- org.<span class="property">checkerframework</span>:checker-<span class="attr">qual</span>:<span class="attr">jar</span>:<span class="number">2.5</span><span class="number">.2</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- com.<span class="property">google</span>.<span class="property">errorprone</span>:<span class="attr">error_prone_annotations</span>:<span class="attr">jar</span>:<span class="number">2.2</span><span class="number">.0</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  +- com.<span class="property">google</span>.<span class="property">j2objc</span>:j2objc-<span class="attr">annotations</span>:<span class="attr">jar</span>:<span class="number">1.1</span>:compile</span><br><span class="line">[<span class="variable constant_">INFO</span>] |  |  \- org.<span class="property">codehaus</span>.<span class="property">mojo</span>:animal-sniffer-<span class="attr">annotations</span>:<span class="attr">jar</span>:<span class="number">1.17</span>:compile</span><br></pre></td></tr></table></figure>
+
+<h2 id="本地安装包"><a href="#本地安装包" class="headerlink" title="本地安装包"></a>本地安装包</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="attr">install</span>:install-file -<span class="title class_">Dfile</span>=<span class="attr">D</span>:\projects\deep_learning\text-matching\text-matching-<span class="number">1.0</span>-<span class="variable constant_">SNAPSHOT</span>.<span class="property">jar</span> -<span class="title class_">DgroupId</span>=com.<span class="property">tenmao</span>.<span class="property">dp</span> -<span class="title class_">DartifactId</span>=text-matching -<span class="title class_">Dversion</span>=<span class="number">1.0</span>-<span class="variable constant_">SNAPSHOT</span> -<span class="title class_">Dpackaging</span>=jar</span><br></pre></td></tr></table></figure>
+
+<h2 id="maven-helper插件"><a href="#maven-helper插件" class="headerlink" title="maven helper插件"></a>maven helper插件</h2><p><strong>maven helper</strong>是<strong>Intellij IDEA</strong>必备插件，可以很方便的定位Jar包依赖关系和Jar包冲突 </p>
+<p><img src="https://ask.qcloudimg.com/http-save/yehe-1337634/hse2jxxaui.png?imageView2/2/w/1620" alt="img"></p>
+<p>Maven Helper插件</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https://blog.sonatype.com/2009/02/why-putting-repositories-in-your-poms-is-a-bad-idea/">Why Putting Repositories in your POMs is a Bad Idea</a></li>
+<li><a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https://stackoverflow.com/questions/7446599/how-to-deploy-only-the-sub-modules-using-maven-deploy">How to Deploy only the sub-modules using maven deploy?</a></li>
+<li><a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https://book.douban.com/subject/5345682/">Maven实战</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/09/01/Correct-way-to-compare-floats-or-doubles-in-Java/" class="post-title-link" itemprop="url">Correct way to compare floats or doubles in Java</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-01 14:35:22" itemprop="dateCreated datePublished" datetime="2020-09-01T14:35:22+08:00">2020-09-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:25:25" itemprop="dateModified" datetime="2023-03-24T21:25:25+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Correctly <strong>compare float</strong> or <strong>compare double</strong> is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a> standard format. How the actual storage and conversion works, it is out of scope of this article.</p>
+<p>For now, just understand that during computations and conversions, <em>minor rounding errors</em> can be introduced in these numbers. That’s why it is not advisable to simply rely on the <em>equality operators (&#x3D;&#x3D;)</em> to <strong>compare floating-point numbers</strong>.</p>
+<p>Let’s learn <strong>how to compare float values in Java</strong>.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Table of Contents</span><br><span class="line"></span><br><span class="line">1. Simple comparison [Not recommended]</span><br><span class="line">2. Threshold based comparison [Recommended]</span><br><span class="line">3. Compare with BigDecimal [Recommended]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-Compare-double-–-Simple-comparison-Not-recommended"><a href="#1-Compare-double-–-Simple-comparison-Not-recommended" class="headerlink" title="1. Compare double – Simple comparison [Not recommended]"></a>1. Compare double – Simple comparison [Not recommended]</h2><p>First look at the simple comparison to understand what exactly is wrong with <em>comparing double with &#x3D;&#x3D; operator</em>. In given program, I am creating same floating point number (i.e. <code>1.1</code>) using two methods:</p>
+<ol>
+<li>Add <code>.1</code>, 11 times.</li>
+<li>Multiply <code>.1</code> to 11.</li>
+</ol>
+<p>In theory, both operations should produce the number <code>1.1</code>. And when we compare the results of both methods, it should match.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private` `static` `void` `simpleFloatsComparison() ``&#123;``  ``//Method 1``  ``double` `f1 = .``0``;``  ``for` `(``int` `i = ``1``; i &lt;= ``11``; i++) &#123;``    ``f1 += .``1``;``  ``&#125;` `  ``//Method 2``  ``double` `f2 = .``1` `* ``11``;` `  ``System.out.println(``&quot;f1 = &quot;` `+ f1);``  ``System.out.println(``&quot;f2 = &quot;` `+ f2);` `  ``if` `(f1 == f2)``    ``System.out.println(``&quot;f1 and f2 are equal\n&quot;``);``  ``else``    ``System.out.println(``&quot;f1 and f2 are not equal\n&quot;``);``&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 = ``1.0999999999999999``f2 = ``1.1``f1 and f2 are not equal</span><br></pre></td></tr></table></figure>
+
+<p>Look at the both values printed in console. <code>f1</code> is computed to <code>1.0999999999999999</code>. Its exactly the problem which rounding off causes internally. That’s why, <strong>floating point comparison with <code>&#39;==&#39;</code> operator is not recommended</strong>.</p>
+<h2 id="2-Compare-double-–-Threshold-based-comparison-Recommended"><a href="#2-Compare-double-–-Threshold-based-comparison-Recommended" class="headerlink" title="2. Compare double – Threshold based comparison [Recommended]"></a>2. Compare double – Threshold based comparison [Recommended]</h2><p>Now when we know the problem with equality operator, lets solve it. Using programming, we cannot change the way these floating point numbers are stored or computed. So we have to adapt a solution where we agree that a determine the differences in both values which we can tolerate and still consider the numbers equal. This agreed upon difference in values is called the <strong>threshold</strong> or <strong>epsilon</strong>.</p>
+<p>So now to use ‘<strong>threshold based floating point comparison</strong>‘, we can use the <code>Math.abs()</code> method to compute a difference between the two numbers and compare the difference to a threshold value.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private` `static` `void` `thresholdBasedFloatsComparison() ``&#123;``  ``final` `double` `THRESHOLD = .``0001``;` `  ``//Method 1``  ``double` `f1 = .``0``;``  ``for` `(``int` `i = ``1``; i &lt;= ``11``; i++) &#123;``    ``f1 += .``1``;``  ``&#125;` `  ``//Method 2``  ``double` `f2 = .``1` `* ``11``;` `  ``System.out.println(``&quot;f1 = &quot;` `+ f1);``  ``System.out.println(``&quot;f2 = &quot;` `+ f2);` `  ``if` `(Math.abs(f1 - f2) &lt; THRESHOLD)``    ``System.out.println(``&quot;f1 and f2 are equal using threshold\n&quot;``);``  ``else``    ``System.out.println(``&quot;f1 and f2 are not equal using threshold\n&quot;``);``&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 = ``1.0999999999999999``f2 = ``1.1``f1 and f2 are equal using threshold</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-Compare-double-–-Compare-with-BigDecimal-Recommended"><a href="#3-Compare-double-–-Compare-with-BigDecimal-Recommended" class="headerlink" title="3. Compare double – Compare with BigDecimal [Recommended]"></a>3. Compare double – Compare with BigDecimal [Recommended]</h2><p>In <code>BigDecimal</code> class, you can specify the <strong>rounding mode</strong> and <strong>exact precision</strong> which you want to use. Using the exact precision limit, rounding errors are mostly solved.</p>
+<p>Best part is that <code>BigDecimal</code> numbers are <a target="_blank" rel="noopener" href="https://howtodoinjava.com/java/basics/how-to-make-a-java-class-immutable/">immutable</a> i.e. if you create a <code>BigDecimal</code> BD with value <code>&quot;1.23&quot;</code>, that object will remain <code>&quot;1.23&quot;</code> and can never be changed. This class provide many methods which can be used to do numerical operations on it’s value.</p>
+<p>You can use it’s <code>compareTo()</code> method to compare to <code>BigDecimal</code> numbers. It ignore the scale while comparing.</p>
+<blockquote>
+<p><strong>a.compareTo(b);</strong></p>
+<p>Method returns:</p>
+<p>-1 – if a &lt; b)</p>
+<p>0 – if a &#x3D;&#x3D; b</p>
+<p>1 – if a &gt; b</p>
+</blockquote>
+<p>Never use the <code>equals()</code> method to compare <code>BigDecimal</code> instances. That is because this equals function will compare the scale. If the scale is different, <code>equals()</code> will return false, even if they are the same number mathematically.</p>
+<p>Java program to compare double with <code>BigDecimal</code> class.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private` `static` `void` `testBdEquality() ``&#123;``   ``BigDecimal a = ``new` `BigDecimal(``&quot;2.00&quot;``);``   ``BigDecimal b = ``new` `BigDecimal(``&quot;2.0&quot;``);` `   ``System.out.println(a.equals(b));      ``// false` `   ``System.out.println(a.compareTo(b) == ``0``);  ``// true``&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now just to verify, let’s solve out original problem using <code>BigDecimal</code> class.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private` `static` `void` `bigDecimalComparison() ``&#123;``  ``//Method 1``  ``BigDecimal f1 = ``new` `BigDecimal(``&quot;0.0&quot;``);``  ``BigDecimal pointOne = ``new` `BigDecimal(``&quot;0.1&quot;``);``  ``for` `(``int` `i = ``1``; i &lt;= ``11``; i++) &#123;``    ``f1 = f1.add(pointOne);``  ``&#125;` `  ``//Method 2``  ``BigDecimal f2 = ``new` `BigDecimal(``&quot;0.1&quot;``);``  ``BigDecimal eleven = ``new` `BigDecimal(``&quot;11&quot;``);``  ``f2 = f2.multiply(eleven);` `  ``System.out.println(``&quot;f1 = &quot;` `+ f1);``  ``System.out.println(``&quot;f2 = &quot;` `+ f2);` `  ``if` `(f1.compareTo(f2) == ``0``)``    ``System.out.println(``&quot;f1 and f2 are equal using BigDecimal\n&quot;``);``  ``else``    ``System.out.println(``&quot;f1 and f2 are not equal using BigDecimal\n&quot;``);``&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 = ``1.1``f2 = ``1.1``f1 and f2 are equal using BigDecimal</span><br></pre></td></tr></table></figure>
+
+<p>That’s all about <strong>comparing floating point numbers in java</strong>. Share your thoughts in comments section.</p>
+<p>Happy Learning !!</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/08/31/difference-of-Calendar-day-of-year-and-day-of-month/" class="post-title-link" itemprop="url">difference of Calendar day_of_year and day_of_month</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-31 17:13:38" itemprop="dateCreated datePublished" datetime="2020-08-31T17:13:38+08:00">2020-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:26:18" itemprop="dateModified" datetime="2023-03-24T21:26:18+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>for adding it really makes no difference, but this</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Calendar</span> <span class="variable">c</span> <span class="operator">=</span> Calendar.getInstance();</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_MONTH));</span><br><span class="line">System.out.println(c.get(Calendar.DAY_OF_YEAR));</span><br></pre></td></tr></table></figure>
+
+<p>prints</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">28</span></span><br><span class="line"><span class="number">363</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/08/31/dnf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/08/31/dnf/" class="post-title-link" itemprop="url">DNF</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-31 17:13:38" itemprop="dateCreated datePublished" datetime="2020-08-31T17:13:38+08:00">2020-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:28:02" itemprop="dateModified" datetime="2023-03-24T21:28:02+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">服务器</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="dnf"><a href="#dnf" class="headerlink" title="dnf"></a>dnf</h1><p>新一代的RPM软件包管理器</p>
+<h2 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h2><p><strong>DNF</strong> 是新一代的rpm软件包管理器。他首先出现在 Fedora 18 这个发行版中。而最近，它取代了yum，正式成为 Fedora 22 的包管理器。</p>
+<p>DNF包管理器克服了YUM包管理器的一些瓶颈，提升了包括用户体验，内存占用，依赖分析，运行速度等多方面的内容。DNF使用 RPM, libsolv 和 hawkey 库进行包管理操作。尽管它没有预装在 CentOS 和 RHEL 7 中，但你可以在使用 YUM 的同时使用 DNF 。你可以在这里获得关于 DNF 的更多知识：《 DNF 代替 YUM ，你所不知道的缘由》</p>
+<p>DNF 的最新稳定发行版版本号是 1.0，发行日期是2015年5月11日。 这一版本的额 DNF 包管理器（包括在他之前的所有版本） 都大部分采用 Python 编写，发行许可为GPL v2.</p>
+<h3 id="安装-DNF-包管理器"><a href="#安装-DNF-包管理器" class="headerlink" title="安装 DNF 包管理器"></a>安装 DNF 包管理器</h3><p>DNF 并未默认安装在 RHEL 或 CentOS 7系统中，但是 Fedora 22 已经默认使用 DNF .</p>
+<p>1、为了安装 DNF ，您必须先安装并启用 epel-release 依赖。</p>
+<p>在系统中执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br></pre></td></tr></table></figure>
+
+<p>其实这里并没有强制使用”-y”的理由，相反的，在不使用”-y”的情况下，用户可以在安装过程中查看到底有哪些东西被安装进了系统。但对于没有这个需求的用户，您可以在 YUM 中使用”-y”参数来自动安装所有东西。</p>
+<p>2、使用 epel-release 依赖中的 YUM 命令来安装 DNF 包。在系统中执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install dnf</span><br></pre></td></tr></table></figure>
+
+<p>然后， DNF 包管理器就被成功的安装到你的系统中了。接下来，是时候开始我们的教程了！在这个教程中，您将会学到27个用于 DNF 包管理器的命令。使用这些命令，你可以方便有效的管理您系统中的 RPM 软件包。现在，让我们开始学习 DNF 包管理器的27条常用命令吧！</p>
+<p><strong>查看 DNF 包管理器版本</strong></p>
+<p>用处：该命令用于查看安装在您系统中的 DNF 包管理器的版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf –version</span><br></pre></td></tr></table></figure>
+
+<p>!Check-DNF-Version</p>
+<p><strong>查看系统中可用的 DNF 软件库</strong></p>
+<p>用处：该命令用于显示系统中可用的 DNF 软件库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf repolist</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看系统中可用和不可用的所有的 DNF 软件库</strong></p>
+<p>用处：该命令用于显示系统中可用和不可用的所有的 DNF 软件库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf repolist all</span><br></pre></td></tr></table></figure>
+
+<p><strong>列出所有 RPM 包</strong></p>
+<p>用处：该命令用于列出用户系统上的所有来自软件库的可用软件包和所有已经安装在系统上的软件包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf list</span><br></pre></td></tr></table></figure>
+
+<p><strong>列出所有安装了的 RPM 包</strong></p>
+<p>用处：该命令用于列出所有安装了的 RPM 包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf list installed</span><br></pre></td></tr></table></figure>
+
+<p><strong>列出所有可供安装的 RPM 包</strong></p>
+<p>用处：该命令用于列出来自所有可用软件库的可供安装的软件包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf list available</span><br></pre></td></tr></table></figure>
+
+<p><strong>搜索软件库中的 RPM 包</strong></p>
+<p>用处：当你不知道你想要安装的软件的准确名称时，你可以用该命令来搜索软件包。你需要在”search”参数后面键入软件的部分名称来搜索。（在本例中我们使用”nano”）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf search nano</span><br></pre></td></tr></table></figure>
+
+<p><strong>查找某一文件的提供者</strong></p>
+<p>用处：当你想要查看是哪个软件包提供了系统中的某一文件时，你可以使用这条命令。（在本例中，我们将查找”&#x2F;bin&#x2F;bash”这个文件的提供者）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf provides /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看软件包详情</strong></p>
+<p>用处：当你想在安装某一个软件包之前查看它的详细信息时，这条命令可以帮到你。（在本例中，我们将查看”nano”这一软件包的详细信息）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf info nano</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装软件包</strong></p>
+<p>用处：使用该命令，系统将会自动安装对应的软件及其所需的所有依赖（在本例中，我们将用该命令安装nano软件）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf install nano</span><br></pre></td></tr></table></figure>
+
+<p><strong>升级软件包</strong></p>
+<p>用处：该命令用于升级制定软件包（在本例中，我们将用命令升级”systemd”这一软件包）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf update systemd</span><br></pre></td></tr></table></figure>
+
+<p><strong>检查系统软件包的更新</strong></p>
+<p>用处：该命令用于检查系统中所有软件包的更新</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf check-update</span><br></pre></td></tr></table></figure>
+
+<p><strong>升级所有系统软件包</strong></p>
+<p>用处：该命令用于升级系统中所有有可用升级的软件包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf update 或 dnf upgrade</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除软件包</strong></p>
+<p>用处：删除系统中指定的软件包（在本例中我们将使用命令删除”nano”这一软件包）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf remove nano 或 dnf erase nano</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除无用孤立的软件包</strong></p>
+<p>用处：当没有软件再依赖它们时，某一些用于解决特定软件依赖的软件包将会变得没有存在的意义，该命令就是用来自动移除这些没用的孤立软件包。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf autoremove</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除缓存的无用软件包</strong></p>
+<p>用处：在使用 DNF 的过程中，会因为各种原因在系统中残留各种过时的文件和未完成的编译工程。我们可以使用该命令来删除这些没用的垃圾文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf clean all</span><br></pre></td></tr></table></figure>
+
+<p><strong>获取有关某条命令的使用帮助</strong></p>
+<p>用处：该命令用于获取有关某条命令的使用帮助（包括可用于该命令的参数和该命令的用途说明）（本例中我们将使用命令获取有关命令”clean”的使用帮助）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf help clean</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看所有的 DNF 命令及其用途</strong></p>
+<p>用处：该命令用于列出所有的 DNF 命令及其用途</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf help</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看 DNF 命令的执行历史</strong></p>
+<p>用处：您可以使用该命令来查看您系统上 DNF 命令的执行历史。通过这个手段您可以知道在自您使用 DNF 开始有什么软件被安装和卸载。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf history</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看所有的软件包组</strong></p>
+<p>用处：该命令用于列出所有的软件包组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf grouplist</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装一个软件包组</strong></p>
+<p>用处：该命令用于安装一个软件包组（本例中，我们将用命令安装”Educational Software”这个软件包组）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf groupinstall ‘Educational Software’</span><br></pre></td></tr></table></figure>
+
+<p><strong>升级一个软件包组中的软件包</strong></p>
+<p>用处：该命令用于升级一个软件包组中的软件包（本例中，我们将用命令升级”Educational Software”这个软件包组中的软件）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf groupupdate ‘Educational Software’</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除一个软件包组</strong></p>
+<p>用处：该命令用于删除一个软件包组（本例中，我们将用命令删除”Educational Software”这个软件包组）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf groupremove ‘Educational Software’</span><br></pre></td></tr></table></figure>
+
+<p><strong>从特定的软件包库安装特定的软件</strong></p>
+<p>用处：该命令用于从特定的软件包库安装特定的软件（本例中我们将使用命令从软件包库 epel 中安装 phpmyadmin 软件包）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf –enablerepo=epel install phpmyadmin</span><br></pre></td></tr></table></figure>
+
+<p><strong>更新软件包到最新的稳定发行版</strong></p>
+<p>用处：该命令可以通过所有可用的软件源将已经安装的所有软件包更新到最新的稳定发行版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf distro-sync</span><br></pre></td></tr></table></figure>
+
+<p><strong>重新安装特定软件包</strong></p>
+<p>用处：该命令用于重新安装特定软件包（本例中，我们将使用命令重新安装”nano”这个软件包）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf reinstall nano</span><br></pre></td></tr></table></figure>
+
+<p><strong>回滚某个特定软件的版本</strong></p>
+<p>用处：该命令用于降低特定软件包的版本（如果可能的话）（本例中，我们将使用命令降低”acpid”这个软件包的版本）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf downgrade acpid</span><br></pre></td></tr></table></figure>
+
+<p>样例输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Using metadata from Wed May 20 12:44:59 2015</span><br><span class="line">No match for available package: acpid-2.0.19-5.el7.x86_64</span><br><span class="line">Error: Nothing to do.</span><br></pre></td></tr></table></figure>
+
+<p>原作者注：在执行这条命令的时候， DNF 并没有按照我期望的那样降级指定的软件（“acpid”）。该问题已经上报。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>DNF 包管理器作为 YUM 包管理器的升级替代品，它能自动完成更多的操作。但在我看来，正因如此，所以 DNF 包管理器不会太受那些经验老道的 Linux 系统管理者的欢迎。举例如下：</p>
+<ol>
+<li>在 DNF 中没有 –skip-broken 命令，并且没有替代命令供选择。</li>
+<li>在 DNF 中没有判断哪个包提供了指定依赖的 resolvedep 命令。</li>
+<li>在 DNF 中没有用来列出某个软件依赖包的 deplist 命令。</li>
+<li>当你在 DNF 中排除了某个软件库，那么该操作将会影响到你之后所有的操作，不像在 YUM 下那样，你的排除操作只会咋升级和安装软件时才起作用。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/08/31/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2020/08/31/linux%E6%9E%84%E5%BB%BAweb%E6%9C%8D%E5%8A%A1/" class="post-title-link" itemprop="url">difference of Calendar day_of_year and day_of_month</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-31 17:13:38" itemprop="dateCreated datePublished" datetime="2020-08-31T17:13:38+08:00">2020-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:33:23" itemprop="dateModified" datetime="2023-03-24T21:33:23+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="使用Python-FastAPI构建Web服务"><a href="#使用Python-FastAPI构建Web服务" class="headerlink" title="使用Python FastAPI构建Web服务"></a>使用Python FastAPI构建Web服务</h2><p>FastAPI 是一个使用 Python 编写的 Web 框架，还应用了 Python asyncio 库中最新的优化。本文将会介绍如何搭建基于容器的开发环境，还会展示如何使用 FastAPI 实现一个小型 Web 服务。</p>
+<p><a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI</a> 是一个使用 Python 编写的 Web 框架，还应用了 Python asyncio 库中最新的优化。本文将会介绍如何搭建基于容器的开发环境，还会展示如何使用 FastAPI 实现一个小型 Web 服务。</p>
+<h3 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h3><p>我们将使用 Fedora 作为基础镜像来搭建开发环境，并使用 Dockerfile 为镜像注入 FastAPI、<a target="_blank" rel="noopener" href="https://www.uvicorn.org/">Uvicorn</a> 和 <a target="_blank" rel="noopener" href="https://github.com/Tinche/aiofiles">aiofiles</a> 这几个包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM fedora:32RUN dnf install -y python-pip \    &amp;&amp; dnf clean all \    &amp;&amp; pip install fastapi uvicorn aiofilesWORKDIR /srvCMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--reload&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>在工作目录下保存 <code>Dockerfile</code> 之后，执行 <code>podman</code> 命令构建容器镜像。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman build -t fastapi .$ podman imagesREPOSITORY TAG IMAGE ID CREATED SIZElocalhost/fastapi latest 01e974cabe8b 18 seconds ago 326 MB</span><br></pre></td></tr></table></figure>
+
+<p>下面我们可以开始创建一个简单的 FastAPI 应用程序，并通过容器镜像运行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPI app = FastAPI() @app.get(&quot;/&quot;)async def root():    return &#123;&quot;message&quot;: &quot;Hello Fedora Magazine!&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将上面的代码保存到 <code>main.py</code> 文件中，然后执行以下命令开始运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman run --rm -v $PWD:/srv:z -p 8000:8000 --name fastapi -d fastapi$ curl http://127.0.0.1:8000&#123;&quot;message&quot;:&quot;Hello Fedora Magazine!&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样，一个基于 FastAPI 的 Web 服务就跑起来了。由于指定了 <code>--reload</code> 参数，一旦 <code>main.py</code> 文件发生了改变，整个应用都会自动重新加载。你可以尝试将返回信息 <code>&quot;Hello Fedora Magazine!&quot;</code> 修改为其它内容，然后观察效果。</p>
+<p>可以使用以下命令停止应用程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ podman stop fastapi</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建一个小型-Web-服务"><a href="#构建一个小型-Web-服务" class="headerlink" title="构建一个小型 Web 服务"></a>构建一个小型 Web 服务</h3><p>接下来我们会构建一个需要 I&#x2F;O 操作的应用程序，通过这个应用程序，我们可以看到 FastAPI 自身的特点，以及它在性能上有什么优势（可以在<a target="_blank" rel="noopener" href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=composite&l=z8kflr-v&a=2&f=jz8cg-0-3s-0-3k-6bo-0-0-18y74-8s5c-0">这里</a>参考 FastAPI 和其它 Python Web 框架的对比）。为简单起见，我们直接使用 <code>dnf history</code> 命令的输出来作为这个应用程序使用的数据。</p>
+<p>首先将 <code>dnf history</code> 命令的输出保存到文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dnf history | tail --lines=+3 &gt; history.txt</span><br></pre></td></tr></table></figure>
+
+<p>在上面的命令中，我们使用 <code>tail</code> 去除了 <code>dnf history</code> 输出内容中无用的表头信息。剩余的每一条 <code>dnf</code> 事务都包括了以下信息：</p>
+<ul>
+<li><code>id</code>：事务编号（每次运行一条新事务时该编号都会递增）</li>
+<li><code>command</code>：事务中运行的 <code>dnf</code> 命令</li>
+<li><code>date</code>：执行事务的日期和时间</li>
+</ul>
+<p>然后修改 <code>main.py</code> 文件将相关的数据结构添加进去。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPIfrom pydantic import BaseModel app = FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str</span><br></pre></td></tr></table></figure>
+
+<p>FastAPI 自带的 <a target="_blank" rel="noopener" href="https://pydantic-docs.helpmanual.io/">pydantic</a> 库让你可以轻松定义一个数据类，其中的类型注释对数据的验证也提供了方便。</p>
+<p>再增加一个函数，用于从 <code>history.txt</code> 文件中读取数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import aiofiles from fastapi import FastAPIfrom pydantic import BaseModel app = FastAPI() class DnfTransaction(BaseModel):    id: int    command: str    date: str  async def read_history():    transactions = []    async with aiofiles.open(&quot;history.txt&quot;) as f:        async for line in f:            transactions.append(DnfTransaction(                id=line.split(&quot;|&quot;)[0].strip(&quot; &quot;),                command=line.split(&quot;|&quot;)[1].strip(&quot; &quot;),                date=line.split(&quot;|&quot;)[2].strip(&quot; &quot;)))    return transactions</span><br></pre></td></tr></table></figure>
+
+<p>这个函数中使用了 <code>aiofiles</code> 库，这个库提供了一个异步 API 来处理 Python 中的文件，因此打开文件或读取文件的时候不会阻塞其它对服务器的请求。</p>
+<p>最后，修改 <code>root</code> 函数，让它返回事务列表中的数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@app.get(&quot;/&quot;)async def read_root():    return await read_history()</span><br></pre></td></tr></table></figure>
+
+<p>执行以下命令就可以看到应用程序的输出内容了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://127.0.0.1:8000 | python -m json.tool[&#123;&quot;id&quot;: 103,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-25 08:35&quot;&#125;,&#123;&quot;id&quot;: 102,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-23 15:46&quot;&#125;,&#123;&quot;id&quot;: 101,&quot;command&quot;: &quot;update&quot;,&quot;date&quot;: &quot;2020-05-22 11:32&quot;&#125;,....]</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>FastAPI 提供了一种使用 asyncio 构建 Web 服务的简单方法，因此它在 Python Web 框架的生态中日趋流行。要了解 FastAPI 的更多信息，欢迎查阅 <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI 文档</a>。</p>
+<p>本文中的代码可以在 <a target="_blank" rel="noopener" href="https://github.com/cverna/fastapi_app">GitHub</a> 上找到。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/blogOfLin/page/5/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/blogOfLin/">1</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/5/">5</a><span class="page-number current">6</span>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">baishuanglin</p>
+  <div class="site-description" itemprop="description">personal blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blogOfLin/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blogOfLin/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">108</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuanglin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blogOfLin/lib/anime.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blogOfLin/js/utils.js"></script>
+
+<script src="/blogOfLin/js/motion.js"></script>
+
+
+<script src="/blogOfLin/js/schemes/muse.js"></script>
+
+
+<script src="/blogOfLin/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

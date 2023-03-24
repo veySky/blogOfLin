@@ -1,77 +1,354 @@
-{% extends '_layout.swig' %}
-{% import '_macro/sidebar.swig' as sidebar_template with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blogOfLin/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blogOfLin/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blogOfLin/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blogOfLin/images/logo.svg" color="#222">
 
-{% block title %}
-  {%- set page_title_suffix = ' | ' + title %}
+<link rel="stylesheet" href="/blogOfLin/css/main.css">
 
-  {%- if page.type === 'categories' and not page.title %}
-    {{- __('title.category') + page_title_suffix }}
-  {%- elif page.type === 'tags' and not page.title %}
-    {{- __('title.tag') + page_title_suffix }}
-  {%- elif page.type === 'schedule' and not page.title %}
-    {{- __('title.schedule') + page_title_suffix }}
-  {%- else %}
-    {{- page.title + page_title_suffix }}
-  {%- endif %}
-{% endblock %}
 
-{% block class %}page posts-expand{% endblock %}
+<link rel="stylesheet" href="/blogOfLin/lib/font-awesome/css/all.min.css">
 
-{% block content %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-    {##################}
-    {### PAGE BLOCK ###}
-    {##################}
-    <div class="post-block" lang="{{ page.lang or config.language }}">
-      {% include '_partials/page/page-header.swig' %}
-      {#################}
-      {### PAGE BODY ###}
-      {#################}
-      <div class="post-body{%- if page.direction and page.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}">
-        {%- if page.type === 'tags' %}
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-              {{ _p('counter.tag_cloud', site.tags.length) }}
-            </div>
-            <div class="tag-cloud-tags">
-              {{ tagcloud({
-                min_font   : theme.tagcloud.min,
-                max_font   : theme.tagcloud.max,
-                amount     : theme.tagcloud.amount,
-                color      : true,
-                start_color: theme.tagcloud.start,
-                end_color  : theme.tagcloud.end})
-              }}
-            </div>
-          </div>
-        {% elif page.type === 'categories' %}
-          <div class="category-all-page">
-            <div class="category-all-title">
-              {{ _p('counter.categories', site.categories.length) }}
-            </div>
-            <div class="category-all">
-              {{ list_categories() }}
-            </div>
-          </div>
-        {% elif page.type === 'schedule' %}
-          <div class="event-list">
-          </div>
-          {% include '_scripts/pages/schedule.swig' %}
-        {% else %}
-          {{ page.content }}
-        {%- endif %}
-      </div>
-      {#####################}
-      {### END PAGE BODY ###}
-      {#####################}
+  <meta name="description" content="背景项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。 性能分析VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）《在windows上">
+<meta property="og:type" content="website">
+<meta property="og:title" content="使用性能分析工具定位Spring Boot启动慢问题">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="背景项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。 性能分析VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）《在windows上">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-02T11:03:53.000Z">
+<meta property="article:modified_time" content="2021-04-02T12:17:15.128Z">
+<meta property="article:author" content="baishuanglin">
+<meta property="article:tag" content="性能分析">
+<meta property="article:tag" content="启动慢排查">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://veysky.github.io/blogOfLin/blog/%E4%BD%BF%E7%94%A8%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8DSpring-Boot%E5%90%AF%E5%8A%A8%E6%85%A2%E9%97%AE%E9%A2%98">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>使用性能分析工具定位Spring Boot启动慢问题 | lin's blog home
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    {% include '_partials/page/breadcrumb.swig' %}
-    {######################}
-    {### END PAGE BLOCK ###}
-    {######################}
+  </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/blogOfLin/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lin's blog home</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blogOfLin/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blogOfLin/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">使用性能分析工具定位Spring Boot启动慢问题
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>背景<br>项目最近做了大的改动，添加了大量配置，Spring Boot项目启动时间从原来的100秒变成了400秒以上。从大量无效日志中一时难以看出瓶颈所在。首先需要一款性能分析软件，发现Intel® VTune™ Profiler对项目性能影响甚小。</p>
+<p>性能分析<br>VTune是 Intel 提供的一个强大的应用程序性能分析软件，如何使用只需要看这两篇官方教程。（下载需要注册intel账号）<br>《在windows上面启动》<a target="_blank" rel="noopener" href="https://software.intel.com/en-us/get-started-with-vtune-windows-os">https://software.intel.com/en-us/get-started-with-vtune-windows-os</a><br>《分析Java程序》<a target="_blank" rel="noopener" href="https://software.intel.com/zh-cn/vtune-help-java-code-analysis">https://software.intel.com/zh-cn/vtune-help-java-code-analysis</a><br>为了能够在VTune分析Java项目，首先创建一个启动脚本启动项目，然后在VTune创建一个性能分析项目开启性能监控。<br>start.bat脚本如下，很简单。</p>
+<p> java -jar myboot.jar<br>1</p>
+<p>项目启动后结束性能监控，VTune会自动分析监控结果，在Bottom-up Tab页可以看到哪些方法花费了大量CPU时间。<br>其中Spring的一个matches方法就占用了50秒。</p>
+<p>org.springframework.boot.bind.DefaultPropertyNamePatternsMatcher.matches<br>1</p>
+<p>性能瓶颈<br>查阅DefaultPropertyNamePatternsMatcher.matches源码及资料，matches的作用是根据我们在ConfigurationProperties中设置的prefix的值获取对应的匹配项。<br>由于分库分表后有多个主库与从库，Properties配置了大量不同的数据源。解析这些数据源配置耗费了大量时间，再加上解析后初始化数据源对象。</p>
+<p>spring.datasource.url&#x3D;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3310&#x2F;test<br>spring.datasource.username&#x3D;root<br>spring.datasource.password&#x3D;123456<br>1<br>2<br>3<br>    @Bean(name &#x3D; “masterDataSource”)<br>    @ConfigurationProperties(prefix &#x3D; “spring.datasource”)<br>    public DataSource masterDataSource() {<br>        return DataSourceBuilder.create().type(dataSourceType).build();<br>    }<br>1<br>2<br>3<br>4<br>5<br>根据Spring官方github，matches在匹配prefix值的过程中确实性能欠佳，尤其是prefix越短所花费的匹配时间越长。<br>详见：spring boot startup performance issue when large properties file</p>
+<p>改善<br>matches性能问题在Spring Boot 2中已经得到改善，但项目升Spring Boot 2遥遥无期。<br>既然瓶颈在过多的prefix，首先可以减少prefix配置但治标不治本。最终解决方法为本地调试绕过Spring matches方法，改用测试插件去初始化数据源，将项目启动时间从400秒压缩为100秒左右。<br>————————————————<br>版权声明：本文为CSDN博主「tom3mao」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/j16421881/article/details/105444700">https://blog.csdn.net/j16421881/article/details/105444700</a></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">baishuanglin</p>
+  <div class="site-description" itemprop="description">personal blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blogOfLin/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blogOfLin/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">108</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuanglin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blogOfLin/lib/anime.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blogOfLin/js/utils.js"></script>
+
+<script src="/blogOfLin/js/motion.js"></script>
+
+
+<script src="/blogOfLin/js/schemes/muse.js"></script>
+
+
+<script src="/blogOfLin/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

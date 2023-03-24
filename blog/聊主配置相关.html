@@ -1,77 +1,351 @@
-{% extends '_layout.swig' %}
-{% import '_macro/sidebar.swig' as sidebar_template with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blogOfLin/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blogOfLin/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blogOfLin/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blogOfLin/images/logo.svg" color="#222">
 
-{% block title %}
-  {%- set page_title_suffix = ' | ' + title %}
+<link rel="stylesheet" href="/blogOfLin/css/main.css">
 
-  {%- if page.type === 'categories' and not page.title %}
-    {{- __('title.category') + page_title_suffix }}
-  {%- elif page.type === 'tags' and not page.title %}
-    {{- __('title.tag') + page_title_suffix }}
-  {%- elif page.type === 'schedule' and not page.title %}
-    {{- __('title.schedule') + page_title_suffix }}
-  {%- else %}
-    {{- page.title + page_title_suffix }}
-  {%- endif %}
-{% endblock %}
 
-{% block class %}page posts-expand{% endblock %}
+<link rel="stylesheet" href="/blogOfLin/lib/font-awesome/css/all.min.css">
 
-{% block content %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-    {##################}
-    {### PAGE BLOCK ###}
-    {##################}
-    <div class="post-block" lang="{{ page.lang or config.language }}">
-      {% include '_partials/page/page-header.swig' %}
-      {#################}
-      {### PAGE BODY ###}
-      {#################}
-      <div class="post-body{%- if page.direction and page.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}">
-        {%- if page.type === 'tags' %}
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-              {{ _p('counter.tag_cloud', site.tags.length) }}
-            </div>
-            <div class="tag-cloud-tags">
-              {{ tagcloud({
-                min_font   : theme.tagcloud.min,
-                max_font   : theme.tagcloud.max,
-                amount     : theme.tagcloud.amount,
-                color      : true,
-                start_color: theme.tagcloud.start,
-                end_color  : theme.tagcloud.end})
-              }}
-            </div>
-          </div>
-        {% elif page.type === 'categories' %}
-          <div class="category-all-page">
-            <div class="category-all-title">
-              {{ _p('counter.categories', site.categories.length) }}
-            </div>
-            <div class="category-all">
-              {{ list_categories() }}
-            </div>
-          </div>
-        {% elif page.type === 'schedule' %}
-          <div class="event-list">
-          </div>
-          {% include '_scripts/pages/schedule.swig' %}
-        {% else %}
-          {{ page.content }}
-        {%- endif %}
-      </div>
-      {#####################}
-      {### END PAGE BODY ###}
-      {#####################}
+  <meta name="description" content="聊主等级配置相关123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657chatAnchorLevelMap: #聊主等级配置    &amp;#x27;1&amp;#x27;:        level: 1 #等级        levelName: &amp;qu">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lin&#39;s blog home">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/%E8%81%8A%E4%B8%BB%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%85%B3.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="聊主等级配置相关123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657chatAnchorLevelMap: #聊主等级配置    &amp;#x27;1&amp;#x27;:        level: 1 #等级        levelName: &amp;qu">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-12-09T02:40:01.298Z">
+<meta property="article:modified_time" content="2022-12-05T09:50:47.202Z">
+<meta property="article:author" content="baishuanglin">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://veysky.github.io/blogOfLin/blog/%E8%81%8A%E4%B8%BB%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%85%B3">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | lin's blog home
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    {% include '_partials/page/breadcrumb.swig' %}
-    {######################}
-    {### END PAGE BLOCK ###}
-    {######################}
+  </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/blogOfLin/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lin's blog home</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blogOfLin/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blogOfLin/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="聊主等级配置相关"><a href="#聊主等级配置相关" class="headerlink" title="聊主等级配置相关"></a>聊主等级配置相关</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">chatAnchorLevelMap:</span> <span class="comment">#聊主等级配置</span></span><br><span class="line">    <span class="attr">&#x27;1&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">1</span> <span class="comment">#等级</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人1&quot;</span> <span class="comment">#名称</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人1&quot;</span> <span class="comment">#等级名称（兼容v1版本）</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span>  <span class="comment">#最低通话价格</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">200</span> <span class="comment">#最高通话价格</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">0</span> <span class="comment">#聊主表现分值对应等级关系</span></span><br><span class="line">    <span class="attr">&#x27;2&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">2</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人2&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人2&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren2@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">400</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">21</span></span><br><span class="line">    <span class="attr">&#x27;3&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">3</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人3&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人3&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren3@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">600</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">41</span></span><br><span class="line">    <span class="attr">&#x27;4&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">4</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人4&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人4&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren4@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">800</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">101</span></span><br><span class="line">    <span class="attr">&#x27;5&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人5&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人5&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren5@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">1000</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">501</span></span><br><span class="line">    <span class="attr">&#x27;6&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">6</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人6&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人6&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren6@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">1200</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">1001</span></span><br><span class="line">    <span class="attr">&#x27;7&#x27;:</span></span><br><span class="line">        <span class="attr">level:</span> <span class="number">7</span></span><br><span class="line">        <span class="attr">levelName:</span> <span class="string">&quot;达人7&quot;</span></span><br><span class="line">        <span class="attr">levelShowName:</span> <span class="string">&quot;达人7&quot;</span></span><br><span class="line">        <span class="attr">levelIcon:</span> <span class="string">https://www.iqiyipic.com/ppsxiu/fix/sc/img/daren7@3x.png</span></span><br><span class="line">        <span class="attr">min_call_price:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">max_call_price:</span> <span class="number">2000</span></span><br><span class="line">        <span class="attr">startScore:</span> <span class="number">2000</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="chatAnchor-yml"><a href="#chatAnchor-yml" class="headerlink" title="chatAnchor.yml"></a>chatAnchor.yml</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">chat-anchor:</span></span><br><span class="line">    <span class="attr">chatAnchorGreetingRangeNum:</span> <span class="number">100</span> <span class="comment">#在线打招呼缓存获取数量</span></span><br><span class="line">    <span class="attr">chatAnchorGreetingSelectedNum:</span> <span class="number">30</span> <span class="comment">#筛选后保留数量</span></span><br><span class="line">    <span class="attr">chatAnchorBlackTypeId:</span> <span class="number">110</span>        </span><br><span class="line">    <span class="attr">chatAnchorCycleStartTime:</span> <span class="string">&quot;2022-11-07 00:00:00&quot;</span> <span class="comment">#周期开始时间 需要是周一0点</span></span><br><span class="line">    <span class="attr">callBlackCommonListId:</span> <span class="number">69</span>  <span class="comment">#聊主黑名单通用名单id 线上：110</span></span><br><span class="line">    <span class="attr">chatAnchorAudioPropId:</span> <span class="number">3465</span> <span class="comment">#语音通话道具id</span></span><br><span class="line">    <span class="attr">chatAnchorVideoPropId:</span> <span class="number">3467</span> <span class="comment">#视频通话道具id</span></span><br><span class="line">    <span class="attr">defaultGreetingWordList:</span> <span class="comment">#默认语用于用户给聊主心动</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;对你很感兴趣，去聊一聊吧&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;我不是个主动的人，但不想错过你&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;邀请你一起玩真心话挑战，去看看&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;今天的你们很有缘分哦，去聊一下吧&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;今天她和你比较合拍哦&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&#x27;她认为你很特别，去聊一下吧&#x27;</span></span><br><span class="line">    <span class="attr">chatAnchorLevelJumpUrl:</span> <span class="string">https://test-m-x.pps.tv/html/zt/chat_liverLevel_intro.html?no_titlebar=1</span>  <span class="comment">#聊主等级也跳转地址</span></span><br><span class="line">    <span class="attr">chatAnchorCallWeightAmount:</span> <span class="comment">#聊主通话权重（用于计算在线用户权重）</span></span><br><span class="line">        <span class="attr">&#x27;1&#x27;:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">&#x27;1000&#x27;:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">&#x27;10000&#x27;:</span> <span class="number">200</span></span><br><span class="line">    <span class="attr">chatAnchorSmsWeightAmount:</span> <span class="comment">#聊主短信数量权重（用于计算在线用户权重）</span></span><br><span class="line">        <span class="attr">&#x27;1&#x27;:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">&#x27;10&#x27;:</span> <span class="number">50</span></span><br><span class="line">        <span class="attr">&#x27;50&#x27;:</span> <span class="number">100</span></span><br><span class="line">    <span class="attr">chatAnchorScoreLimitMap:</span> <span class="comment">#聊主表现分获取分值（按次）</span></span><br><span class="line">        <span class="attr">&#x27;call&#x27;:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">&#x27;evaluation&#x27;:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">&#x27;pay_recharge&#x27;:</span> <span class="number">2</span></span><br><span class="line">        <span class="attr">&#x27;pay_consume&#x27;:</span> <span class="number">20</span></span><br><span class="line">    <span class="attr">chatAnchorTrafficLevelMap:</span> <span class="comment">#流量等级配置</span></span><br><span class="line">        <span class="attr">&#x27;10&#x27;:</span></span><br><span class="line">            <span class="attr">level:</span> <span class="number">10</span> <span class="comment"># 流量等级</span></span><br><span class="line">            <span class="attr">autoGreetingNum:</span> <span class="number">10</span> <span class="comment"># 自动打招呼数量</span></span><br><span class="line">            <span class="attr">autoGreetingWeight:</span> <span class="number">10</span> <span class="comment">#自动打招呼权重</span></span><br><span class="line">            <span class="attr">newUserGreetingNum:</span> <span class="number">10</span> <span class="comment">#新用户推荐数</span></span><br><span class="line">            <span class="attr">onlineUserGreetingNum:</span> <span class="number">10</span> <span class="comment">#在线用户推荐数</span></span><br><span class="line">        <span class="attr">&#x27;20&#x27;:</span></span><br><span class="line">            <span class="attr">level:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">autoGreetingNum:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">autoGreetingWeight:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">newUserGreetingNum:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">onlineUserGreetingNum:</span> <span class="number">20</span></span><br><span class="line">        <span class="attr">&#x27;30&#x27;:</span></span><br><span class="line">            <span class="attr">level:</span> <span class="number">30</span></span><br><span class="line">            <span class="attr">autoGreetingNum:</span> <span class="number">30</span></span><br><span class="line">            <span class="attr">autoGreetingWeight:</span> <span class="number">30</span></span><br><span class="line">            <span class="attr">newUserGreetingNum:</span> <span class="number">30</span></span><br><span class="line">            <span class="attr">onlineUserGreetingNum:</span> <span class="number">30</span></span><br><span class="line">        <span class="attr">&#x27;40&#x27;:</span></span><br><span class="line">            <span class="attr">level:</span> <span class="number">40</span></span><br><span class="line">            <span class="attr">autoGreetingNum:</span> <span class="number">40</span></span><br><span class="line">            <span class="attr">autoGreetingWeight:</span> <span class="number">40</span></span><br><span class="line">            <span class="attr">newUserGreetingNum:</span> <span class="number">40</span></span><br><span class="line">            <span class="attr">onlineUserGreetingNum:</span> <span class="number">40</span></span><br></pre></td></tr></table></figure>
+
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%8A%E4%B8%BB%E7%AD%89%E7%BA%A7%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%85%B3"><span class="nav-number">1.</span> <span class="nav-text">聊主等级配置相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chatAnchor-yml"><span class="nav-number">2.</span> <span class="nav-text">chatAnchor.yml</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">baishuanglin</p>
+  <div class="site-description" itemprop="description">personal blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blogOfLin/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blogOfLin/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">108</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">baishuanglin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blogOfLin/lib/anime.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.min.js"></script>
+  <script src="/blogOfLin/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blogOfLin/js/utils.js"></script>
+
+<script src="/blogOfLin/js/motion.js"></script>
+
+
+<script src="/blogOfLin/js/schemes/muse.js"></script>
+
+
+<script src="/blogOfLin/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
