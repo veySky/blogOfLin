@@ -66,105 +66,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-centos安装python3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" class="article-date">
-  <time datetime="2021-07-08T12:57:33.000Z" itemprop="datePublished">2021-07-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/">centos安装python3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>CentOS是经常使用的Linux系统之一，特别是作为服务器使用，其只自带了Python2，但是现在使用更广泛的是Python3，因此需要自行安装，同时为了更方便地安装第三方库，还需要安装pip3。</p>
-<h2 id="一、安装相关依赖"><a href="#一、安装相关依赖" class="headerlink" title="一、安装相关依赖"></a>一、安装相关依赖</h2><p>1.安装环境依赖：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel</span><br></pre></td></tr></table></figure>
-
-<p>2.安装gcc编译器（有可能已经安装）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc -y</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、安装Python3"><a href="#二、安装Python3" class="headerlink" title="二、安装Python3"></a>二、安装Python3</h2><p>以Python3.7为例讲解。</p>
-<p>1.下载Python安装包</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz</span></span><br></pre></td></tr></table></figure>
-
-<p>因为下载很慢，所以可以在本地通过更快的方式下载后再上传到服务器。</p>
-<p>2.将安装包移动到<code>/usr/local</code>文件夹下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv Python<span class="number">-3.7</span><span class="number">.4</span>.tgz /usr/local/</span><br></pre></td></tr></table></figure>
-
-<p>3.在local目录下创建Python3目录</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/python3</span><br></pre></td></tr></table></figure>
-
-<p>4.进入的Python安装包压缩包所在的目录</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br></pre></td></tr></table></figure>
-
-<p>5.解压安装包</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf Python<span class="number">-3.7</span><span class="number">.4</span>.tgz</span><br></pre></td></tr></table></figure>
-
-<p>6.进入解压后的目录</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/Python<span class="number">-3.7</span><span class="number">.4</span>/</span><br></pre></td></tr></table></figure>
-
-<p>7.配置安装目录</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=<span class="regexp">/usr/</span>local/python3</span><br></pre></td></tr></table></figure>
-
-<p>8.编译源码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
-
-<p>9.执行源码安装</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>这一步可能会出现报错<code>ModuleNotFoundError: No module named &#39;_ctypes&#39;</code>，这是因为缺少依赖包<code>libffi-devel</code>，解决方法可参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/CUFEECR/article/details/103093951%E3%80%82">https://blog.csdn.net/CUFEECR/article/details/103093951。</a></p>
-<p>10.创建软连接</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/python3/bin/python3  /usr/bin/python3</span><br></pre></td></tr></table></figure>
-
-<p>11.测试 输入<code>python3</code>打印：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Python <span class="number">3.7</span><span class="number">.4</span> (<span class="keyword">default</span>, Sep  <span class="number">6</span> <span class="number">2020</span>, <span class="number">09</span>:<span class="number">22</span>:<span class="number">23</span>) </span><br><span class="line">[GCC <span class="number">4.8</span><span class="number">.5</span> <span class="number">20150623</span> (Red Hat <span class="number">4.8</span><span class="number">.5</span><span class="number">-39</span>)] on linux</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
-
-<p>即说明Python安装成功。</p>
-<h2 id="二、安装pip3"><a href="#二、安装pip3" class="headerlink" title="二、安装pip3"></a>二、安装pip3</h2><p>1.安装依赖（非必要）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install openssl-devel -y </span><br><span class="line">sudo yum install zlib-devel -y</span><br></pre></td></tr></table></figure>
-
-<p>2.安装setuptools</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/s/setuptools/setuptools-19.6.tar.gz#md5=c607dd118eae682c44ed146367a17e26</span></span><br><span class="line"></span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf setuptools<span class="number">-19.6</span>.tar.gz </span><br><span class="line">cd setuptools<span class="number">-19.6</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">sudo python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
-
-<p>3.安装pip3</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装文件</span><br><span class="line">wget --no-check-certificate https:<span class="comment">//pypi.python.org/packages/source/p/pip/pip-20.2.2.tar.gz#md5=3a73c4188f8dbad6a1e6f6d44d117eeb</span></span><br><span class="line"> </span><br><span class="line"># 解压</span><br><span class="line">tar -zxvf pip<span class="number">-20.2</span><span class="number">.2</span>.tar.gz </span><br><span class="line">cd pip<span class="number">-20.2</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"># 执行安装</span><br><span class="line">python3 setup.py build </span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
-
-<p>4.测试 安装完成后，输入<code>pip3 -V</code>，打印：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="number">20.2</span><span class="number">.2</span> <span class="keyword">from</span> /usr/local/python3/lib/python3<span class="number">.7</span>/site-packages/pip (python <span class="number">3.7</span>)</span><br></pre></td></tr></table></figure>
-
-<p>则说明安装成功，可以正常安装需要的第三方库了，需要注意： 在使用时应该是<code>pip3 xxx</code>，而不是<code>pip xxx</code>，使之与Python2相区别。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/07/08/centos%E5%AE%89%E8%A3%85python3/" data-id="clfmk7jkl001rjun4ayml8no7" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/python3/" rel="tag">python3</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-centos7-安装-mysql" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" class="article-date">
@@ -206,7 +107,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="clfmk7jkk001njun4aovbadwf" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/06/04/centos7-%E5%AE%89%E8%A3%85-mysql/" data-id="clfmkbios001nrxn4hmr1gcox" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/MySql/" rel="tag">MySql</a></li></ul>
@@ -263,7 +164,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="clfmk7jjq0007jun4hl0l36s3" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/27/CentOS%E5%AE%89%E8%A3%85oh-my-zsh%E5%B9%B6%E9%85%8D%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E5%92%8C%E5%91%BD%E4%BB%A4%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" data-id="clfmkbiny0003rxn4d073h0s7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/centos/" rel="tag">centos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/github/" rel="tag">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/oh-my-zsh/" rel="tag">oh-my-zsh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/zsh/" rel="tag">zsh</a></li></ul>
@@ -320,7 +221,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="clfmk7jjg0001jun4flur624k" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" data-id="clfmkbins0001rxn41ncq29lj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Jdk/" rel="tag">Jdk</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
@@ -382,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="clfmk7jlb004jjun43vlr40f1" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/" data-id="clfmkbipi004lrxn41hfs1s7p" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/manager/" rel="tag">manager</a></li></ul>
@@ -437,8 +338,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#110;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;">&#114;&#x6f;&#111;&#116;&#x40;&#x6e;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#121;&#x69;&#110;&#x7a;&#x68;&#101;&#110;&#x67;&#x6a;&#x69;&#x65;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#x6f;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#114;&#103;&#46;&#99;&#110;">&#114;&#x6f;&#x6f;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#114;&#103;&#46;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#111;&#111;&#116;&#x40;&#110;&#111;&#x64;&#101;&#49;&#x30;&#x38;&#x2e;&#121;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#x6e;&#103;&#106;&#x69;&#101;&#46;&#111;&#114;&#103;&#46;&#x63;&#x6e;">&#114;&#111;&#111;&#116;&#x40;&#110;&#111;&#x64;&#101;&#49;&#x30;&#x38;&#x2e;&#121;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#x6e;&#103;&#106;&#x69;&#101;&#46;&#111;&#114;&#103;&#46;&#x63;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#100;&#101;&#x31;&#x30;&#x38;&#x2e;&#121;&#x69;&#110;&#122;&#x68;&#x65;&#110;&#103;&#x6a;&#105;&#101;&#46;&#111;&#x72;&#x67;&#x2e;&#x63;&#x6e;">&#x72;&#111;&#111;&#116;&#64;&#110;&#x6f;&#100;&#101;&#x31;&#x30;&#x38;&#x2e;&#121;&#x69;&#110;&#122;&#x68;&#x65;&#110;&#103;&#x6a;&#105;&#101;&#46;&#111;&#x72;&#x67;&#x2e;&#x63;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 &#x2F;home&#x2F;softwares&#x2F;kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll &#x2F;home&#x2F;softwares&#x2F;kafka-manager&#x2F;</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -508,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="clfmk7jkx002zjun4aadhcj3r" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" data-id="clfmkbip4002zrxn47b8fa1r5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/Kafka-Manager/" rel="tag">Kafka Manager</a></li></ul>
@@ -603,7 +504,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clfmk7jlg0057jun4cdv58t37" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" data-id="clfmkbipn0059rxn4bkz5fdbk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/exception/" rel="tag">exception</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/redis/" rel="tag">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/time-out/" rel="tag">time out</a></li></ul>
@@ -653,7 +554,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="clfmk7jkt002jjun4446s1bti" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" data-id="clfmkbip3002qrxn4ec0wbslh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/maven/" rel="tag">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/module-cycles/" rel="tag">module cycles</a></li></ul>
@@ -755,7 +656,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="clfmk7jlm005tjun43f56asrh" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" data-id="clfmkbipp005irxn4hhmn6ccr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/autoCommit/" rel="tag">autoCommit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
@@ -848,10 +749,77 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clfmk7jjz000hjun42d5f54uv" class="article-share-link">Share</a>
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/" data-id="clfmkbio8000hrxn4faan9wb3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/0-8-2/" rel="tag">0.8.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/config/" rel="tag">config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/kafka/" rel="tag">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-循环缓冲区（RingBuffer）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" class="article-date">
+  <time datetime="2021-04-06T10:43:14.000Z" itemprop="datePublished">2021-04-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blogOfLin/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/">循环缓冲区（RingBuffer）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><h2 id="1、循环缓冲区的实现原理"><a href="#1、循环缓冲区的实现原理" class="headerlink" title="1、循环缓冲区的实现原理"></a>1、循环缓冲区的实现原理</h2><p>环形缓冲区通常有一个读指针和一个写指针。读指针指向环形缓冲区中可读的数据，写指针指向环形缓冲区中可写的缓冲区。通过移动读指针和写指针就可以实现缓冲区的数据读取和写入。在通常情况下，环形缓冲区的读用户仅仅会影响读指针，而写用户仅仅会影响写指针。如果仅仅有一个读用户和一个写用户，那么不需要添加互斥保护机制就可以保证数据的正确性。如果有多个读写用户访问环形缓冲区，那么必须添加互斥保护机制来确保多个用户互斥访问环形缓冲区。</p>
+<h2 id="2、概念"><a href="#2、概念" class="headerlink" title="2、概念"></a>2、概念</h2><p>关于循环缓冲区（Ring Buffer）的概念，其实来自于Linux内核（Maybe），是为解决某些特殊情况下的竞争问题提供了一种免锁的方法。这种特殊的情况就是当生产者和消费者都只有一个，而在其它情况下使用它也是必须要加锁的。对应在Linux内核中有对它的定义：</p>
+<p>struct kfifo { </p>
+<p>​     unsigned char *buffer; </p>
+<p>​     unsigned int size; </p>
+<p>​     unsigned int in; </p>
+<p>​     unsigned int out; </p>
+<p>​     spinlock_t *lock; </p>
+<p>}; </p>
+<p>其中buffer指向存放数据的缓冲区，size是缓冲区的大小，in是写指针下标，out是读指针下标，lock是加到struct kfifo上的自旋锁（上面说不加锁不是这里的锁），防止多个进程并发访问此数据结构。当in==out时，说明缓冲区为空；当(in-out)==size时，说明缓冲区已满。 </p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1506225-292e7f094dcc2f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1034/format/webp" alt="img"></p>
+<p> 注：我们保有对应的读写指针，当第一批数据（蓝色）完成，第二批数据（红色）会根据当前的写指针位置继续我们的数据操作，当达到最大的Buffer_Size时，会重新回到Buffer的开始端。</p>
+<p>我们更多要说的是Ring Buffer关于在我们在日志处理方面的一个应用，我们知道对于Program来说日志记录提供了故障前应用程序状态的详细信息，在一段时间的运行过程中，会将不断地产生大量的跟踪数据，以及调试信息并持续地将其写入到磁盘上的文本文件中。多亿进行有效的日志记录，需要使用大量的磁盘空间，并且在多线程环境中，所需的磁盘空间会成倍地增加。常规的日志处理来说存在一些问题，比如硬盘空间的可用性，以及在对一个文件写入数据时磁盘 I/O 的速度较慢。持续地对磁盘进行写入操作可能会极大地降低程序的性能，导致其运行速度缓慢。通常，可以通过使用日志轮换策略来解决空间问题，将日志保存在几个文件中，当这些文件大小达到某个预定义的字节数时，对它们进行截断和覆盖。</p>
+<p>  所以要克服空间问题并实现磁盘 I/O 的最小化，某些程序可以将它们的跟踪数据记录在内存中，仅当请求时才转储这些数据。这个循环的、内存中的缓冲区称为循环缓冲区。它可以将相关的数据保存在内存中，而不是每次都将其写入到磁盘上的文件中。在需要的时候（比如当用户请求将内存数据转储到文件中时、程序检测到一个错误时，或者由于非法的操作或者接收到的信号而引起程序崩溃时）可以将内存中的数据转储到磁盘。循环缓冲区日志记录由一个固定大小的内存缓冲区构成，进程使用这个内存缓冲区进行日志记录。</p>
+<p>  当然现在我们面对的大多是多线程的协同工作，对于日志记录来说，倘若采取传统的加锁机制访问我们的存储文件，这些线程将在获得和释放锁上花费了大部分的时间，所以采取循环缓冲区会是一个不错的办法。通过使得每个线程将数据写入到它自己的内存块，就可以完全避免同步问题。当收到来自用户的转储数据的请求时，每个线程获得一个锁，并将其转储到中心位置。或者分配一个很大的全局内存块，并将其划分为较小的槽位，其中每个槽位都可由一个线程用来进行日志记录。每个线程只能够读写它自己的槽位，而不是整个缓冲区。当每个线程第一次尝试写入数据时，它会尝试寻找一个空的内存槽位，并将其标记为忙碌。当线程获得了一个特定的槽位时，可以将跟踪槽位使用情况的位图中相应的位设置为1，当该线程退出时，重新将这个位设置为 0。在这里需要同时需要维护当前使用的槽位编号的全局列表，以及正在使用它的线程的线程信息。</p>
+<p>  但是这里需要注意的是当一个线程已经死亡，却没有释放相应的槽位，并在垃圾收集器释放该槽位之前，再次使用了这个线程 ID 并为其分配一个新的槽位。对于新的线程来说，检查全局列表并且重用相同的槽位（如果以前的实例使用了它的话），这是非常重要的。因为垃圾收集器线程和写入者线程可能同时尝试修改全局列表，所以同样也需要使用某种锁定机制。</p>
+<p>二、Ring Buffer的优点</p>
+<p>  我们使用 Ring Buffer 这种数据结构，是因为它给我们提供了可靠的消息传递特性。这个理由就足够了，不过它还有一些其他的优点。</p>
+<p>首先，Ring Buffer 比链表要快，因为它是数组，而且有一个容易预测的访问模式。这很不错，对 CPU 高速缓存友好 （CPU-cache-friendly）－数据可以在硬件层面预加载到高速缓存，因此 CPU 不需要经常回到主内存 RAM 里去寻找 Ring Buffer 的下一条数据。</p>
+<p>第二点，Ring Buffer 是一个数组，你可以预先分配内存，并保持数组元素永远有效。这意味着内存垃圾收集（GC）在这种情况下几乎什么也不用做。此外，也不像链表那样每增加一条数据都要创建对象－当这些数据从链表里删除时，这些对象都要被清理掉。</p>
+<p>参考网址：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/sim_szm/article/details/17011545">https://blog.csdn.net/sim_szm/article/details/17011545</a></p>
+<p>图片说明：</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://blog.csdn.net/u011046042/article/details/51853535">环形缓冲区的应用ringbuffer - CSDN博客</a></p>
+<p>作者：萧修<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8499d9603544">https://www.jianshu.com/p/8499d9603544</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/2021/04/06/%E5%BE%AA%E7%8E%AF%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%88RingBuffer%EF%BC%89/" data-id="clfmkbipn005crxn48muceevb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogOfLin/tags/RingBuffer/" rel="tag">RingBuffer</a></li></ul>
 
     </footer>
   </div>
@@ -904,7 +872,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/09/">September 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2020/08/">August 2020</a></li></ul>
     </div>
   </div>
 
@@ -915,10 +883,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/blogOfLin/2022/12/05/%E8%81%8A%E4%B8%BB%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%85%B3/">(no title)</a>
-          </li>
         
           <li>
             <a href="/blogOfLin/2022/11/18/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map/">How to find the Entry with largest Value in a Java Map</a>
@@ -934,6 +898,10 @@
         
           <li>
             <a href="/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/">mysql时间获取周日月季度起止时间</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2022/07/14/hive%E6%9F%A5%E8%AF%A2%E6%97%B6%E4%BD%BF%E7%94%A8%E4%B8%AD%E6%96%87%E5%88%AB%E5%90%8D/">hive查询时使用中文别名</a>
           </li>
         
       </ul>
