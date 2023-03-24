@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>How to find the Entry with largest Value in a Java Map | lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="How to find the Entry with largest Value in a Java Map Last Updated : 13 Sep, 2021  Read Discuss Given a map in Java, the task is to find out the entry in this map with the highest value.  Illustratio">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How to find the Entry with largest Value in a Java Map">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="How to find the Entry with largest Value in a Java Map Last Updated : 13 Sep, 2021  Read Discuss Given a map in Java, the task is to find out the entry in this map with the highest value.  Illustratio">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-18T08:43:17.000Z">
+<meta property="article:modified_time" content="2022-11-18T08:45:10.018Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/blog/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map.html" class="article-date">
+  <time datetime="2022-11-18T08:43:17.000Z" itemprop="datePublished">2022-11-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      How to find the Entry with largest Value in a Java Map
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="How-to-find-the-Entry-with-largest-Value-in-a-Java-Map"><a href="#How-to-find-the-Entry-with-largest-Value-in-a-Java-Map" class="headerlink" title="How to find the Entry with largest Value in a Java Map"></a>How to find the Entry with largest Value in a Java Map</h1><ul>
+<li>Last Updated : 13 Sep, 2021</li>
+</ul>
+<p>Read</p>
+<p>Discuss</p>
+<p>Given a <a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/map-interface-java-examples/">map in Java</a>, the task is to find out the entry in this map with the highest value. </p>
+<p><strong>Illustration:</strong> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Input  : Map &#x3D; &#123;ABC &#x3D; 10, DEF &#x3D; 30, XYZ &#x3D; 20&#125;</span><br><span class="line">Output : DEF &#x3D; 30</span><br><span class="line">Input  : Map &#x3D; &#123;1 &#x3D; 40, 2 &#x3D; 30, 3 &#x3D; 60&#125;</span><br><span class="line">Output : 3 &#x3D; 60</span><br></pre></td></tr></table></figure>
+
+<p><strong>Methods:</strong> There can be several approaches to achieve the goal that are listed as follows: </p>
+<ol>
+<li>Simple iterative approach via for each loop</li>
+<li>Using max() method from Collections class</li>
+<li>Using the concept of Streams introduced in Java 8</li>
+</ol>
+<p>Now we will discuss the above-proposed methods alongside procedure and implementing them via clean java programs.</p>
+<p><strong>Method 1:</strong> Using iterative approach for each loop</p>
+<p><strong>Approach:</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/iterate-map-java/">Iterate the map entry by entry</a></li>
+<li>Store the first entry in a reference variable to compare to initially.</li>
+<li>If the current entry’s value is greater than the reference entry’s value, then store the current entry as the reference entry.</li>
+<li>Repeat this process for all the entries in the map.</li>
+<li>In the end, the reference variable has the required entry with the highest value in the map.</li>
+<li>Print this entry</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for (Map.Entry entry : map.entrySet()) </span><br><span class="line">&#123; &#x2F;&#x2F; Operations &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example:</strong></p>
+<ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java program to Find Entry</span></span><br><span class="line"><span class="comment">// with the Highest Value in Map</span></span><br><span class="line"><span class="comment">// Using Comparators in Map interface</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Importing all utility classes</span></span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Main class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GFG</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method 1</span></span><br><span class="line">    <span class="comment">// Find the entry with highest value</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;K, V extends Comparable&lt;V&gt; &gt;</span><br><span class="line">        Map.Entry&lt;K, V&gt;</span><br><span class="line">        getMaxEntryInMapBasedOnValue(Map&lt;K, V&gt; map)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// To store the result</span></span><br><span class="line">        Map.Entry&lt;K, V&gt; entryWithMaxValue = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Iterate in the map to find the required entry</span></span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;K, V&gt; currentEntry :</span><br><span class="line">            map.entrySet()) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (</span><br><span class="line">                <span class="comment">// If this is the first entry, set result as</span></span><br><span class="line">                <span class="comment">// this</span></span><br><span class="line">                entryWithMaxValue == <span class="keyword">null</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// If this entry&#x27;s value is more than the</span></span><br><span class="line">                <span class="comment">// max value Set this entry as the max</span></span><br><span class="line">                || currentEntry.getValue().compareTo(</span><br><span class="line">                    entryWithMaxValue.getValue())</span><br><span class="line">                    &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">                entryWithMaxValue = currentEntry;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Return the entry with highest value</span></span><br><span class="line">        <span class="keyword">return</span> entryWithMaxValue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method 2</span></span><br><span class="line">    <span class="comment">// To print the map</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Map&lt;String, Integer&gt; map)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        System.out.print(<span class="string">&quot;Map: &quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If map does not contain any value</span></span><br><span class="line">        <span class="keyword">if</span> (map.isEmpty()) &#123;</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;[]&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(map);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method 3</span></span><br><span class="line">    <span class="comment">// Main driver method</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Creating a Map</span></span><br><span class="line">        <span class="comment">// Declaring object of string and integer type</span></span><br><span class="line">        Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Inserting elements in the Map object</span></span><br><span class="line">        <span class="comment">// using put() method</span></span><br><span class="line">        <span class="comment">// Custom input element addition</span></span><br><span class="line">        map.put(<span class="string">&quot;ABC&quot;</span>, <span class="number">10</span>);</span><br><span class="line">        map.put(<span class="string">&quot;DEF&quot;</span>, <span class="number">30</span>);</span><br><span class="line">        map.put(<span class="string">&quot;XYZ&quot;</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Calling method 2 to</span></span><br><span class="line">        <span class="comment">// print the map</span></span><br><span class="line">        print(map);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Calling method 1 to</span></span><br><span class="line">        <span class="comment">// find the entry with highest value and</span></span><br><span class="line">        <span class="comment">// print on the console</span></span><br><span class="line">        System.out.println(</span><br><span class="line">            <span class="string">&quot;Entry with highest value: &quot;</span></span><br><span class="line">            + getMaxEntryInMapBasedOnValue(map));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map: &#123;ABC&#x3D;10, DEF&#x3D;30, XYZ&#x3D;20&#125;</span><br><span class="line">Entry with highest value: DEF&#x3D;30</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Method 2:</strong> Using max() method from Collections class without lambda expression </p>
+<p><strong>Example:</strong></p>
+<ul>
+<li>Java</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Java Program to Find Entry with largest Value in Map</span><br><span class="line">&#x2F;&#x2F; Using max() method from Collections class</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Importing required classes</span><br><span class="line">import java.util.*;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; main class</span><br><span class="line">class GFG &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Main driver method</span><br><span class="line">    public static void main(String[] args)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Creating HashMap</span><br><span class="line">        &#x2F;&#x2F; Declaring objects of string and integer type</span><br><span class="line">        HashMap&lt;Integer, Integer&gt; map</span><br><span class="line">            &#x3D; new HashMap&lt;Integer, Integer&gt;();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Inserting elements in the Map</span><br><span class="line">        &#x2F;&#x2F; using put() method</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Custom input addition</span><br><span class="line">        map.put(1, 4);</span><br><span class="line">        map.put(2, 5);</span><br><span class="line">        map.put(3, 7);</span><br><span class="line">        map.put(4, 2);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Using Collections.max() method returning max</span><br><span class="line">        &#x2F;&#x2F; value in HashMap and storing in a integer</span><br><span class="line">        &#x2F;&#x2F; variable</span><br><span class="line">        int maxValueInMap &#x3D; (Collections.max(map.values()));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Iterate through HashMap</span><br><span class="line">        for (Entry&lt;Integer, Integer&gt; entry :</span><br><span class="line">            map.entrySet()) &#123;</span><br><span class="line"></span><br><span class="line">            if (entry.getValue() &#x3D;&#x3D; maxValueInMap) &#123;</span><br><span class="line"></span><br><span class="line">                &#x2F;&#x2F; Print the key with max value</span><br><span class="line">                System.out.println(entry.getKey());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3</span><br></pre></td></tr></table></figure>
+
+<p> <strong>Method 3:</strong> Using the concept of Streams introduced in Java 8</p>
+<ul>
+<li>Java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java Program to Find Entry with largest Value in Map</span></span><br><span class="line"><span class="comment">// Using concept of Streams</span></span><br><span class="line"><span class="keyword">import</span> java.util.stream.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Main class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GFG</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method 1</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Entries in our map</span></span><br><span class="line">        Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        map.put(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;23&quot;</span>);</span><br><span class="line">        map.put(<span class="string">&quot;F&quot;</span>, <span class="string">&quot;43&quot;</span>);</span><br><span class="line">        map.put(<span class="string">&quot;C&quot;</span>, <span class="string">&quot;56&quot;</span>);</span><br><span class="line">        map.put(<span class="string">&quot;Z&quot;</span>, <span class="string">&quot;04&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Printing the largest value in map by</span></span><br><span class="line">        <span class="comment">// calling above method</span></span><br><span class="line">        System.out.print(map.maxUsingStreamAndLambda());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method 2</span></span><br><span class="line">    <span class="keyword">public</span> &lt;String, String&gt;</span><br><span class="line">        extends Comparable&lt;String&gt; &gt; maxUsingStreamAndLambda(</span><br><span class="line">                    Map&lt;String, String&gt; map)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Using lambda operation over streams</span></span><br><span class="line">        Map&lt;String, String&gt; maxEntry</span><br><span class="line">            = map.entrySet().stream().max(</span><br><span class="line">                (String e1, String e2)</span><br><span class="line">                    -&gt; e1.getValue().compareTo(</span><br><span class="line">                        <span class="number">0e2</span>.getValue()));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Returning the maximum element from map</span></span><br><span class="line">        <span class="keyword">return</span> maxEntry.get().getValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/blog/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map.html" data-id="clfmjjhru0008gin47e8jd0hy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/03/">March 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/02/">February 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2023/03/24/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E9%94%99%E8%AF%AF%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/MurmurHash/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/github%20%E7%9B%B8%E5%85%B3%E9%A1%B9%E7%9B%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

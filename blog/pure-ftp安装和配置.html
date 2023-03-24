@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>pure-ftp安装和配置 | lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Pure-FTPd 是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在CentOS中安装与使用Pure-FTPd。 1.安装Pure-FTPd1yum -y install pure-ftpd  2.配置Pure-FTPd1vim &#x2F;etc&#x2F;pure-ftpd&#x2F;pure-ftpd.co">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pure-ftp安装和配置">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="Pure-FTPd 是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在CentOS中安装与使用Pure-FTPd。 1.安装Pure-FTPd1yum -y install pure-ftpd  2.配置Pure-FTPd1vim &#x2F;etc&#x2F;pure-ftpd&#x2F;pure-ftpd.co">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-02-10T07:26:55.000Z">
+<meta property="article:modified_time" content="2021-02-10T07:27:15.358Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/blog/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE.html" class="article-date">
+  <time datetime="2021-02-10T07:26:55.000Z" itemprop="datePublished">2021-02-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      pure-ftp安装和配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.pureftpd.org/project/pure-ftpd/">Pure-FTPd </a>是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在<a target="_blank" rel="noopener" href="https://www.cco.xyz/archives/tag/centos">CentOS</a>中安装与使用Pure-FTPd。</p>
+<h2 id="1-安装Pure-FTPd"><a href="#1-安装Pure-FTPd" class="headerlink" title="1.安装Pure-FTPd"></a>1.安装Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install pure-ftpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-配置Pure-FTPd"><a href="#2-配置Pure-FTPd" class="headerlink" title="2.配置Pure-FTPd"></a>2.配置Pure-FTPd</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;pure-ftpd&#x2F;pure-ftpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>根据以下内容修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ChrootEveryone               yes</span><br><span class="line">BrokenClientsCompatibility   no</span><br><span class="line">MaxClientsNumber             50</span><br><span class="line">Daemonize                    yes</span><br><span class="line">MaxClientsPerIP              8</span><br><span class="line">VerboseLog                   no</span><br><span class="line">DisplayDotFiles              yes</span><br><span class="line">AnonymousOnly                no</span><br><span class="line">NoAnonymous                  no</span><br><span class="line">SyslogFacility               ftp</span><br><span class="line">DontResolve                  yes</span><br><span class="line">MaxIdleTime                  15</span><br><span class="line">PureDB                        &#x2F;etc&#x2F;pure-ftpd&#x2F;pureftpd.pdb</span><br><span class="line">PAMAuthentication             yes</span><br><span class="line">LimitRecursion               10000 8</span><br><span class="line">AnonymousCanCreateDirs       no</span><br><span class="line">MaxLoad                      4</span><br><span class="line">AntiWarez                    yes</span><br><span class="line">Umask                        133:022</span><br><span class="line">MinUID                      1000</span><br><span class="line">AllowUserFXP                 no</span><br><span class="line">AllowAnonymousFXP            no</span><br><span class="line">ProhibitDotFilesWrite        no</span><br><span class="line">ProhibitDotFilesRead         no</span><br><span class="line">AutoRename                   no</span><br><span class="line">AnonymousCantUpload         yes</span><br><span class="line">AltLog                     clf:&#x2F;var&#x2F;log&#x2F;pureftpd.log</span><br><span class="line">PIDFile                     &#x2F;var&#x2F;run&#x2F;pure-ftpd.pid</span><br><span class="line">MaxDiskUsage                   99</span><br><span class="line">CustomerProof                yes</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-新增系统用户"><a href="#3-新增系统用户" class="headerlink" title="3.新增系统用户"></a>3.新增系统用户</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd www</span><br><span class="line">useradd -g www www</span><br></pre></td></tr></table></figure>
+
+<p>创建FTP的根目录，并赋予权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mdkir -p &#x2F;data&#x2F;wwwroot</span><br><span class="line">chown www:www -R &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-虚拟用户管理"><a href="#4-虚拟用户管理" class="headerlink" title="4.虚拟用户管理"></a>4.虚拟用户管理</h2><h3 id="4-1-创建虚拟用户"><a href="#4-1-创建虚拟用户" class="headerlink" title="4.1 创建虚拟用户"></a>4.1 创建虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw useradd wwwuser -u www -g www -d &#x2F;data&#x2F;wwwroot</span><br></pre></td></tr></table></figure>
+
+<p>创建FTP用户<code>wwwuser</code>, 将该虚拟用户关联到系统用户的<code>www和www用户组</code>，指定FTP的根目录为<code>/data/wwwroot</code>，按下回车，输入密码即可创建。<br>创建完虚拟FTP用户后，需要重新生成用户数据库文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw mkdb</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-查看虚拟用户"><a href="#4-2-查看虚拟用户" class="headerlink" title="4.2 查看虚拟用户"></a>4.2 查看虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pure-pw list  # 查看用户列表</span><br><span class="line"></span><br><span class="line">pure-pw show wwwuser  # 查看wwwuser用户</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-修改虚拟用户信息"><a href="#4-2-修改虚拟用户信息" class="headerlink" title="4.2 修改虚拟用户信息"></a>4.2 修改虚拟用户信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pure-pw passwd wwwuser   #修改密码</span><br><span class="line">pure-pw usermod wwwuser -d &#x2F;data&#x2F;wwwroot1  # 修改根目录</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-删除虚拟用户"><a href="#4-4-删除虚拟用户" class="headerlink" title="4.4 删除虚拟用户"></a>4.4 删除虚拟用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw userdel wwwuser</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/blog/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE.html" data-id="clfmjjhs50017gin4ciwn1r74" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/03/">March 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/02/">February 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2023/03/24/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E9%94%99%E8%AF%AF%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/MurmurHash/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/github%20%E7%9B%B8%E5%85%B3%E9%A1%B9%E7%9B%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

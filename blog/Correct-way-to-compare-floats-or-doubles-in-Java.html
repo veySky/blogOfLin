@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Correct way to compare floats or doubles in Java | lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Correctly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using I">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Correct way to compare floats or doubles in Java">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/Correct-way-to-compare-floats-or-doubles-in-Java.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="Correctly compare float or compare double is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using I">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-01T06:35:22.000Z">
+<meta property="article:modified_time" content="2020-09-01T06:38:13.235Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/blog/Correct-way-to-compare-floats-or-doubles-in-Java.html" class="article-date">
+  <time datetime="2020-09-01T06:35:22.000Z" itemprop="datePublished">2020-09-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Correct way to compare floats or doubles in Java
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Correctly <strong>compare float</strong> or <strong>compare double</strong> is not only Java specific problem. It can be observed in almost all the programming languages today. In computer memory, floats and doubles are stored using <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a> standard format. How the actual storage and conversion works, it is out of scope of this article.</p>
+<p>For now, just understand that during computations and conversions, <em>minor rounding errors</em> can be introduced in these numbers. That’s why it is not advisable to simply rely on the <em>equality operators (==)</em> to <strong>compare floating-point numbers</strong>.</p>
+<p>Let’s learn <strong>how to compare float values in Java</strong>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Table of Contents</span><br><span class="line"></span><br><span class="line">1. Simple comparison [Not recommended]</span><br><span class="line">2. Threshold based comparison [Recommended]</span><br><span class="line">3. Compare with BigDecimal [Recommended]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-Compare-double-–-Simple-comparison-Not-recommended"><a href="#1-Compare-double-–-Simple-comparison-Not-recommended" class="headerlink" title="1. Compare double – Simple comparison [Not recommended]"></a>1. Compare double – Simple comparison [Not recommended]</h2><p>First look at the simple comparison to understand what exactly is wrong with <em>comparing double with == operator</em>. In given program, I am creating same floating point number (i.e. <code>1.1</code>) using two methods:</p>
+<ol>
+<li>Add <code>.1</code>, 11 times.</li>
+<li>Multiply <code>.1</code> to 11.</li>
+</ol>
+<p>In theory, both operations should produce the number <code>1.1</code>. And when we compare the results of both methods, it should match.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private&#96; &#96;static&#96; &#96;void&#96; &#96;simpleFloatsComparison() &#96;&#96;&#123;&#96;&#96;  &#96;&#96;&#x2F;&#x2F;Method 1&#96;&#96;  &#96;&#96;double&#96; &#96;f1 &#x3D; .&#96;&#96;0&#96;&#96;;&#96;&#96;  &#96;&#96;for&#96; &#96;(&#96;&#96;int&#96; &#96;i &#x3D; &#96;&#96;1&#96;&#96;; i &lt;&#x3D; &#96;&#96;11&#96;&#96;; i++) &#123;&#96;&#96;    &#96;&#96;f1 +&#x3D; .&#96;&#96;1&#96;&#96;;&#96;&#96;  &#96;&#96;&#125;&#96; &#96;  &#96;&#96;&#x2F;&#x2F;Method 2&#96;&#96;  &#96;&#96;double&#96; &#96;f2 &#x3D; .&#96;&#96;1&#96; &#96;* &#96;&#96;11&#96;&#96;;&#96; &#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f1 &#x3D; &quot;&#96; &#96;+ f1);&#96;&#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f2 &#x3D; &quot;&#96; &#96;+ f2);&#96; &#96;  &#96;&#96;if&#96; &#96;(f1 &#x3D;&#x3D; f2)&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are equal\n&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;else&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are not equal\n&quot;&#96;&#96;);&#96;&#96;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 &#x3D; &#96;&#96;1.0999999999999999&#96;&#96;f2 &#x3D; &#96;&#96;1.1&#96;&#96;f1 and f2 are not equal</span><br></pre></td></tr></table></figure>
+
+<p>Look at the both values printed in console. <code>f1</code> is computed to <code>1.0999999999999999</code>. Its exactly the problem which rounding off causes internally. That’s why, <strong>floating point comparison with <code>&#39;==&#39;</code> operator is not recommended</strong>.</p>
+<h2 id="2-Compare-double-–-Threshold-based-comparison-Recommended"><a href="#2-Compare-double-–-Threshold-based-comparison-Recommended" class="headerlink" title="2. Compare double – Threshold based comparison [Recommended]"></a>2. Compare double – Threshold based comparison [Recommended]</h2><p>Now when we know the problem with equality operator, lets solve it. Using programming, we cannot change the way these floating point numbers are stored or computed. So we have to adapt a solution where we agree that a determine the differences in both values which we can tolerate and still consider the numbers equal. This agreed upon difference in values is called the <strong>threshold</strong> or <strong>epsilon</strong>.</p>
+<p>So now to use ‘<strong>threshold based floating point comparison</strong>‘, we can use the <code>Math.abs()</code> method to compute a difference between the two numbers and compare the difference to a threshold value.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private&#96; &#96;static&#96; &#96;void&#96; &#96;thresholdBasedFloatsComparison() &#96;&#96;&#123;&#96;&#96;  &#96;&#96;final&#96; &#96;double&#96; &#96;THRESHOLD &#x3D; .&#96;&#96;0001&#96;&#96;;&#96; &#96;  &#96;&#96;&#x2F;&#x2F;Method 1&#96;&#96;  &#96;&#96;double&#96; &#96;f1 &#x3D; .&#96;&#96;0&#96;&#96;;&#96;&#96;  &#96;&#96;for&#96; &#96;(&#96;&#96;int&#96; &#96;i &#x3D; &#96;&#96;1&#96;&#96;; i &lt;&#x3D; &#96;&#96;11&#96;&#96;; i++) &#123;&#96;&#96;    &#96;&#96;f1 +&#x3D; .&#96;&#96;1&#96;&#96;;&#96;&#96;  &#96;&#96;&#125;&#96; &#96;  &#96;&#96;&#x2F;&#x2F;Method 2&#96;&#96;  &#96;&#96;double&#96; &#96;f2 &#x3D; .&#96;&#96;1&#96; &#96;* &#96;&#96;11&#96;&#96;;&#96; &#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f1 &#x3D; &quot;&#96; &#96;+ f1);&#96;&#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f2 &#x3D; &quot;&#96; &#96;+ f2);&#96; &#96;  &#96;&#96;if&#96; &#96;(Math.abs(f1 - f2) &lt; THRESHOLD)&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are equal using threshold\n&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;else&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are not equal using threshold\n&quot;&#96;&#96;);&#96;&#96;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 &#x3D; &#96;&#96;1.0999999999999999&#96;&#96;f2 &#x3D; &#96;&#96;1.1&#96;&#96;f1 and f2 are equal using threshold</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-Compare-double-–-Compare-with-BigDecimal-Recommended"><a href="#3-Compare-double-–-Compare-with-BigDecimal-Recommended" class="headerlink" title="3. Compare double – Compare with BigDecimal [Recommended]"></a>3. Compare double – Compare with BigDecimal [Recommended]</h2><p>In <code>BigDecimal</code> class, you can specify the <strong>rounding mode</strong> and <strong>exact precision</strong> which you want to use. Using the exact precision limit, rounding errors are mostly solved.</p>
+<p>Best part is that <code>BigDecimal</code> numbers are <a target="_blank" rel="noopener" href="https://howtodoinjava.com/java/basics/how-to-make-a-java-class-immutable/">immutable</a> i.e. if you create a <code>BigDecimal</code> BD with value <code>&quot;1.23&quot;</code>, that object will remain <code>&quot;1.23&quot;</code> and can never be changed. This class provide many methods which can be used to do numerical operations on it’s value.</p>
+<p>You can use it’s <code>compareTo()</code> method to compare to <code>BigDecimal</code> numbers. It ignore the scale while comparing.</p>
+<blockquote>
+<p><strong>a.compareTo(b);</strong></p>
+<p>Method returns:</p>
+<p>-1 – if a &lt; b)</p>
+<p>0 – if a == b</p>
+<p>1 – if a &gt; b</p>
+</blockquote>
+<p>Never use the <code>equals()</code> method to compare <code>BigDecimal</code> instances. That is because this equals function will compare the scale. If the scale is different, <code>equals()</code> will return false, even if they are the same number mathematically.</p>
+<p>Java program to compare double with <code>BigDecimal</code> class.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private&#96; &#96;static&#96; &#96;void&#96; &#96;testBdEquality() &#96;&#96;&#123;&#96;&#96;   &#96;&#96;BigDecimal a &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;2.00&quot;&#96;&#96;);&#96;&#96;   &#96;&#96;BigDecimal b &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;2.0&quot;&#96;&#96;);&#96; &#96;   &#96;&#96;System.out.println(a.equals(b));      &#96;&#96;&#x2F;&#x2F; false&#96; &#96;   &#96;&#96;System.out.println(a.compareTo(b) &#x3D;&#x3D; &#96;&#96;0&#96;&#96;);  &#96;&#96;&#x2F;&#x2F; true&#96;&#96;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now just to verify, let’s solve out original problem using <code>BigDecimal</code> class.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private&#96; &#96;static&#96; &#96;void&#96; &#96;bigDecimalComparison() &#96;&#96;&#123;&#96;&#96;  &#96;&#96;&#x2F;&#x2F;Method 1&#96;&#96;  &#96;&#96;BigDecimal f1 &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;0.0&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;BigDecimal pointOne &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;0.1&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;for&#96; &#96;(&#96;&#96;int&#96; &#96;i &#x3D; &#96;&#96;1&#96;&#96;; i &lt;&#x3D; &#96;&#96;11&#96;&#96;; i++) &#123;&#96;&#96;    &#96;&#96;f1 &#x3D; f1.add(pointOne);&#96;&#96;  &#96;&#96;&#125;&#96; &#96;  &#96;&#96;&#x2F;&#x2F;Method 2&#96;&#96;  &#96;&#96;BigDecimal f2 &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;0.1&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;BigDecimal eleven &#x3D; &#96;&#96;new&#96; &#96;BigDecimal(&#96;&#96;&quot;11&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;f2 &#x3D; f2.multiply(eleven);&#96; &#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f1 &#x3D; &quot;&#96; &#96;+ f1);&#96;&#96;  &#96;&#96;System.out.println(&#96;&#96;&quot;f2 &#x3D; &quot;&#96; &#96;+ f2);&#96; &#96;  &#96;&#96;if&#96; &#96;(f1.compareTo(f2) &#x3D;&#x3D; &#96;&#96;0&#96;&#96;)&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are equal using BigDecimal\n&quot;&#96;&#96;);&#96;&#96;  &#96;&#96;else&#96;&#96;    &#96;&#96;System.out.println(&#96;&#96;&quot;f1 and f2 are not equal using BigDecimal\n&quot;&#96;&#96;);&#96;&#96;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Program Output.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1 &#x3D; &#96;&#96;1.1&#96;&#96;f2 &#x3D; &#96;&#96;1.1&#96;&#96;f1 and f2 are equal using BigDecimal</span><br></pre></td></tr></table></figure>
+
+<p>That’s all about <strong>comparing floating point numbers in java</strong>. Share your thoughts in comments section.</p>
+<p>Happy Learning !!</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/blog/Correct-way-to-compare-floats-or-doubles-in-Java.html" data-id="clfmjjhrs0004gin42s9x27du" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/03/">March 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/02/">February 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2023/03/24/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E9%94%99%E8%AF%AF%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/MurmurHash/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/github%20%E7%9B%B8%E5%85%B3%E9%A1%B9%E7%9B%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

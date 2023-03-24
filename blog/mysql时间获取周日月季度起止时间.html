@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mysql时间获取周日月季度起止时间 | lin&#39;s blog home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天） 获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天） 获取当前周的第一天日期 获取当前周的最后一天日期 获取指定某年某一周的起止日期 获取当前月份第一天日期 获取当前月份最后一天日期 获取指定年份月份的起止日期 获取现在是今年的第几个季度 获取当前季度的第一天日期 获取当前季度的最后一天日期 获取指定季度的起止">
+<meta property="og:type" content="website">
+<meta property="og:title" content="mysql时间获取周日月季度起止时间">
+<meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4.html">
+<meta property="og:site_name" content="lin&#39;s blog home">
+<meta property="og:description" content="获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天） 获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天） 获取当前周的第一天日期 获取当前周的最后一天日期 获取指定某年某一周的起止日期 获取当前月份第一天日期 获取当前月份最后一天日期 获取指定年份月份的起止日期 获取现在是今年的第几个季度 获取当前季度的第一天日期 获取当前季度的最后一天日期 获取指定季度的起止">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-08-22T07:35:44.000Z">
+<meta property="article:modified_time" content="2022-08-22T08:03:00.007Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blogOfLin/atom.xml" title="lin&#39;s blog home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/blogOfLin/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blogOfLin/" id="logo">lin&#39;s blog home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blogOfLin/">Home</a>
+        
+          <a class="main-nav-link" href="/blogOfLin/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blogOfLin/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://veysky.github.io/blogOfLin"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blogOfLin/blog/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4.html" class="article-date">
+  <time datetime="2022-08-22T07:35:44.000Z" itemprop="datePublished">2022-08-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mysql时间获取周日月季度起止时间
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天）</li>
+<li>获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天）</li>
+<li>获取当前周的第一天日期</li>
+<li>获取当前周的最后一天日期</li>
+<li>获取指定某年某一周的起止日期</li>
+<li>获取当前月份第一天日期</li>
+<li>获取当前月份最后一天日期</li>
+<li>获取指定年份月份的起止日期</li>
+<li>获取现在是今年的第几个季度</li>
+<li>获取当前季度的第一天日期</li>
+<li>获取当前季度的最后一天日期</li>
+<li>获取指定季度的起止日期</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 获取指定时间在这一年是第几周 可以把 CURDATE() 函数替换成你的指定时间 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT WEEK(CURDATE());</span><br><span class="line"></span><br><span class="line">SELECT YEARWEEK(CURDATE());</span><br></pre></td></tr></table></figure>
+
+<p>获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 获取指定时间在这一年是第几周 可以把 CURDATE() 函数替换成你的指定时间 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT WEEK(CURDATE(),1);</span><br><span class="line"></span><br><span class="line">SELECT WEEKOFYEAR(CURDATE());</span><br></pre></td></tr></table></figure>
+
+<p>周起止时间获取</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 获取当前周的第一天日期</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">INTERVAL</span> <span class="keyword">WEEKDAY</span>(<span class="keyword">CURDATE</span>()) + <span class="number">0</span> <span class="keyword">DAY</span>);</span><br><span class="line"><span class="comment">-- 获取当前周的最后一天日期</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">INTERVAL</span> <span class="keyword">WEEKDAY</span>(<span class="keyword">CURDATE</span>()) - <span class="number">6</span> <span class="keyword">DAY</span>);</span><br><span class="line"><span class="comment">-- 上周周一日期</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">DATE_SUB</span>( <span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">interval</span> <span class="number">7</span> <span class="keyword">day</span>),<span class="built_in">interval</span>  <span class="keyword">weekday</span>(<span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">interval</span> <span class="number">7</span> <span class="keyword">day</span>)) +<span class="number">0</span> <span class="keyword">Day</span>) <span class="keyword">as</span> preWeekStartDay</span><br><span class="line"><span class="comment">-- 上周周日日期</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DATE_SUB</span>( <span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">interval</span> <span class="number">7</span> <span class="keyword">day</span>),<span class="built_in">interval</span>  <span class="keyword">weekday</span>(<span class="keyword">DATE_SUB</span>(<span class="keyword">CURDATE</span>(),<span class="built_in">interval</span> <span class="number">7</span> <span class="keyword">day</span>)) <span class="number">-6</span> <span class="keyword">Day</span>) <span class="keyword">as</span> preWeekEndDay</span><br></pre></td></tr></table></figure>
+
+<p>获取指定某年某一周的起止日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 指定某年某一周的第一天日期 *&#x2F;</span><br><span class="line">SELECT DATE_SUB((DATE_SUB(CONCAT(指定年份,&#39;-01-01&#39;), INTERVAL -(指定第几周-1) WEEK)),INTERVAL WEEKDAY((DATE_SUB(CONCAT(指定年份,&#39;-01-01&#39;), INTERVAL -(指定第几周-1) WEEK))) + 0 DAY)</span><br><span class="line">&#x2F;* 指定某年某一周的最后一天日期 *&#x2F;</span><br><span class="line">SELECT DATE_SUB((DATE_SUB(CONCAT(指定年份,&#39;-01-01&#39;), INTERVAL -(指定第几周-1) WEEK)),INTERVAL WEEKDAY((DATE_SUB(CONCAT(指定年份,&#39;-01-01&#39;), INTERVAL -(指定第几周-1) WEEK))) - 6 DAY)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取当前月份第一天日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(CURRENT_DATE()),&#39;%Y-%m-&#39;),&#39;01&#39;); </span><br></pre></td></tr></table></figure>
+
+<p>获取当前月份最后一天日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT LAST_DAY(CURRENT_DATE()); </span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取指定年份月份的起止日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 指定年份月份的第一天日期 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT CONCAT_WS(&#39;-&#39;,指定年份,指定月份,&#39;01&#39;);</span><br><span class="line"></span><br><span class="line">&#x2F;* 指定年份月份的最后一天日期 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT LAST_DAY(指定时间);</span><br></pre></td></tr></table></figure>
+
+<p>获取现在是今年的第几个季度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT QUARTER(CURRENT_DATE());</span><br></pre></td></tr></table></figure>
+
+<p>获取当前季度的第一天日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(MAKEDATE(EXTRACT(YEAR FROM  CURDATE()),1) + INTERVAL QUARTER(CURDATE())*3-3 MONTH),&#39;%Y-%m-&#39;),&#39;01&#39;);   </span><br></pre></td></tr></table></figure>
+
+<p>获取当前季度的最后一天日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT LAST_DAY(MAKEDATE(EXTRACT(YEAR  FROM CURDATE()),1) + INTERVAL QUARTER(CURDATE())*3-1 MONTH);  </span><br></pre></td></tr></table></figure>
+
+<p>获取指定季度的起止日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 指定季度的第一天日期 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(MAKEDATE(指定年份,1) + INTERVAL 指定季度*3-3 MONTH),&#39;%Y-%m-&#39;),&#39;01&#39;); </span><br><span class="line"></span><br><span class="line">&#x2F;* 指定季度的最后一天日期 *&#x2F;</span><br><span class="line"></span><br><span class="line">SELECT LAST_DAY(MAKEDATE(指定年份,1) + INTERVAL 指定季度*3-1 MONTH);  </span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://veysky.github.io/blogOfLin/blog/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4.html" data-id="clfmjjhs40015gin48qap1ens" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/03/">March 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blogOfLin/archives/2023/02/">February 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blogOfLin/2023/03/24/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E9%94%99%E8%AF%AF%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/MurmurHash/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/github%20%E7%9B%B8%E5%85%B3%E9%A1%B9%E7%9B%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/blogOfLin/2023/02/15/%E6%8A%80%E6%9C%AF/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blogOfLin/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blogOfLin/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/blogOfLin/fancybox/jquery.fancybox.css">
+
+  
+<script src="/blogOfLin/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/blogOfLin/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
