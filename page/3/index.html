@@ -166,6 +166,100 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/05/26/CentOS-7-%E5%AE%89%E8%A3%85-JAVA%E7%8E%AF%E5%A2%83%EF%BC%88JDK-1-8%EF%BC%89/" class="post-title-link" itemprop="url">CentOS 7 安装 JAVA环境（JDK 1.8）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-05-26 09:24:35" itemprop="dateCreated datePublished" datetime="2021-05-26T09:24:35+08:00">2021-05-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:24:29" itemprop="dateModified" datetime="2023-03-24T21:24:29+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">服务器</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ol>
+<li>打开url选择jdk1.8下载</li>
+</ol>
+<p>官网地址</p>
+<ol start="2">
+<li>下载（友情提示：如果下载链接失效，那就自己换一个，或者下载到本地在上传到安装目录解压）</li>
+</ol>
+<p>wget <a target="_blank" rel="noopener" href="https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz?AuthParam=1595227231_c973dac5c59012a4184f32776ff66778">https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz?AuthParam=1595227231_c973dac5c59012a4184f32776ff66778</a></p>
+<ol start="3">
+<li>安装</li>
+</ol>
+<p>创建安装目录<br>mkdir &#x2F;usr&#x2F;local&#x2F;java&#x2F;</p>
+<p>解压至安装目录<br>tar -zxvf jdk-8u251-linux-x64.tar.gz -C &#x2F;usr&#x2F;local&#x2F;java&#x2F;</p>
+<ol start="4">
+<li>设置环境变量</li>
+</ol>
+<p>打开文件<br>vim &#x2F;etc&#x2F;profile</p>
+<p>在末尾添加（按i编辑）<br>export JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251<br>export JRE_HOME&#x3D;${JAVA_HOME}&#x2F;jre<br>export CLASSPATH&#x3D;.:${JAVA_HOME}&#x2F;lib:${JRE_HOME}&#x2F;lib<br>export PATH&#x3D;${JAVA_HOME}&#x2F;bin:$PATH</p>
+<p>使环境变量生效<br>source &#x2F;etc&#x2F;profile</p>
+<p>添加软链接<br>ln -s &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java &#x2F;usr&#x2F;bin&#x2F;java</p>
+<p> 检查<br>java -version</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/27/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2kafka%E6%9C%8D%E5%8A%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -318,8 +412,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#111;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#x65;&#110;&#x67;&#106;&#105;&#101;&#x2e;&#x6f;&#114;&#103;&#46;&#99;&#x6e;">&#x72;&#x6f;&#111;&#x74;&#64;&#110;&#111;&#x64;&#x65;&#x31;&#x30;&#56;&#x2e;&#x79;&#105;&#110;&#x7a;&#104;&#x65;&#110;&#x67;&#106;&#105;&#101;&#x2e;&#x6f;&#114;&#103;&#46;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#111;&#111;&#116;&#64;&#x6e;&#x6f;&#x64;&#x65;&#x31;&#48;&#56;&#x2e;&#x79;&#105;&#110;&#122;&#104;&#x65;&#x6e;&#103;&#x6a;&#105;&#101;&#x2e;&#x6f;&#x72;&#103;&#46;&#99;&#110;">&#114;&#111;&#111;&#116;&#64;&#x6e;&#x6f;&#x64;&#x65;&#x31;&#48;&#56;&#x2e;&#x79;&#105;&#110;&#122;&#104;&#x65;&#x6e;&#103;&#x6a;&#105;&#101;&#x2e;&#x6f;&#x72;&#103;&#46;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#x6f;&#x74;&#x40;&#x6e;&#x6f;&#100;&#101;&#x31;&#48;&#56;&#x2e;&#121;&#105;&#x6e;&#122;&#104;&#x65;&#110;&#x67;&#x6a;&#105;&#x65;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#99;&#110;">&#x72;&#111;&#x6f;&#x74;&#x40;&#x6e;&#x6f;&#100;&#101;&#x31;&#48;&#56;&#x2e;&#121;&#105;&#x6e;&#122;&#104;&#x65;&#110;&#x67;&#x6a;&#105;&#x65;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#99;&#110;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#x74;&#x40;&#x6e;&#111;&#x64;&#x65;&#49;&#x30;&#x38;&#46;&#x79;&#105;&#110;&#x7a;&#104;&#x65;&#110;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;">&#114;&#x6f;&#111;&#x74;&#x40;&#x6e;&#111;&#x64;&#x65;&#49;&#x30;&#x38;&#46;&#x79;&#105;&#110;&#x7a;&#104;&#x65;&#110;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#103;&#x2e;&#99;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 /home/softwares/kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll /home/softwares/kafka-manager/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -1187,95 +1281,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/03/18/Spring-%E9%A1%B9%E7%9B%AE%E6%89%93%E4%B8%8D%E5%90%8C%E7%8E%AF%E5%A2%83%E7%9A%84-jar-%E5%8C%85%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Spring 项目打不同环境的 jar 包原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-03-18 20:12:08 / Modified: 20:13:21" itemprop="dateCreated datePublished" datetime="2021-03-18T20:12:08+08:00">2021-03-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在 application.yml 中配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring:  profiles:    active: @spring.profile@</span><br></pre></td></tr></table></figure>
-
-<p>其中， spring.profiles.active 配置项表示启用哪套环境，这里没有明确指定，而是用了占位符 @spring.profile@</p>
-<p>不同的环境有不同的配置文件，例如以下有 dev、prod、test 三套环境：</p>
-<p>在打包时，如果想要打 prod 环境的包，可以使用命令：</p>
-<p>mvn clean package -Dmaven.test.skip&#x3D;true -Dspring.profile&#x3D;prod</p>
-<p>打包后解压，再次查看 application.yml，占位符 @spring.profile@ 被替换成了 prod，即打包命令通过 -Dspring.profile&#x3D;prod 传入的值：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring:  profiles:    active: prod</span><br></pre></td></tr></table></figure>
-
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>Spring Boot 项目通过 @..@ 指定占位符，参考文档：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#howto-automatic-expansion-maven">https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#howto-automatic-expansion-maven</a></p>
-<p>我们的 Spring Boot 项目都是继承自 spring-boot-starter-parent 模块，源码中可以找到：</p>
-<p>配置占位符为 @：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L19">https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L19</a></p>
-<p>并且使用了 maven-resources-plugin 插件</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L132">https://github.com/spring-projects/spring-boot/blob/484050347a919e15c16885b14472e557461cccc9/spring-boot-project/spring-boot-starters/spring-boot-starter-parent/pom.xml#L132</a></p>
-<p>查看 maven-resources-plugin 插件的文档，可以看到这个插件可以在打包时通过 “-D” 选项，对项目中的占位符进行替换：</p>
-<p><a target="_blank" rel="noopener" href="https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html">https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/6/">6</a><a class="extend next" rel="next" href="/blogOfLin/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/blogOfLin/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/blogOfLin/">1</a><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/blogOfLin/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/7/">7</a><a class="extend next" rel="next" href="/blogOfLin/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1341,7 +1350,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1352,7 +1361,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">110</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

@@ -166,6 +166,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/03/27/Type%E6%8E%A5%E5%8F%A3%E7%9F%A5%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2023/03/27/Type%E6%8E%A5%E5%8F%A3%E7%9F%A5%E8%AF%86/" class="post-title-link" itemprop="url">Type接口知识</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-27 21:51:32 / Modified: 21:52:57" itemprop="dateCreated datePublished" datetime="2023-03-27T21:51:32+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Type的子类和子接口列表：</p>
+<h3 id="Class-实现-Type接口。"><a href="#Class-实现-Type接口。" class="headerlink" title="Class 实现 Type接口。"></a>Class 实现 Type接口。</h3><pre><code>Class 是一个原始类型，Class的对象表示JVM的一个类或者接口，每个Java类在jvm都表现为一个Class对象
+</code></pre>
+<h3 id="ParameterizedType-表示的是参数化类型，例如：-List-等这种带有泛型的类型。"><a href="#ParameterizedType-表示的是参数化类型，例如：-List-等这种带有泛型的类型。" class="headerlink" title="ParameterizedType 表示的是参数化类型，例如： List 等这种带有泛型的类型。"></a>ParameterizedType 表示的是参数化类型，例如： List<String> 等这种带有泛型的类型。</h3><ol>
+<li>Type getRawType()**  返回参数化类型中的原始类型，例如List<String> 的原始类型为 List </li>
+<li>Type[] getActualTypeArguments() 获取参数化类型中的类型变量或者实际类型列表。 例如： Map&lt;Integer,String&gt; 的实际泛型列表是Integer，String 。 注意点： 返回类型是Type 可能存在多层嵌套情况。 </li>
+<li>Type getOwnerType() 返回类型所属的类型</li>
+</ol>
+<h3 id="TypeVariable-表示的是类型变量，用来反映在JVM编译改泛型前的信息"><a href="#TypeVariable-表示的是类型变量，用来反映在JVM编译改泛型前的信息" class="headerlink" title="TypeVariable 表示的是类型变量，用来反映在JVM编译改泛型前的信息"></a>TypeVariable 表示的是类型变量，用来反映在JVM编译改泛型前的信息</h3><pre><code>例如： List&lt;T&gt; 中的T 就是类型变量，它在编译时需要转换成一个具体的类型才能正常使用。 
+</code></pre>
+<p>该接口常用方法有三个：</p>
+<ol>
+<li>Type[] getBounds() 获取类型变量的上边界（未声明情况默认为Object）</li>
+<li>D getGenericDeclaration() 获取声明类型变量的原始类型：例如：Class Test<K extends Person> 的原始类型是 Test</li>
+<li>String getName() 获取在源码中定义的名字，上例中 就是 K</li>
+</ol>
+<h3 id="GenericArrayType-表示：-是数组类型且组成元素是：-ParameterizedType或者TypeVariable"><a href="#GenericArrayType-表示：-是数组类型且组成元素是：-ParameterizedType或者TypeVariable" class="headerlink" title="GenericArrayType 表示： 是数组类型且组成元素是： ParameterizedType或者TypeVariable"></a>GenericArrayType 表示： 是数组类型且组成元素是： ParameterizedType或者TypeVariable</h3><p>该接口方法：Type getGenericComponentType()<br>表示数组的组成元素</p>
+<h3 id="WildcardType-表示通配符泛型，例如：-？extends-Number-或者-？-supper-Integer"><a href="#WildcardType-表示通配符泛型，例如：-？extends-Number-或者-？-supper-Integer" class="headerlink" title="WildcardType 表示通配符泛型，例如： ？extends Number 或者 ？ supper Integer"></a>WildcardType 表示通配符泛型，例如： ？extends Number 或者 ？ supper Integer</h3><p>该接口有俩方法：</p>
+<ol>
+<li>Type[] getUpperBounds() 返回泛型变量的上界</li>
+<li>Type[] getLowerBounds() 返回泛型变量的下界</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/11/18/How-to-find-the-Entry-with-largest-Value-in-a-Java-Map/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1024,87 +1113,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/12/31/docker%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">docker常用命令和技巧</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-31 09:27:00" itemprop="dateCreated datePublished" datetime="2021-12-31T09:27:00+08:00">2021-12-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:28:52" itemprop="dateModified" datetime="2023-03-24T21:28:52+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="相关命令："><a href="#相关命令：" class="headerlink" title="相关命令："></a>相关命令：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">1、查看所有镜像</span><br><span class="line">docker images</span><br><span class="line">2、查看正在运行的容器</span><br><span class="line">docker ps</span><br><span class="line">3、查看所有容器</span><br><span class="line">docker ps -a </span><br><span class="line">4、运行已存在的容器</span><br><span class="line">docker start &#123;id&#125; </span><br><span class="line">5、停止已存在的容器</span><br><span class="line">docker stop &#123;id&#125; </span><br><span class="line">6、删除容器 （必须先停止容器）</span><br><span class="line">docker rm &#123;容器id&#125;  </span><br><span class="line">7、删除镜像</span><br><span class="line">docker rmi &#123;镜像id&#125; </span><br><span class="line">8、进入容器，推荐使用</span><br><span class="line">docker exec -it &#123;容器id&#125; /bin/bash </span><br><span class="line">9、进入容器</span><br><span class="line">docker attach &#123;容器id&#125;</span><br><span class="line">10、查看容器ip：</span><br><span class="line">docker inspect --format=&#x27;&#123;&#123;.Name&#125;&#125; - &#123;&#123;range.NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;&#x27; $(docker ps -aq)</span><br></pre></td></tr></table></figure>
-
-<h3 id="docker命令别名"><a href="#docker命令别名" class="headerlink" title="docker命令别名"></a>docker命令别名</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#alias node=&#x27;docker run --rm -it -v `pwd`:/app -w /app node:16-alpine &#x27;</span></span><br><span class="line"><span class="built_in">alias</span> node=<span class="string">&#x27;docker run --rm -it -v &quot;$&#123;CURDIR&#125;&quot;:/app -w /app node:16-alpine &#x27;</span></span><br><span class="line"><span class="built_in">alias</span> npm=<span class="string">&#x27;docker run --rm -it -v &quot;$&#123;CURDIR&#125;&quot;:/app -w /app node:16-alpine npm &#x27;</span></span><br><span class="line"><span class="built_in">alias</span> ffmpeg=<span class="string">&#x27;docker run --rm -it -v &quot;$&#123;CURDIR&#125;&quot;:/app -w /app jrottenberg/ffmpeg &#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> dm=<span class="string">&#x27;docker-machine&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dmx=<span class="string">&#x27;docker-machine ssh&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dk=<span class="string">&#x27;docker&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dki=<span class="string">&#x27;docker images&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dks=<span class="string">&#x27;docker service&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkrm=<span class="string">&#x27;docker rm&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkl=<span class="string">&#x27;docker logs&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dklf=<span class="string">&#x27;docker logs -f&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkflush=<span class="string">&#x27;docker rm `docker ps --no-trunc -aq`&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkflush2=<span class="string">&#x27;docker rmi $(docker images --filter &quot;dangling=true&quot; -q --no-trunc)&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkt=<span class="string">&#x27;docker stats --format &quot;table &#123;&#123;.Name&#125;&#125;\t&#123;&#123;.CPUPerc&#125;&#125;\t&#123;&#123;.MemUsage&#125;&#125;\t&#123;&#123;.NetIO&#125;&#125;&quot;&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> dkps=<span class="string">&quot;docker ps --format &#x27;&#123;&#123;.ID&#125;&#125; ~ &#123;&#123;.Names&#125;&#125; ~ &#123;&#123;.Status&#125;&#125; ~ &#123;&#123;.Image&#125;&#125;&#x27;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkln</span></span>() &#123;</span><br><span class="line"> docker logs -f `docker ps | grep <span class="variable">$1</span> | awk <span class="string">&#x27;&#123;print $1&#125;&#x27;</span>`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkp</span></span>() &#123;</span><br><span class="line"> <span class="keyword">if</span> [ ! -f .dockerignore ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, .dockerignore file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Proceed anyway?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> [ ! -f package.json ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, package.json file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Are you in the right directory?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> VERSION=`<span class="built_in">cat</span> package.json | jq .version | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> NAME=`<span class="built_in">cat</span> package.json | jq .name | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> LABEL=<span class="string">&quot;<span class="variable">$1</span>/<span class="variable">$NAME</span>:<span class="variable">$VERSION</span>&quot;</span></span><br><span class="line"></span><br><span class="line"> docker build --build-arg NPM_TOKEN=<span class="variable">$&#123;NPM_TOKEN&#125;</span> -t <span class="variable">$LABEL</span> .</span><br><span class="line"></span><br><span class="line"> <span class="built_in">read</span> -p <span class="string">&quot;Press enter to publish&quot;</span></span><br><span class="line"> docker push <span class="variable">$LABEL</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkpnc</span></span>() &#123;</span><br><span class="line"> <span class="keyword">if</span> [ ! -f .dockerignore ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, .dockerignore file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Proceed anyway?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> [ ! -f package.json ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, package.json file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Are you in the right directory?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> VERSION=`<span class="built_in">cat</span> package.json | jq .version | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> NAME=`<span class="built_in">cat</span> package.json | jq .name | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> LABEL=<span class="string">&quot;<span class="variable">$1</span>/<span class="variable">$NAME</span>:<span class="variable">$VERSION</span>&quot;</span></span><br><span class="line"></span><br><span class="line"> docker build --build-arg NPM_TOKEN=<span class="variable">$&#123;NPM_TOKEN&#125;</span> --no-cache=<span class="literal">true</span> -t <span class="variable">$LABEL</span> .</span><br><span class="line"> <span class="built_in">read</span> -p <span class="string">&quot;Press enter to publish&quot;</span></span><br><span class="line"> docker push <span class="variable">$LABEL</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkpl</span></span>() &#123;</span><br><span class="line"> <span class="keyword">if</span> [ ! -f .dockerignore ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, .dockerignore file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Proceed anyway?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> [ ! -f package.json ]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">&quot;Warning, package.json file is missing.&quot;</span></span><br><span class="line">   <span class="built_in">read</span> -p <span class="string">&quot;Are you in the right directory?&quot;</span></span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"> VERSION=`<span class="built_in">cat</span> package.json | jq .version | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> NAME=`<span class="built_in">cat</span> package.json | jq .name | sed <span class="string">&#x27;s/\&quot;//g&#x27;</span>`</span><br><span class="line"> LATEST=<span class="string">&quot;<span class="variable">$1</span>/<span class="variable">$NAME</span>:latest&quot;</span></span><br><span class="line"></span><br><span class="line"> docker build --build-arg NPM_TOKEN=<span class="variable">$&#123;NPM_TOKEN&#125;</span> --no-cache=<span class="literal">true</span> -t <span class="variable">$LATEST</span> .</span><br><span class="line"> <span class="built_in">read</span> -p <span class="string">&quot;Press enter to publish&quot;</span></span><br><span class="line"> docker push <span class="variable">$LATEST</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkclean</span></span>() &#123;</span><br><span class="line"> docker <span class="built_in">rm</span> $(docker ps --all -q -f status=exited)</span><br><span class="line"> docker volume <span class="built_in">rm</span> $(docker volume <span class="built_in">ls</span> -qf dangling=<span class="literal">true</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkprune</span></span>() &#123;</span><br><span class="line"> docker system prune -af</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dktop</span></span>() &#123;</span><br><span class="line"> docker stats --format <span class="string">&quot;table &#123;&#123;.Container&#125;&#125;\t&#123;&#123;.Name&#125;&#125;\t&#123;&#123;.CPUPerc&#125;&#125;  &#123;&#123;.MemPerc&#125;&#125;\t&#123;&#123;.NetIO&#125;&#125;\t&#123;&#123;.BlockIO&#125;&#125;&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkstats</span></span>() &#123;</span><br><span class="line"> <span class="keyword">if</span> [ <span class="variable">$#</span> -eq 0 ]</span><br><span class="line">   <span class="keyword">then</span> docker stats --no-stream;</span><br><span class="line">   <span class="keyword">else</span> docker stats --no-stream | grep <span class="variable">$1</span>;</span><br><span class="line"> <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dke</span></span>() &#123;</span><br><span class="line"> docker <span class="built_in">exec</span> -it <span class="variable">$1</span> /bin/sh</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkexe</span></span>() &#123;</span><br><span class="line"> docker <span class="built_in">exec</span> -it <span class="variable">$1</span> <span class="variable">$2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkreboot</span></span>() &#123;</span><br><span class="line"> osascript -e <span class="string">&#x27;quit app &quot;Docker&quot;&#x27;</span></span><br><span class="line"> countdown 2</span><br><span class="line"> open -a Docker</span><br><span class="line"> <span class="built_in">echo</span> <span class="string">&quot;Restarting Docker engine&quot;</span></span><br><span class="line"> countdown 120</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dkstate</span></span>() &#123;</span><br><span class="line"> docker inspect <span class="variable">$1</span> | jq .[0].State</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dksb</span></span>() &#123;</span><br><span class="line"> docker service scale <span class="variable">$1</span>=0</span><br><span class="line"> <span class="built_in">sleep</span> 2</span><br><span class="line"> docker service scale <span class="variable">$1</span>=<span class="variable">$2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">mongo</span></span>() &#123;</span><br><span class="line"> mongoLabel=`docker ps | grep mongo | awk <span class="string">&#x27;&#123;print $NF&#125;&#x27;</span>`</span><br><span class="line"> docker <span class="built_in">exec</span> -it <span class="variable">$mongoLabel</span> mongo <span class="string">&quot;<span class="variable">$@</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">redis</span></span>() &#123;</span><br><span class="line"> redisLabel=`docker ps | grep redis | awk <span class="string">&#x27;&#123;print $NF&#125;&#x27;</span>`</span><br><span class="line"> docker <span class="built_in">exec</span> -it <span class="variable">$redisLabel</span> redis-cli</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/6/">6</a><a class="extend next" rel="next" href="/blogOfLin/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/blogOfLin/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/blogOfLin/page/7/">7</a><a class="extend next" rel="next" href="/blogOfLin/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1170,7 +1182,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1181,7 +1193,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">110</span>
+        <span class="site-state-item-count">112</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
