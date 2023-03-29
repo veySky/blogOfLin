@@ -166,6 +166,294 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/03/29/Java%E4%BB%8E%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%86%85%E5%AE%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2023/03/29/Java%E4%BB%8E%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%86%85%E5%AE%B9/" class="post-title-link" itemprop="url">Java从文件读取内容</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-29 22:31:24 / Modified: 23:01:06" itemprop="dateCreated datePublished" datetime="2023-03-29T22:31:24+08:00">2023-03-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="总结通过文件获取内容方式"><a href="#总结通过文件获取内容方式" class="headerlink" title="总结通过文件获取内容方式"></a>总结通过文件获取内容方式</h2><p>在java中有很多读取文本文件的方法。文本文件由字符组成，因此可以使用<code>Reader</code>类。在java中读取文本文件也有一些实用程序类。</p>
+<ul>
+<li>使用<code>Files</code>类读取文本文件；</li>
+<li>使用<code>FileReader</code>类读取文本文件；</li>
+<li>使用<code>BufferedReader</code>类读取文本文件；</li>
+<li>使用<code>Scanner</code>类读取文本文件；</li>
+</ul>
+<h3 id="方法一-使用java-nio-file-Files读取文本文件"><a href="#方法一-使用java-nio-file-Files读取文本文件" class="headerlink" title="方法一  使用java.nio.file.Files读取文本文件"></a>方法一  使用java.nio.file.Files读取文本文件</h3><p>使用<code>Files</code>类将文件的所有内容读入字节数组。<code>Files</code>类还有一个方法可以读取所有行到字符串列表。<code>Files</code>类是在Java 7中引入的，如果想加载所有文件内容，使用这个类是比较适合的。只有在处理小文件并且需要加载所有文件内容到内存中时才应使用此方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String fileName = &quot;D:/maxsu/docs/source.txt&quot;;</span><br><span class="line">Path path = Paths.get(fileName);</span><br><span class="line">byte[] bytes = Files.readAllBytes(path);</span><br><span class="line">List&lt;String&gt; allLines = Files.readAllLines(path, StandardCharsets.UTF_8);</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="方法二：使用java-io-FileReader类"><a href="#方法二：使用java-io-FileReader类" class="headerlink" title="方法二：使用java.io.FileReader类"></a>方法二：使用java.io.FileReader类</h3><p>可以使用<code>FileReader</code>获取<code>BufferedReader</code>，然后逐行读取文件。FileReader不支持编码并使用系统默认编码，因此它不是一种java中读取文本文件的非常有效的方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">String fileName = &quot;D:/maxsu/docs/source.txt&quot;;</span><br><span class="line">File file = new File(fileName);</span><br><span class="line">FileReader fr = new FileReader(file);</span><br><span class="line">BufferedReader br = new BufferedReader(fr);</span><br><span class="line">String line;</span><br><span class="line">while((line = br.readLine()) != null)&#123;</span><br><span class="line">    // 一行一行地处理...</span><br><span class="line">    System.out.println(line);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="方法三：使用java-io-BufferedReader"><a href="#方法三：使用java-io-BufferedReader" class="headerlink" title="方法三：使用java.io.BufferedReader"></a>方法三：使用java.io.BufferedReader</h3><p>如果想逐行读取文件并对它们进行处理，那么<code>BufferedReader</code>是非常合适的。它适用于处理大文件，也支持编码。</p>
+<p><code>BufferedReader</code>是同步的，因此可以安全地从多个线程完成对<code>BufferedReader</code>的读取操作。<code>BufferedReader</code>的默认缓冲区大小为：<code>8KB</code>。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String fileName = &quot;D:/maxsu/docs/source.txt&quot;;</span><br><span class="line">File file = new File(fileName);</span><br><span class="line">FileInputStream fis = new FileInputStream(file);</span><br><span class="line">InputStreamReader isr = new InputStreamReader(fis, cs);</span><br><span class="line">BufferedReader br = new BufferedReader(isr);</span><br><span class="line"></span><br><span class="line">String line;</span><br><span class="line">while((line = br.readLine()) != null)&#123;</span><br><span class="line">     //process the line</span><br><span class="line">     System.out.println(line);</span><br><span class="line">&#125;</span><br><span class="line">br.close(); </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="方法四：使用Scanner读取文本文件"><a href="#方法四：使用Scanner读取文本文件" class="headerlink" title="方法四：使用Scanner读取文本文件"></a>方法四：使用Scanner读取文本文件</h3><p>如果要逐行读取文件或基于某些java正则表达式读取文件，则可使用<code>Scanner</code>类。</p>
+<p><code>Scanner</code>类使用分隔符模式将其输入分解为标记，分隔符模式默认匹配空格。然后可以使用各种下一种方法将得到的标记转换成不同类型的值。<code>Scanner</code>类不同步，因此不是线程安全的。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Path path = Paths.get(fileName);</span><br><span class="line">Scanner scanner = new Scanner(path);</span><br><span class="line">System.out.println(&quot;Read text file using Scanner&quot;);</span><br><span class="line">// 一行一行地读取</span><br><span class="line">while(scanner.hasNextLine())&#123;</span><br><span class="line">    //process each line</span><br><span class="line">    String line = scanner.nextLine();</span><br><span class="line">    System.out.println(line);</span><br><span class="line">&#125;</span><br><span class="line">scanner.close(); </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="方法五：-使用RandomAccessFile-读取文件"><a href="#方法五：-使用RandomAccessFile-读取文件" class="headerlink" title="方法五： 使用RandomAccessFile 读取文件"></a>方法五： 使用RandomAccessFile 读取文件</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RandomAccessFile file = new RandomAccessFile(&quot;D:/maxsu/docs/readme.txt&quot;, &quot;r&quot;);</span><br><span class="line">String str;</span><br><span class="line"></span><br><span class="line">while ((str = file.readLine()) != null) &#123;</span><br><span class="line">    System.out.println(str);</span><br><span class="line">&#125;</span><br><span class="line">file.close(); </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">package com.journaldev.files;</span><br><span class="line"></span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.nio.charset.Charset;</span><br><span class="line">import java.nio.charset.StandardCharsets;</span><br><span class="line">import java.nio.file.Files;</span><br><span class="line">import java.nio.file.Path;</span><br><span class="line">import java.nio.file.Paths;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Scanner;</span><br><span class="line"></span><br><span class="line">public class JavaReadFile &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws IOException &#123;</span><br><span class="line">        String fileName = &quot;D:/maxsu/docs/source.txt&quot;;</span><br><span class="line"></span><br><span class="line">        //使用Java 7中的Files类处理小文件，获取完整的文件数据</span><br><span class="line">        readUsingFiles(fileName);</span><br><span class="line"></span><br><span class="line">        //使用Scanner类来处理大文件，逐行读取</span><br><span class="line">        readUsingScanner(fileName);</span><br><span class="line"></span><br><span class="line">        //使用BufferedReader读取，逐行读取</span><br><span class="line">        readUsingBufferedReader(fileName);</span><br><span class="line">        readUsingBufferedReaderJava7(fileName, StandardCharsets.UTF_8);</span><br><span class="line">        readUsingBufferedReader(fileName, StandardCharsets.UTF_8);</span><br><span class="line"></span><br><span class="line">        //使用FileReader读取，没有编码支持，效率不高</span><br><span class="line">        readUsingFileReader(fileName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingFileReader(String fileName) throws IOException &#123;</span><br><span class="line">        File file = new File(fileName);</span><br><span class="line">        FileReader fr = new FileReader(file);</span><br><span class="line">        BufferedReader br = new BufferedReader(fr);</span><br><span class="line">        String line;</span><br><span class="line">        System.out.println(&quot;Reading text file using FileReader&quot;);</span><br><span class="line">        while((line = br.readLine()) != null)&#123;</span><br><span class="line">            //逐行读取</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        br.close();</span><br><span class="line">        fr.close();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingBufferedReader(String fileName, Charset cs) throws IOException &#123;</span><br><span class="line">        File file = new File(fileName);</span><br><span class="line">        FileInputStream fis = new FileInputStream(file);</span><br><span class="line">        InputStreamReader isr = new InputStreamReader(fis, cs);</span><br><span class="line">        BufferedReader br = new BufferedReader(isr);</span><br><span class="line">        String line;</span><br><span class="line">        System.out.println(&quot;Read text file using InputStreamReader&quot;);</span><br><span class="line">        while((line = br.readLine()) != null)&#123;</span><br><span class="line">            //逐行读取</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        br.close();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingBufferedReaderJava7(String fileName, Charset cs) throws IOException &#123;</span><br><span class="line">        Path path = Paths.get(fileName);</span><br><span class="line">        BufferedReader br = Files.newBufferedReader(path, cs);</span><br><span class="line">        String line;</span><br><span class="line">        System.out.println(&quot;Read text file using BufferedReader Java 7 improvement&quot;);</span><br><span class="line">        while((line = br.readLine()) != null)&#123;</span><br><span class="line">            //逐行读取</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        br.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingBufferedReader(String fileName) throws IOException &#123;</span><br><span class="line">        File file = new File(fileName);</span><br><span class="line">        FileReader fr = new FileReader(file);</span><br><span class="line">        BufferedReader br = new BufferedReader(fr);</span><br><span class="line">        String line;</span><br><span class="line">        System.out.println(&quot;Read text file using BufferedReader&quot;);</span><br><span class="line">        while((line = br.readLine()) != null)&#123;</span><br><span class="line">            //逐行读取</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        //close resources</span><br><span class="line">        br.close();</span><br><span class="line">        fr.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingScanner(String fileName) throws IOException &#123;</span><br><span class="line">        Path path = Paths.get(fileName);</span><br><span class="line">        Scanner scanner = new Scanner(path);</span><br><span class="line">        System.out.println(&quot;Read text file using Scanner&quot;);</span><br><span class="line">        //逐行读取</span><br><span class="line">        while(scanner.hasNextLine())&#123;</span><br><span class="line">            //逐行处理</span><br><span class="line">            String line = scanner.nextLine();</span><br><span class="line">            System.out.println(line);</span><br><span class="line">        &#125;</span><br><span class="line">        scanner.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void readUsingFiles(String fileName) throws IOException &#123;</span><br><span class="line">        Path path = Paths.get(fileName);</span><br><span class="line">        //将文件读取到字节数组</span><br><span class="line">        byte[] bytes = Files.readAllBytes(path);</span><br><span class="line">        System.out.println(&quot;Read text file using Files class&quot;);</span><br><span class="line">        //read file to String list</span><br><span class="line">        @SuppressWarnings(&quot;unused&quot;)</span><br><span class="line">        List&lt;String&gt; allLines = Files.readAllLines(path, StandardCharsets.UTF_8);</span><br><span class="line">        System.out.println(new String(bytes));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/03/29/Java%E4%BB%8E%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2023/03/29/Java%E4%BB%8E%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">Java从控制台输入方式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-29 22:14:03 / Modified: 22:30:54" itemprop="dateCreated datePublished" datetime="2023-03-29T22:14:03+08:00">2023-03-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>今天面试时遇到了一套计算题，计算逻辑实现很简单，被从控制台获取输入信息难住了。 </p>
+<p>所以面试结束后，查了下资料。 原来很简单…… </p>
+<h2 id="从控制台获取输入内容的方式有那些"><a href="#从控制台获取输入内容的方式有那些" class="headerlink" title="从控制台获取输入内容的方式有那些"></a>从控制台获取输入内容的方式有那些</h2><h3 id="使用阅读缓冲器类"><a href="#使用阅读缓冲器类" class="headerlink" title="使用阅读缓冲器类"></a>使用阅读缓冲器类</h3><p>这个是经典的取输入方式 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(System.in));</span><br><span class="line">        <span class="comment">// Reading data using readLine</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (!<span class="string">&quot;0&quot;</span>.equals(name)) &#123;</span><br><span class="line">                name = reader.readLine();</span><br><span class="line">                System.out.println(name);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用Scanner类"><a href="#使用Scanner类" class="headerlink" title="使用Scanner类"></a>使用Scanner类</h3><p>这可能是接受输入的最首选方法。Scanner 类的主要目的是使用<strong>正则表达式解析原始类型和字符串</strong>，但是，它也可用于在<strong>命令行中读取用户的输入</strong>。</p>
+<p>从标记化输入中解析基元(nextInt()、nextFloat()、…)的便捷方法。</p>
+<p>正则表达式可用于查找标记。</p>
+<p>阅读方式不同步</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">       <span class="type">Scanner</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">       <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> in.nextLine();</span><br><span class="line">       System.out.println(<span class="string">&quot;You entered string &quot;</span> + s);</span><br><span class="line">       <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">       System.out.println(<span class="string">&quot;You entered integer &quot;</span> + a);</span><br><span class="line">       <span class="type">float</span> <span class="variable">b</span> <span class="operator">=</span> in.nextFloat();</span><br><span class="line">       System.out.println(<span class="string">&quot;You entered float &quot;</span> + b);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="使用控制台类"><a href="#使用控制台类" class="headerlink" title="使用控制台类"></a>使用控制台类</h3><p>它已成为从命令行读取用户输入的首选方式。此外，它可以用于读取类似密码的输入，而不用回显用户输入的字符;也可以使用格式字符串语法(如 System.out.printf())。</p>
+<p>优点：</p>
+<p>读取密码而不回显输入的字符。</p>
+<p>读取方法是同步的。</p>
+<p>可以使用格式字符串语法。</p>
+<p>**不适用于非交互环境(例如 IDE)**。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"><span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> System.console().readLine();</span><br><span class="line">    System.out.println(<span class="string">&quot;You entered string &quot;</span> + name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>执行提示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.lang.NullPointerException</span><br><span class="line">	at com.lin.springlearn.service.PrimeNumber.main(Test.java:<span class="number">37</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用命令行参数"><a href="#使用命令行参数" class="headerlink" title="使用命令行参数"></a>使用命令行参数</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args)</span><br><span class="line">	&#123;</span><br><span class="line">		// check if length of args array is</span><br><span class="line">		// greater than 0</span><br><span class="line">		if (args.length &gt; 0) &#123;</span><br><span class="line">			System.out.println(</span><br><span class="line">				&quot;The command line arguments are:&quot;);</span><br><span class="line">			// iterating the args array and printing</span><br><span class="line">			// the command line arguments</span><br><span class="line">			for (String val : args)</span><br><span class="line">				System.out.println(val);</span><br><span class="line">		&#125;</span><br><span class="line">		else</span><br><span class="line">			System.out.println(&quot;No command line &quot;</span><br><span class="line">							+ &quot;arguments found.&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/03/29/3%E6%9C%8829%E6%97%A5%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2023/03/29/3%E6%9C%8829%E6%97%A5%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">3月29日面试记录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-29 20:06:51 / Modified: 23:26:04" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="面试过程："><a href="#面试过程：" class="headerlink" title="面试过程："></a>面试过程：</h2><ol>
+<li><p>做题 7道 </p>
+<ol>
+<li>string reverse 字符串反转</li>
+<li>从文件中读取最大长度word</li>
+<li>sql查询 去重取id最小记录</li>
+<li>验证ip</li>
+<li>检测string中的重复字符</li>
+<li>通过命令行输入表达式进行计算</li>
+<li>检测一个数字是否基本类型 ？</li>
+</ol>
+</li>
+<li><p>问题：</p>
+<ol>
+<li>如何使用@Controller 注解实现返回@RestController json结构</li>
+<li>数据库连接池配置参数有那些</li>
+<li>redis使用的数据接口有那些，以及大key使用zset结构场景有那些</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/03/27/Type%E6%8E%A5%E5%8F%A3%E7%9F%A5%E8%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -834,285 +1122,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2022/05/10/mysql%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E4%B8%AD%E6%96%87%E6%B1%89%E5%AD%97/" class="post-title-link" itemprop="url">mysql查询某一个字段是否包含中文汉字</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-05-10 18:11:25" itemprop="dateCreated datePublished" datetime="2022-05-10T18:11:25+08:00">2022-05-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:38:31" itemprop="dateModified" datetime="2023-03-24T21:38:31+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在使用mysql时候，某些字段会存储中文字符，或是包含中文字符的串，查询出来的方法是：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">column</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> length(<span class="keyword">column</span>)<span class="operator">!=</span><span class="keyword">char_length</span>(<span class="keyword">column</span>)</span><br></pre></td></tr></table></figure>
-
-<p>　　</p>
-<p>原理其实很简单，当字符集为UTF-8，并且字符为中文时，length() 和 char_length() 两个方法返回的结果是不相同的。</p>
-<p>PS:column更换为对应的列名</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/04/21/mac%E7%AB%AF%E5%8F%A3%E5%8D%A0%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2022/04/21/mac%E7%AB%AF%E5%8F%A3%E5%8D%A0%E7%94%A8/" class="post-title-link" itemprop="url">mac端口占用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-04-21 10:00:03" itemprop="dateCreated datePublished" datetime="2022-04-21T10:00:03+08:00">2022-04-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:35:49" itemprop="dateModified" datetime="2023-03-24T21:35:49+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>查看进程占用</p>
-<p>lsof -i tcp:8080 </p>
-<p>该命令会显示占用8080端口的进程，有其 pid ,可以通过pid关掉该进程</p>
-<p>杀死进程 </p>
-<p>kill pid</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/01/05/Docker-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%90%AD%E5%BB%BA%E8%BF%90%E8%A1%8CFTP%E6%9C%8D%E5%8A%A1%E5%99%A8-vsftpd/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2022/01/05/Docker-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%90%AD%E5%BB%BA%E8%BF%90%E8%A1%8CFTP%E6%9C%8D%E5%8A%A1%E5%99%A8-vsftpd/" class="post-title-link" itemprop="url">Docker - 在容器中搭建运行FTP服务器（vsftpd)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-01-05 20:38:37 / Modified: 20:40:45" itemprop="dateCreated datePublished" datetime="2022-01-05T20:38:37+08:00">2022-01-05</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>使用 <strong>Docker</strong> 搭建 <strong>FTP</strong> 服务，不仅十分简单，而且可以对宿主机有一定的隔离。下面以 <strong>CentOS</strong> 系统为例，演示如何通过容器运行 <strong>FTP</strong> 服务。</p>
-<h3 id="1，拉取镜像"><a href="#1，拉取镜像" class="headerlink" title="1，拉取镜像"></a>1，拉取镜像</h3><p>首先执行如下命令将镜像下载到本地：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull fauria/vsftpd</span><br></pre></td></tr></table></figure>
-
-<h3 id="2，启动容器"><a href="#2，启动容器" class="headerlink" title="2，启动容器"></a>2，启动容器</h3><p>执行如下命令实例化 <strong>ftp</strong> 服务：</p>
-<p><strong>参数说明：</strong></p>
-<ul>
-<li><strong>&#x2F;home&#x2F;ftp:&#x2F;home&#x2F;vsftpd</strong>：映射 <strong>docker</strong> 容器 <strong>ftp</strong> 文件根目录（冒号前面是宿主机的目录）</li>
-<li><strong>-p</strong>：映射 <strong>docker</strong> 端口（冒号前面是宿主机的端口）</li>
-<li><strong>-e FTP_USER&#x3D;test -e FTP_PASS&#x3D;test</strong> ：设置默认的用户名密码（都为 <strong>test</strong>）</li>
-<li><strong>PASV_ADDRESS</strong>：宿主机 <strong>ip</strong>，当需要使用被动模式时必须设置。</li>
-<li><strong>PASV_MIN_PORT~ PASV_MAX_PORT</strong>：给客服端提供下载服务随机端口号范围，默认 <strong>21100-21110</strong>，与前面的 <strong>docker</strong> 端口映射设置成一样。</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /home/ftp:/home/vsftpd \-p 20:20 -p 21:21 -p 21100-21110:21100-21110 \-e FTP_USER=test -e FTP_PASS=test \-e PASV_ADDRESS=192.168.60.128 \-e PASV_MIN_PORT=21100 -e PASV_MAX_PORT=21110 \--name vsftpd --restart=always fauria/vsftpd</span><br></pre></td></tr></table></figure>
-
-<h3 id="3，防火墙配置"><a href="#3，防火墙配置" class="headerlink" title="3，防火墙配置"></a>3，防火墙配置</h3><p>  如果 <strong>CentOS</strong> 服务器有防火墙，为了让客户端能够访问 <strong>ftp</strong> 服务。我们可以关闭防火墙，或者执行如下命令配置 <strong>firewall</strong> 防火墙策略：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --add-port=20/tcpfirewall-cmd --permanent --add-port=21/tcpfirewall-cmd --permanent --add-port=21100/tcpfirewall-cmd --permanent --add-port=21101/tcpfirewall-cmd --permanent --add-port=21102/tcpfirewall-cmd --permanent --add-port=21103/tcpfirewall-cmd --permanent --add-port=21104/tcpfirewall-cmd --permanent --add-port=21105/tcpfirewall-cmd --permanent --add-port=21106/tcpfirewall-cmd --permanent --add-port=21107/tcpfirewall-cmd --permanent --add-port=21108/tcpfirewall-cmd --permanent --add-port=21109/tcpfirewall-cmd --permanent --add-port=21110/tcpfirewall-cmd --reload</span><br></pre></td></tr></table></figure>
-
-<h3 id="4，新建用户文件夹"><a href="#4，新建用户文件夹" class="headerlink" title="4，新建用户文件夹"></a>4，新建用户文件夹</h3><p>（1）首先执行如下命令进入到容器里面：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -i -t vsftpd bash</span><br></pre></td></tr></table></figure>
-
-
-<p>（2）由于前面我们启动的时候设置用户名为 <strong>test</strong>，已经自动创建对应的用户文件夹（所以下面这个文件夹无需我们再次手动创建）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /home/vsftpd/test</span><br></pre></td></tr></table></figure>
-
-<p>（3）为方便演示，在 <strong>test</strong> 用户文件夹下新建一个 <strong>1.txt</strong> 文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /home/vsftpd/test/1.txt</span><br></pre></td></tr></table></figure>
-
-<h3 id="5，访问服务"><a href="#5，访问服务" class="headerlink" title="5，访问服务"></a>5，访问服务</h3><p>（1）我们可以直接使用浏览器进行访问，地址如下：</p>
-<ul>
-<li><a href="ftp://test:test@192.168.60.128/">ftp://test:test@192.168.60.128:21</a></li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://www.hangge.com/blog/cache/detail_2449.html#"><img src="https://www.hangge.com/blog_uploads/201905/2019052714203320876.png" alt="原文:Docker - 在容器中搭建运行FTP服务器（vsftpd）"></a></p>
-<p>（2）也可以使用 <strong>ftp</strong> 客户端工具进行访问。</p>
-<p><a target="_blank" rel="noopener" href="https://www.hangge.com/blog/cache/detail_2449.html#"><img src="https://www.hangge.com/blog_uploads/201905/2019052714225485840.png" alt="原文:Docker - 在容器中搭建运行FTP服务器（vsftpd）"></a></p>
-<p>（3）如果是 <strong>Mac</strong> 电脑，我们还可以通过“<strong>访达</strong>”-&gt;“<strong>前往</strong>”-&gt;“**连接服务器…**”来访问 <strong>ftp</strong> 服务。</p>
-<p><a target="_blank" rel="noopener" href="https://www.hangge.com/blog/cache/detail_2449.html#"><img src="https://www.hangge.com/blog_uploads/201905/2019052714315589251.png" alt="原文:Docker - 在容器中搭建运行FTP服务器（vsftpd）"></a></p>
-<h2 id="附：增加一个新用户"><a href="#附：增加一个新用户" class="headerlink" title="附：增加一个新用户"></a>附：增加一个新用户</h2><p>  前面我们在启动服务的时候就创建了个默认用户 <strong>test</strong>。如果需要新增一个新用户，假设用户名：<strong>hangge</strong>，密码：<strong>123456</strong>，具体操作如下。 </p>
-<p>（1）首先执行如下命令进入到容器里面：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -i -t vsftpd bash</span><br></pre></td></tr></table></figure>
-
-<p>（2）创建新用户的文件夹：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /home/vsftpd/hangge</span><br></pre></td></tr></table></figure>
-
-<p>（3）编辑用户配置文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/vsftpd/virtual_users.txt</span><br></pre></td></tr></table></figure>
-
-
-<p>（4）在文件中添加新用户的用户名和密码：</p>
-<p><a target="_blank" rel="noopener" href="https://www.hangge.com/blog/cache/detail_2449.html#"><img src="https://www.hangge.com/blog_uploads/201905/2019052714384228469.png" alt="原文:Docker - 在容器中搭建运行FTP服务器（vsftpd）"></a></p>
-<p>（5）保存退出后执行如下命令，把登录的验证信息写入数据库。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/db_load -T -t hash -f /etc/vsftpd/virtual_users.txt /etc/vsftpd/virtual_users.db</span><br></pre></td></tr></table></figure>
-
-<p>（6）最后退出容器，并重启容器可以使用新用户连接 <strong>FTP</strong> 服务了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exitdocker restart vsftpd</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1182,7 +1191,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1193,7 +1202,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">112</span>
+        <span class="site-state-item-count">118</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

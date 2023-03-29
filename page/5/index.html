@@ -166,6 +166,486 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/02/05/idea-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6/" class="post-title-link" itemprop="url">idea 推荐插件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-02-05 15:47:30" itemprop="dateCreated datePublished" datetime="2021-02-05T15:47:30+08:00">2021-02-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:31:14" itemprop="dateModified" datetime="2023-03-24T21:31:14+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>推荐一款方便、实用的IDEA插件EasyApi</p>
+<p>在我们开发http请求接口时，开发完成需要进行本地自测，在postman中一个一个输入接口地址，在输入请求参数，尤其是在请求参数较多的情况下，很费劲，尤其是post请求还需要json格式的数据，此时该插件的效果就体现出来了，可以将请求地址以及请求参数导出至postman</p>
+<h2 id="EasyApi插件"><a href="#EasyApi插件" class="headerlink" title="EasyApi插件"></a>EasyApi插件</h2><p>博主是基于mac下的IDEA开发的</p>
+<p>1、安装插件<br><img src="https://img-blog.csdnimg.cn/20200731104909115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>具体安装方法就不在介绍了，安装后为了使插件生效，别忘了对IDEA进行重启哦</p>
+<p>2、然后进行导出，找到我们需要导出的Controller，选中后点击（control+回车）</p>
+<p><img src="https://img-blog.csdnimg.cn/20200731105119191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>执行后会发现出现以下错误，别慌这是配有配置token导致的<br><img src="https://img-blog.csdnimg.cn/202007311052104.png" alt="在这里插入图片描述"></p>
+<p>3、获取token，这里的token是登录postman软件的用户的token<br>链接:<a target="_blank" rel="noopener" href="https://web.postman.co/settings/me/api-keys">https://web.postman.co/settings/me/api-keys</a><br><img src="https://img-blog.csdnimg.cn/20200731105315927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>4、IDEA中添加对应token<br><img src="https://img-blog.csdnimg.cn/20200731105459337.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>然后在进行导出，在postman中查看就会发现响应的请求地址和参数均已导出</p>
+<p><img src="https://img-blog.csdnimg.cn/20200731105621675.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="RestfulToolkit插件"><a href="#RestfulToolkit插件" class="headerlink" title="RestfulToolkit插件"></a>RestfulToolkit插件</h2><p>快速搜索http请求接口路径的插件</p>
+<p>mac下快捷键（command+\）<br>效果图如下：<br><img src="https://img-blog.csdnimg.cn/20200731105918844.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dpbHNvbl9t,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/01/27/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Redis%E7%9A%84scan%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">深入理解Redis的scan命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-27 14:04:11" itemprop="dateCreated datePublished" datetime="2021-01-27T14:04:11+08:00">2021-01-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 21:03:39" itemprop="dateModified" datetime="2023-03-27T21:03:39+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="深入理解Redis的scan命令"><a href="#深入理解Redis的scan命令" class="headerlink" title="深入理解Redis的scan命令"></a>深入理解Redis的scan命令</h1><p>熟悉Redis的人都知道，它是单线程的。因此在使用一些时间复杂度为O(N)的命令时要非常谨慎。可能一不小心就会阻塞进程，导致Redis出现卡顿。</p>
+<p>有时，我们需要针对符合条件的一部分命令进行操作，比如删除以test_开头的key。那么怎么获取到这些key呢？在Redis2.8版本之前，我们可以使用keys命令按照正则匹配得到我们需要的key。但是这个命令有两个缺点：</p>
+<ol>
+<li>没有limit，我们只能一次性获取所有符合条件的key，如果结果有上百万条，那么等待你的就是“无穷无尽”的字符串输出。</li>
+<li>keys命令是遍历算法，时间复杂度是O(N)。如我们刚才所说，这个命令非常容易导致Redis服务卡顿。因此，我们要尽量避免在生产环境使用该命令。</li>
+</ol>
+<p>在满足需求和存在造成Redis卡顿之间究竟要如何选择呢？面对这个两难的抉择，Redis在2.8版本给我们提供了解决办法——scan命令。</p>
+<p>相比于keys命令，scan命令有两个比较明显的优势：</p>
+<ol>
+<li>scan命令的时间复杂度虽然也是O(N)，但它是分次进行的，不会阻塞线程。</li>
+<li>scan命令提供了limit参数，可以控制每次返回结果的最大条数。</li>
+</ol>
+<p>这两个优势就帮助我们解决了上面的难题，不过scan命令也并不是完美的，它返回的结果有可能重复，因此需要客户端去重。至于为什么会重复，相信你看完本文之后就会有答案了。</p>
+<p>关于scan命令的基本用法，可以参看<a target="_blank" rel="noopener" href="https://jackeyzhe.github.io/2018/09/22/Redis%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%9AKeys/">Redis命令详解：Keys</a>一文中关于SCAN命令的介绍。</p>
+<p>今天我们主要从底层的结构和源码的角度来讨论scan是如何工作的。</p>
+<h4 id="Redis的结构"><a href="#Redis的结构" class="headerlink" title="Redis的结构"></a>Redis的结构</h4><p>Redis使用了Hash表作为底层实现，原因不外乎高效且实现简单。说到Hash表，很多Java程序员第一反应就是HashMap。没错，Redis底层key的存储结构就是类似于HashMap那样数组+链表的结构。其中第一维的数组大小为2n(n&gt;&#x3D;0)。每次扩容数组长度扩大一倍。</p>
+<p>scan命令就是对这个一维数组进行遍历。每次返回的游标值也都是这个数组的索引。limit参数表示遍历多少个数组的元素，将这些元素下挂接的符合条件的结果都返回。因为每个元素下挂接的链表大小不同，所以每次返回的结果数量也就不同。</p>
+<h4 id="SCAN的遍历顺序"><a href="#SCAN的遍历顺序" class="headerlink" title="SCAN的遍历顺序"></a>SCAN的遍历顺序</h4><p>关于scan命令的遍历顺序，我们可以用一个小栗子来具体看一下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;db_number&quot;</span><br><span class="line">2) &quot;key1&quot;</span><br><span class="line">3) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 0 MATCH * COUNT 1</span><br><span class="line">1) &quot;2&quot;</span><br><span class="line">2) 1) &quot;db_number&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 2 MATCH * COUNT 1</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) 1) &quot;myKey&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 1 MATCH * COUNT 1</span><br><span class="line">1) &quot;3&quot;</span><br><span class="line">2) 1) &quot;key1&quot;</span><br><span class="line">127.0.0.1:6379&gt; scan 3 MATCH * COUNT 1</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) (empty list or set)</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>我们的Redis中有3个key，我们每次只遍历一个一维数组中的元素。如上所示，SCAN命令的遍历顺序是</p>
+<p>0-&gt;2-&gt;1-&gt;3</p>
+<p>这个顺序看起来有些奇怪。我们把它转换成二进制就好理解一些了。</p>
+<p>00-&gt;10-&gt;01-&gt;11</p>
+<p>我们发现每次这个序列是高位加1的。普通二进制的加法，是从右往左相加、进位。而这个序列是从左往右相加、进位的。这一点我们在redis的源码中也得到印证。</p>
+<p>在dict.c文件的dictScan函数中对游标进行了如下处理</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v = rev(v);</span><br><span class="line">v++;</span><br><span class="line">v = rev(v);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>意思是，将游标倒置，加一后，再倒置，也就是我们所说的“高位加1”的操作。</p>
+<p>这里大家可能会有疑问了，为什么要使用这样的顺序进行遍历，而不是用正常的0、1、2……这样的顺序呢，这是因为需要考虑遍历时发生字典扩容与缩容的情况（不得不佩服开发者考虑问题的全面性）。</p>
+<p>我们来看一下在SCAN遍历过程中，发生扩容时，遍历会如何进行。加入我们原始的数组有4个元素，也就是索引有两位，这时需要把它扩充成3位，并进行rehash。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/9/166596e4dac0695e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="rehash"></p>
+<p>原来挂接在xx下的所有元素被分配到0xx和1xx下。在上图中，当我们即将遍历10时，dict进行了rehash，这时，scan命令会从010开始遍历，而000和100（原00下挂接的元素）不会再被重复遍历。</p>
+<p>再来看看缩容的情况。假设dict从3位缩容到2位，当即将遍历110时，dict发生了缩容，这时scan会遍历10。这时010下挂接的元素会被重复遍历，但010之前的元素都不会被重复遍历了。所以，缩容时还是可能会有些重复元素出现的。</p>
+<h4 id="Redis的rehash"><a href="#Redis的rehash" class="headerlink" title="Redis的rehash"></a>Redis的rehash</h4><p>rehash是一个比较复杂的过程，为了不阻塞Redis的进程，它采用了一种渐进式的rehash的机制。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* 字典 */</span><br><span class="line">typedef struct dict &#123;</span><br><span class="line">    // 类型特定函数</span><br><span class="line">    dictType *type;</span><br><span class="line">    // 私有数据</span><br><span class="line">    void *privdata;</span><br><span class="line">    // 哈希表</span><br><span class="line">    dictht ht[2];</span><br><span class="line">    // rehash 索引</span><br><span class="line">    // 当 rehash 不在进行时，值为 -1</span><br><span class="line">    int rehashidx; /* rehashing not in progress if rehashidx == -1 */</span><br><span class="line">    // 目前正在运行的安全迭代器的数量</span><br><span class="line">    int iterators; /* number of iterators currently running */</span><br><span class="line">&#125; dict;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>在Redis的字典结构中，有两个hash表，一个新表，一个旧表。在rehash的过程中，redis将旧表中的元素逐步迁移到新表中，接下来我们看一下dict的rehash操作的源码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">/* Performs N steps of incremental rehashing. Returns 1 if there are still</span><br><span class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span><br><span class="line"> *</span><br><span class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</span><br><span class="line"> * than one key as we use chaining) from the old to the new hash table, however</span><br><span class="line"> * since part of the hash table may be composed of empty spaces, it is not</span><br><span class="line"> * guaranteed that this function will rehash even a single bucket, since it</span><br><span class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span><br><span class="line"> * work it does would be unbound and the function may block for a long time. */</span><br><span class="line">int dictRehash(dict *d, int n) &#123;</span><br><span class="line">    int empty_visits = n*10; /* Max number of empty buckets to visit. */</span><br><span class="line">    if (!dictIsRehashing(d)) return 0;</span><br><span class="line"></span><br><span class="line">    while(n-- &amp;&amp; d-&gt;ht[0].used != 0) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        /* Note that rehashidx can&#x27;t overflow as we are sure there are more</span><br><span class="line">         * elements because ht[0].used != 0 */</span><br><span class="line">        assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);</span><br><span class="line">        while(d-&gt;ht[0].table[d-&gt;rehashidx] == NULL) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            if (--empty_visits == 0) return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        de = d-&gt;ht[0].table[d-&gt;rehashidx];</span><br><span class="line">        /* Move all the keys in this bucket from the old to the new hash HT */</span><br><span class="line">        while(de) &#123;</span><br><span class="line">            uint64_t h;</span><br><span class="line"></span><br><span class="line">            nextde = de-&gt;next;</span><br><span class="line">            /* Get the index in the new hash table */</span><br><span class="line">            h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;</span><br><span class="line">            de-&gt;next = d-&gt;ht[1].table[h];</span><br><span class="line">            d-&gt;ht[1].table[h] = de;</span><br><span class="line">            d-&gt;ht[0].used--;</span><br><span class="line">            d-&gt;ht[1].used++;</span><br><span class="line">            de = nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[0].table[d-&gt;rehashidx] = NULL;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Check if we already rehashed the whole table... */</span><br><span class="line">    if (d-&gt;ht[0].used == 0) &#123;</span><br><span class="line">        zfree(d-&gt;ht[0].table);</span><br><span class="line">        d-&gt;ht[0] = d-&gt;ht[1];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">        d-&gt;rehashidx = -1;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* More to rehash... */</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>通过注释我们就能了解到，rehash的过程是以bucket为基本单位进行迁移的。所谓的bucket其实就是我们前面所提到的一维数组的元素。每次迁移一个列表。下面来解释一下这段代码。</p>
+<ul>
+<li>首先判断一下是否在进行rehash，如果是，则继续进行；否则直接返回。</li>
+<li>接着就是分n步开始进行渐进式rehash。同时还判断是否还有剩余元素，以保证安全性。</li>
+<li>在进行rehash之前，首先判断要迁移的bucket是否越界。</li>
+<li>然后跳过空的bucket，这里有一个empty_visits变量，表示最大可访问的空bucket的数量，这一变量主要是为了保证不过多的阻塞Redis。</li>
+<li>接下来就是元素的迁移，将当前bucket的全部元素进行rehash，并且更新两张表中元素的数量。</li>
+<li>每次迁移完一个bucket，需要将旧表中的bucket指向NULL。</li>
+<li>最后判断一下是否全部迁移完成，如果是，则收回空间，重置rehash索引，否则告诉调用方，仍有数据未迁移。</li>
+</ul>
+<p>由于Redis使用的是渐进式rehash机制，因此，scan命令在需要同时扫描新表和旧表，将结果返回客户端。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="baishuanglin">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/01/20/redis%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">redis分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-20 11:48:19" itemprop="dateCreated datePublished" datetime="2021-01-20T11:48:19+08:00">2021-01-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:40:43" itemprop="dateModified" datetime="2023-03-24T21:40:43+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+</blockquote>
+<h2 id="1-安装redis-cli"><a href="#1-安装redis-cli" class="headerlink" title="1.安装redis-cli"></a>1.安装redis-cli</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># redis命令安装 就可以获取redis-cli</span><br><span class="line">yum install redis</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-dump-文件：rdb"><a href="#2-dump-文件：rdb" class="headerlink" title="2.dump 文件：rdb"></a>2.dump 文件：rdb</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 需要使用从库防止影响线上服务</span><br><span class="line">redis-cli -h host -p port  -a password --rdb filename</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="RDR-简介"><a href="#RDR-简介" class="headerlink" title="RDR 简介"></a><strong>RDR 简介</strong></h2><p><code>RDR</code> 是解析 <code>redis rdbfile</code> 工具。与<code>redis-rdb-tools</code>相比，RDR 是由golang 实现的，速度更快（5GB rdbfile 在我的PC上大约需要2分钟）。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><strong>例子</strong></h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr show -p 8080 *.rdb</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic4.zhimg.com/80/v2-e42dabaaa2cf15a65779da6539161583_1440w.jpg" alt="img"></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ./rdr keys example.rdb</span><br><span class="line"></span><br><span class="line">portfolio:stock_follower_count:ZH314136</span><br><span class="line">portfolio:stock_follower_count:ZH654106</span><br><span class="line">portfolio:stock_follower:ZH617824</span><br><span class="line">portfolio:stock_follower_count:ZH001019</span><br><span class="line">portfolio:stock_follower_count:ZH346349</span><br><span class="line">portfolio:stock_follower_count:ZH951803</span><br><span class="line">portfolio:stock_follower:ZH924804</span><br><span class="line">portfolio:stock_follower_count:INS104806</span><br></pre></td></tr></table></figure>
+
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a><strong>优势</strong></h2><ul>
+<li>分析 Redis 内存中那个 Key 值占用的内存最多</li>
+<li>分析出 Redis 内存中那一类开头的 Key 占用最多，有利于内存优化</li>
+<li>Redis Key 值以 Dashboard 展示，这样更直观</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a><strong>安装</strong></h2><ul>
+<li>Linux amd64</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-linux -O /usr/local/bin/rdr </span><br><span class="line">$ <span class="built_in">chmod</span> +x /usr/local/bin/rdr</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>MacOS</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-darwin -o /usr/local/bin/rdr </span><br><span class="line">$ chmod +x /usr/local/bin/rdr</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>Windows</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 浏览器下载下面链接，在点击运行 </span><br><span class="line">https://github.com/xueqiu/rdr/releases/download/v0.0.1/rdr-windows.exe</span><br></pre></td></tr></table></figure>
+
+<h2 id="RDR-参数解释"><a href="#RDR-参数解释" class="headerlink" title="RDR 参数解释"></a><strong>RDR 参数解释</strong></h2><ul>
+<li>show 网页显示 rdbfile 的统计信息</li>
+<li>keys 从 rdbfile 获取所有 key</li>
+<li>help 帮助</li>
+<li>–version 显示版本信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">分析多个 Redis rdb</span><br><span class="line">$ rdr keys FILE1 [FILE2] [FILE3]...</span><br></pre></td></tr></table></figure>
+
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a><strong>项目地址</strong></h2><ul>
+<li><a href="https://link.zhihu.com/?target=https://github.com/xueqiu/rdr">https://github.com/xueqiu/rdr</a></li>
+</ul>
+<h1 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>​    Redis是基于内存的KV数据库，内存作为存储介质，关注其内存的使用情况是一个重要指标，解析其内部的存储信息是给出优化方法和维护的最基本要求。解析内存有二种方法：第一个是通过scan遍历所有key，针对每个key进行分析（memory usage）；第二个是基于RDB文件进行所有key的分析（<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">redis-rdb-tools</a>）。本文将介绍如何使用<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具。</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>工具包括了3个可执行文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rdb  -- 解析整个rdb文件</span><br><span class="line">redis-memory-for-key -- 解析server里的单个key</span><br><span class="line">redis-profiler --解析rdb文件成html格式</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdb</a>是rdbtools工具包其中之一的工具，也是解析dump.rdb文件的工具：分析内存并将数据导出到JSON，Rdbtools是Redis的dump.rdb文件的解析器，解析器生成类似于xml。rdbtools提供了以下实用程序：</p>
+<ol>
+<li>生成所有数据库和键中数据的内存报告</li>
+<li>将转储文件转换为JSON</li>
+<li>使用标准差异工具比较两个转储文件</li>
+</ol>
+<h2 id="安装-rdbtools"><a href="#安装-rdbtools" class="headerlink" title="安装 rdbtools"></a>安装 rdbtools</h2><h3 id="前提条件："><a href="#前提条件：" class="headerlink" title="前提条件："></a>前提条件：</h3><ol>
+<li><p>安装 python-lzf ：加快解析速度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install python-lzf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装redis-py：可选，仅在运行测试用例时需要</p>
+</li>
+</ol>
+<h3 id="PyPI安装（推荐）"><a href="#PyPI安装（推荐）" class="headerlink" title="PyPI安装（推荐）"></a>PyPI安装（推荐）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install rdbtools python-lzf</span><br></pre></td></tr></table></figure>
+
+<h3 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/sripathikrishnan/redis-rdb-tools</span><br><span class="line">cd redis-rdb-tools</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行用法示例"><a href="#命令行用法示例" class="headerlink" title="命令行用法示例"></a>命令行用法示例</h2><h3 id="help："><a href="#help：" class="headerlink" title="help："></a>help：</h3><p>**1，rdb –help：解析整个rdb文件<br>**</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">usage: rdb [options] /path/to/dump.rdb</span><br><span class="line"></span><br><span class="line">Example : rdb --command json -k &quot;user.*&quot; /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">positional arguments:</span><br><span class="line">-- 要处理的dump文件</span><br><span class="line">  dump_file             RDB Dump file to process       </span><br><span class="line"></span><br><span class="line">optional arguments:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit  </span><br><span class="line">-- 要处理的命令，-c后的有效参数为：json, diff,justkeys, justkeyvals, memory，protocol </span><br><span class="line">  -c CMD, --command CMD</span><br><span class="line">                        Command to execute. Valid commands are json, diff,</span><br><span class="line">                        justkeys, justkeyvals, memory and protocol  </span><br><span class="line">-- 输出文件       </span><br><span class="line">  -f FILE, --file FILE  Output file</span><br><span class="line">-- 数据库号，可以提供多个数据库。如果未指定，则包括所有数据库。</span><br><span class="line">  -n DBS, --db DBS      Database Number. Multiple databases can be provided.</span><br><span class="line">                        If not specified, all databases will be included.</span><br><span class="line">-- 要导出的key。这可以是一个正则表达式</span><br><span class="line">  -k KEYS, --key KEYS   Keys to export. This can be a regular expression</span><br><span class="line">-- key不导出。这可以是一个正则表达式</span><br><span class="line">  -o NOT_KEYS, --not-key NOT_KEYS</span><br><span class="line">                        Keys Not to export. This can be a regular expression</span><br><span class="line">-- 解析的数据类型。可能的值为string，hash，set，sortedset，list。可以输入多种类型提供。如果未指定，则为所有数据类型</span><br><span class="line">  -t TYPES, --type TYPES</span><br><span class="line">                        Data types to include. Possible values are string,</span><br><span class="line">                        hash, set, sortedset, list. Multiple typees can be</span><br><span class="line">                        provided. If not specified, all data types will be</span><br><span class="line">                        returned</span><br><span class="line">--  将key的内存输出限制为大于或等此值（以字节为单位）</span><br><span class="line">  -b BYTES, --bytes BYTES</span><br><span class="line">                        Limit memory output to keys greater to or equal to</span><br><span class="line">                        this value (in bytes)</span><br><span class="line">--  将内存按大小输出前N个key                       </span><br><span class="line">  -l LARGEST, --largest LARGEST</span><br><span class="line">                        Limit memory output to only the top N keys (by size)</span><br><span class="line">-- 将字符串转义为编码：raw（默认），print，utf8或base64。</span><br><span class="line">  -e &#123;raw,print,utf8,base64&#125;, --escape &#123;raw,print,utf8,base64&#125;</span><br><span class="line">                        Escape strings to encoding: raw (default), print,</span><br><span class="line">                        utf8, or base64.</span><br><span class="line">-- 使用command protocol参数，从所有键中删除到期的key                       </span><br><span class="line">  -x, --no-expire       With protocol command, remove expiry from all keys</span><br><span class="line">-- 使用command protocol参数，将N秒添加到key的到期时间</span><br><span class="line">  -a N, --amend-expire N</span><br><span class="line">                        With protocol command, add N seconds to key expiry</span><br><span class="line">                        time</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p><strong>2，redis-memory-for-key –help：– 解析server里指定的单个key</strong></p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-memory-for-key [options] redis-key</span><br><span class="line">Examples :</span><br><span class="line">redis-memory-for-key user:13423</span><br><span class="line">redis-memory-for-key -s localhost -p 6379 user:13423</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 服务地址，默认127.0.0.1</span><br><span class="line">  -s HOST, --server=HOST</span><br><span class="line">                        Redis Server hostname. Defaults to 127.0.0.1</span><br><span class="line">-- 服务端口，默认6379                        </span><br><span class="line">  -p PORT, --port=PORT  Redis Server port. Defaults to 6379</span><br><span class="line">--服务密码</span><br><span class="line">  -a PASSWORD, --password=PASSWORD</span><br><span class="line">                        Password to use when connecting to the server</span><br><span class="line">-- 数据库号，默认0</span><br><span class="line">  -d DB, --db=DB        Database number, defaults to 0 </span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>**3，redis-profiler –help：<br>**</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Usage: redis-profiler [options] /path/to/dump.rdb</span><br><span class="line"></span><br><span class="line">Example 1 : redis-profiler -k &quot;user.*&quot; -k &quot;friends.*&quot; -f memoryreport.html /var/redis/6379/dump.rdb</span><br><span class="line">Example 2 : redis-profiler /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-- 帮助</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">-- 输出</span><br><span class="line">  -f FILE, --file=FILE  Output file</span><br><span class="line">-- 组合在一起的键。 多个正则表达式</span><br><span class="line">  -k KEYS, --key=KEYS   Keys that should be grouped together. Multiple regexes</span><br><span class="line">                        can be provided</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>每次运行以上工具时都需要指定一个命令，以指示对解析的RDB数据应执行的操作。 操作有：</p>
+<h3 id="转储的JSON："><a href="#转储的JSON：" class="headerlink" title="转储的JSON："></a>转储的JSON：</h3><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command json /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;user003&quot;:&#123;&quot;fname&quot;:&quot;Ron&quot;,&quot;sname&quot;:&quot;Bumquist&quot;&#125;,</span><br><span class="line">&quot;lizards&quot;:[&quot;Bush anole&quot;,&quot;Jackson&#x27;s chameleon&quot;,&quot;Komodo dragon&quot;,&quot;Ground agama&quot;,&quot;Bearded dragon&quot;],</span><br><span class="line">&quot;user001&quot;:&#123;&quot;fname&quot;:&quot;Raoul&quot;,&quot;sname&quot;:&quot;Duke&quot;&#125;,</span><br><span class="line">&quot;user002&quot;:&#123;&quot;fname&quot;:&quot;Gonzo&quot;,&quot;sname&quot;:&quot;Dr&quot;&#125;,</span><br><span class="line">&quot;user_list&quot;:[&quot;user003&quot;,&quot;user002&quot;,&quot;user001&quot;]&#125;,&#123;</span><br><span class="line">&quot;baloon&quot;:&#123;&quot;helium&quot;:&quot;birthdays&quot;,&quot;medical&quot;:&quot;angioplasty&quot;,&quot;weather&quot;:&quot;meteorology&quot;&#125;,</span><br><span class="line">&quot;armadillo&quot;:[&quot;chacoan naked-tailed&quot;,&quot;giant&quot;,&quot;Andean hairy&quot;,&quot;nine-banded&quot;,&quot;pink fairy&quot;],</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<h3 id="过滤解析："><a href="#过滤解析：" class="headerlink" title="过滤解析："></a>过滤解析：</h3><p>正则表达式匹配key，并且仅打印键和值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command justkeyvals --key &quot;user.*&quot; /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">user003 fname Ron,sname Bumquist,</span><br><span class="line">user001 fname Raoul,sname Duke,</span><br><span class="line">user002 fname Gonzo,sname Dr,</span><br><span class="line">user_list user003,user002,user001</span><br></pre></td></tr></table></figure>
+
+<p>仅处理数据库2中hash类型的a开头的key：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json --db 2 --type hash --key &quot;a.*&quot; /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;&#125;,&#123;</span><br><span class="line">&quot;aroma&quot;:&#123;&quot;pungent&quot;:&quot;vinegar&quot;,&quot;putrid&quot;:&quot;rotten eggs&quot;,&quot;floral&quot;:&quot;roses&quot;&#125;&#125;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="dump文件转换为JSON："><a href="#dump文件转换为JSON：" class="headerlink" title="dump文件转换为JSON："></a>dump文件转换为JSON：</h3><p>输出是UTF-8编码的JSON。 默认情况下，回调尝试使用UTF-8解析RDB数据，并使用\U表示符转义非’ASCII可打印’字符，或使用\x转义非UTF-8可解析的字节。 尝试对RDB数据进行解码可能会导致二进制数据错误，可以通过使用–escape raw选项来避免这种情况。 另一种选择是使用-e base64进行二进制数据的Base64编码。 </p>
+<p>解析dump文件并在标准输出上打印JSON： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00e4ttre sent \u00e4n aldrig&quot;,&quot;Bra karl reder sig sj\u00e4lv&quot;,&quot;Man ska inte k\u00f6pa grisen i s\u00e4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\\xFE\u0000\u00e2\\xF2&quot;&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>将dump文件解析为原始字节，并在标准输出上打印JSON：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c json /var/redis/6379/dump.rdb --escape raw</span><br><span class="line"></span><br><span class="line">[&#123;</span><br><span class="line">&quot;Citat&quot;:[&quot;B\u00c3\u00a4ttre sent \u00c3\u00a4n aldrig&quot;,&quot;Bra karl reder sig sj\u00c3\u00a4lv&quot;,&quot;Man ska inte k\u00c3\u00b6pa grisen i s\u00c3\u00a4cken&quot;],</span><br><span class="line">&quot;bin_data&quot;:&quot;\u00fe\u0000\u00c3\u00a2\u00f2&quot;&#125;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成内存报告："><a href="#生成内存报告：" class="headerlink" title="生成内存报告："></a>生成内存报告：</h3><p>使用-c memory 运行会生成CSV报告，其中包含该键使用的近似内存。 –bytes C 和 –largest N 可用于将输出限制为大于C字节的键或N个最大键。</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c memory /var/redis/6379/dump.rdb --bytes 128 -f memory.csv</span><br><span class="line">&gt; cat memory.csv</span><br><span class="line"></span><br><span class="line">database,type,key,size_in_bytes,encoding,num_elements,len_largest_element</span><br><span class="line">0,list,lizards,241,quicklist,5,19</span><br><span class="line">0,list,user_list,190,quicklist,3,7</span><br><span class="line">2,hash,baloon,138,ziplist,3,11</span><br><span class="line">2,list,armadillo,231,quicklist,5,20</span><br><span class="line">2,hash,aroma,129,ziplist,3,11</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>生成的CSV具有以下列：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">database：数据库编号</span><br><span class="line">type：数据类型</span><br><span class="line">key：键</span><br><span class="line">size_in_bytes：使用的内存：包括键，值和任何其他开销</span><br><span class="line">encoding：RDB编码类型</span><br><span class="line">num_elements：key中的value的个数</span><br><span class="line">len_largest_element：key中的value的长度</span><br><span class="line">expiry：过期值</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>注意：内存使用情况是近似的。 通常，实际使用的内存将略高于报告的内存。可以按键或数据库编号或数据类型过滤报告。内存报告应有助于检测由应用程序逻辑引起的内存泄漏。 它还将帮助优化Redis的内存使用。</p>
+<h3 id="查找单键使用的内存："><a href="#查找单键使用的内存：" class="headerlink" title="查找单键使用的内存："></a>查找单键使用的内存：</h3><p>查找特定键使用的内存（运行整个内存报告非常耗时），使用redis-memory-for-key：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; redis-memory-for-key person:1</span><br><span class="line"></span><br><span class="line">&gt; redis-memory-for-key -s localhost -p 6379 -a mypassword person:1</span><br><span class="line"></span><br><span class="line">Key             person:1</span><br><span class="line">Bytes                111</span><br><span class="line">Type                hash</span><br><span class="line">Encoding            ziplist</span><br><span class="line">Number of Elements        2</span><br><span class="line">Length of Largest Element    8</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<h3 id="比较RDB文件："><a href="#比较RDB文件：" class="headerlink" title="比较RDB文件："></a>比较RDB文件：</h3><p>使用–command diff选项，并将输出通过管道传递到标准sort：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb --command diff /var/redis/6379/dump1.rdb | sort &gt; dump1.txt</span><br><span class="line">&gt; rdb --command diff /var/redis/6379/dump2.rdb | sort &gt; dump2.txt</span><br></pre></td></tr></table></figure>
+
+<p>运行差异程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; kdiff3 dump1.txt dump2.txt</span><br></pre></td></tr></table></figure>
+
+<p>要限制文件的大小，可以使用–key选项过滤键</p>
+<h3 id="使用Redis协议："><a href="#使用Redis协议：" class="headerlink" title="使用Redis协议："></a>使用Redis协议：</h3><p>使用<a target="_blank" rel="noopener" href="https://redis.io/topics/protocol">protocol</a>命令将RDB文件转换为redis协议流：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; rdb -c protocol /var/redis/6379/dump.rdb</span><br><span class="line"></span><br><span class="line">*4</span><br><span class="line">$4</span><br><span class="line">HSET</span><br><span class="line">$9</span><br><span class="line">users:123</span><br><span class="line">$9</span><br><span class="line">firstname</span><br><span class="line">$8</span><br><span class="line">Sripathi</span><br></pre></td></tr></table></figure>
+
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>可以将输出通过管道传输到netcat并重新导入数据的子集。如果要将数据在两个Redis实例上共享，则可以使用–key标志选择数据的子集，然后将输出传递给正在运行的Redis实例并加载该数据。 当输出打印协议时，–escape选项可以避免出现不可打印&#x2F;控制字符。</p>
+<p>默认情况下，如果过期时间在rdb文件中存在，则会删除过去所有过期的键。 如果不需要此行为，则使用-x&#x2F;–no-expire选项将忽略所有关键的到期命令。使用-a&#x2F;–amend-expire选项设置将来的到期时间，该选项会为已设置为到期的每个密钥的到期时间增加整数秒，不会更改尚未设置有效期的key。</p>
+<h3 id="使用解析器（Python）："><a href="#使用解析器（Python）：" class="headerlink" title="使用解析器（Python）："></a>使用解析器（Python）：</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code </p>
+<h2 id="测试说明"><a href="#测试说明" class="headerlink" title="测试说明"></a>测试说明</h2><h3 id="一、rdb：根据要求分析这个RDB文件"><a href="#一、rdb：根据要求分析这个RDB文件" class="headerlink" title="一、rdb：根据要求分析这个RDB文件"></a>一、rdb：根据要求分析这个RDB文件</h3><ol>
+<li><p><strong>按json格式导出rdb：</strong></p>
+<p>rdb –command <strong>json</strong> dump.rdb </p>
+<p>**<br>**</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出rdb中的keys：</strong>rdb -c <strong>justkeys</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出rdb中的values</strong>：rdb -c <strong>justkeyvals</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p>导出rdb中keys的内存分析：</p>
+<p>rdb -c <strong>memory</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>按RESP协议导出RDB内容：</strong></p>
+<p>rdb -c <strong>protocol</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>分析RDB结果导出到文件：</strong></p>
+<p>rdb -c <strong>memory</strong> dump.rdb <strong>-f</strong> ttt.csv</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出指定数据库的keys：</strong></p>
+<p>rdb -c justkeyvals dump.rdb <strong>-n</strong> **0<br>**</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出*<em>**匹配（正则）的**</em>*keys：</strong>rdb –command justkeyvals <strong>–key “.*set*“</strong> dump.rdb </p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>不导出匹配（正则）的keys：</strong>rdb –command justkeyvals <strong>–not-key</strong> <strong>“.*set*“</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出指定类型的keys：</strong></p>
+<p>rdb –command json <strong>–type</strong> <strong>hash</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p>导出大于指定字节的keys：</p>
+<p>rdb –command <strong>memory</strong> <strong>–bytes 128</strong> dump.rdb </p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出内存字节排名前3个keys：</strong>rdb –command <strong>memory</strong> <strong>–largest 3</strong> dump.rdb </p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出指定编码转义：</strong>rdb –command justkeyvals <strong>–escape raw</strong> dump.rdb</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+</li>
+<li><p><strong>导出keys（过期keys除外）</strong>：rdb –command memory <strong>–no-expire</strong> dump.rdb </p>
+</li>
+<li><p><strong>导出keys（给过期keys添加时间）：</strong>rdb –command memory <strong>–amend-expire 100</strong> dump.rdb</p>
+</li>
+</ol>
+<p>以上操作参数可以相互叠加使用，按照实际要求进行组合。并且可以导出成csv文件，导入到数据库里进行聚合统计和监控。</p>
+<h3 id="二、redis-memory-for-key：查看指定key的内存"><a href="#二、redis-memory-for-key：查看指定key的内存" class="headerlink" title="二、redis-memory-for-key：查看指定key的内存"></a>二、redis-memory-for-key：查看指定key的内存</h3><p><strong>查看指定key的内存分析情况：</strong>redis-memory-for-key <strong>–server</strong>&#x3D;192.168.163.134 <strong>–port</strong>&#x3D;8379 <strong>f</strong></p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+<h3 id="三、redis-profiler：RDB分析生成html"><a href="#三、redis-profiler：RDB分析生成html" class="headerlink" title="三、redis-profiler：RDB分析生成html"></a>三、redis-profiler：RDB分析生成html</h3><p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> View Code</p>
+<p>分析后的效果图（一部分）如：</p>
+<p><img src="https://img2020.cnblogs.com/blog/163084/202007/163084-20200711003724347-1828918463.png" alt="img"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过本文对于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>说明，能够更好的解析RDB其内部的存储信息，从而方便给出优化和维护的建议，关于<a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools">rdbtools</a>更多的说明可以看官网。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/01/15/linux%E4%B8%8Bmysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -905,522 +1385,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/10/29/mermaid-flowchart-%E6%95%99%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2020/10/29/mermaid-flowchart-%E6%95%99%E7%A8%8B/" class="post-title-link" itemprop="url">mermaid-flowchart-教程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-29 19:41:27" itemprop="dateCreated datePublished" datetime="2020-10-29T19:41:27+08:00">2020-10-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:37:14" itemprop="dateModified" datetime="2023-03-24T21:37:14+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Flowcharts-Basic-Syntax"><a href="#Flowcharts-Basic-Syntax" class="headerlink" title="Flowcharts - Basic Syntax"></a>Flowcharts - Basic Syntax</h1><p><a target="_blank" rel="noopener" href="https://mermaid-js.github.io/mermaid/diagrams-and-syntax-and-examples/flowchart.html">source</a></p>
-<h2 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h2><p>This statement declares the direction of the Flowchart.</p>
-<p>This declares the graph is oriented from top to bottom (<code>TD</code> or <code>TB</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<p>This declares the graph is oriented from left to right (<code>LR</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<h2 id="Flowchart-Orientation"><a href="#Flowchart-Orientation" class="headerlink" title="Flowchart Orientation"></a>Flowchart Orientation</h2><p>Possible FlowChart orientations are:</p>
-<ul>
-<li>TB - top to bottom</li>
-<li>TD - top-down&#x2F; same as top to bottom</li>
-<li>BT - bottom to top</li>
-<li>RL - right to left</li>
-<li>LR - left to right</li>
-</ul>
-<h2 id="Flowcharts"><a href="#Flowcharts" class="headerlink" title="Flowcharts"></a>Flowcharts</h2><p>This renders a flowchart that allows for features such as: more arrow types, multi directional arrows, and linking to and from subgraphs.</p>
-<p>Apart from the graph type, the syntax is the same. This is currently experimental but when the beta period is over, both the graph and flowchart keywords will render in the new way. This means it is ok to start beta testing flowcharts.</p>
-<blockquote>
-<p><strong>Important note</strong> Do not type the word “end” as a Flowchart node. Capitalize all or any one the letters to keep the flowchart from breaking, i.e, “End” or “END”. Or you can apply this <a target="_blank" rel="noopener" href="https://github.com/mermaid-js/mermaid/issues/1444#issuecomment-639528897">workaround</a>.**</p>
-</blockquote>
-<h2 id="Nodes-amp-shapes"><a href="#Nodes-amp-shapes" class="headerlink" title="Nodes &amp; shapes"></a>Nodes &amp; shapes</h2><h3 id="A-node-default"><a href="#A-node-default" class="headerlink" title="A node (default)"></a>A node (default)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id</span><br></pre></td></tr></table></figure>
-
-<p>id</p>
-<blockquote>
-<p><strong>Note</strong> The id is what is displayed in the box.</p>
-</blockquote>
-<h3 id="A-node-with-text"><a href="#A-node-with-text" class="headerlink" title="A node with text"></a>A node with text</h3><p>It is also possible to set text in the box that differs from the id. If this is done several times, it is the last text found for the node that will be used. Also if you define edges for the node later on, you can omit text definitions. The one previously defined will be used when rendering the box.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[This is the text in the box]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h2 id="Node-Shapes"><a href="#Node-Shapes" class="headerlink" title="Node Shapes"></a>Node Shapes</h2><h3 id="A-node-with-round-edges"><a href="#A-node-with-round-edges" class="headerlink" title="A node with round edges"></a>A node with round edges</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(This is the text in the box)</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-stadium-shaped-node"><a href="#A-stadium-shaped-node" class="headerlink" title="A stadium-shaped node"></a>A stadium-shaped node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1([This is the text in the box])</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-node-in-a-subroutine-shape"><a href="#A-node-in-a-subroutine-shape" class="headerlink" title="A node in a subroutine shape"></a>A node in a subroutine shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[[This is the text in the box]]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-node-in-a-cylindrical-shape"><a href="#A-node-in-a-cylindrical-shape" class="headerlink" title="A node in a cylindrical shape"></a>A node in a cylindrical shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[(Database)]</span><br></pre></td></tr></table></figure>
-
-<p>Database</p>
-<h3 id="A-node-in-the-form-of-a-circle"><a href="#A-node-in-the-form-of-a-circle" class="headerlink" title="A node in the form of a circle"></a>A node in the form of a circle</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1((This is the text in the circle))</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the circle</p>
-<h3 id="A-node-in-an-asymetric-shape"><a href="#A-node-in-an-asymetric-shape" class="headerlink" title="A node in an asymetric shape"></a>A node in an asymetric shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&gt;This is the text in the box]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<p>Currently only the shape above is possible and not its mirror. <em>This might change with future releases.</em></p>
-<h3 id="A-node-rhombus"><a href="#A-node-rhombus" class="headerlink" title="A node (rhombus)"></a>A node (rhombus)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;This is the text in the box&#125;</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="A-hexagon-node"><a href="#A-hexagon-node" class="headerlink" title="A hexagon node"></a>A hexagon node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;&#123;This is the text in the box&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Parallelogram"><a href="#Parallelogram" class="headerlink" title="Parallelogram"></a>Parallelogram</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[/This is the text in the box/]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Parallelogram-alt"><a href="#Parallelogram-alt" class="headerlink" title="Parallelogram alt"></a>Parallelogram alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[\This is the text in the box\]</span><br></pre></td></tr></table></figure>
-
-<p>This is the text in the box</p>
-<h3 id="Trapezoid"><a href="#Trapezoid" class="headerlink" title="Trapezoid"></a>Trapezoid</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[/Christmas\]</span><br></pre></td></tr></table></figure>
-
-<p>Christmas</p>
-<h3 id="Trapezoid-alt"><a href="#Trapezoid-alt" class="headerlink" title="Trapezoid alt"></a>Trapezoid alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[\Go shopping/]</span><br></pre></td></tr></table></figure>
-
-<p>Go shopping</p>
-<h2 id="Links-between-nodes"><a href="#Links-between-nodes" class="headerlink" title="Links between nodes"></a>Links between nodes</h2><p>Nodes can be connected with links&#x2F;edges. It is possible to have different types of links or attach a text string to a link.</p>
-<h3 id="A-link-with-arrow-head"><a href="#A-link-with-arrow-head" class="headerlink" title="A link with arrow head"></a>A link with arrow head</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="An-open-link"><a href="#An-open-link" class="headerlink" title="An open link"></a>An open link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A --- B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Text-on-links"><a href="#Text-on-links" class="headerlink" title="Text on links"></a>Text on links</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- This is the text! ---B</span><br></pre></td></tr></table></figure>
-
-<p>This is the textAB</p>
-<p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A---|This is the text|B</span><br></pre></td></tr></table></figure>
-
-<p>This is the textAB</p>
-<h3 id="A-link-with-arrow-head-and-text"><a href="#A-link-with-arrow-head-and-text" class="headerlink" title="A link with arrow head and text"></a>A link with arrow head and text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;|text|B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- text --&gt;B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Dotted-link"><a href="#Dotted-link" class="headerlink" title="Dotted link"></a>Dotted link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">   A-.-&gt;B;</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Dotted-link-with-text"><a href="#Dotted-link-with-text" class="headerlink" title="Dotted link with text"></a>Dotted link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A-. text .-&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Thick-link"><a href="#Thick-link" class="headerlink" title="Thick link"></a>Thick link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A ==&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Thick-link-with-text"><a href="#Thick-link-with-text" class="headerlink" title="Thick link with text"></a>Thick link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A == text ==&gt; B</span><br></pre></td></tr></table></figure>
-
-<p>textAB</p>
-<h3 id="Chaining-of-links"><a href="#Chaining-of-links" class="headerlink" title="Chaining of links"></a>Chaining of links</h3><p>It is possible declare many links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
-
-<p>texttext2ABC</p>
-<p>It is also possible to declare multiple nodes links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   a --&gt; b &amp; c--&gt; d</span><br></pre></td></tr></table></figure>
-
-<p>abcd</p>
-<p>You can then describe dependencies in a very expressive way. Like the one-liner below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A &amp; B--&gt; C &amp; D</span><br></pre></td></tr></table></figure>
-
-<p>ABCD</p>
-<p>If you describe the same diagram using the the basic syntax, it will take four lines. A word of warning, one could go overboard with this making the graph harder to read in markdown form. The Swedish word <code>lagom</code> comes to mind. It means, not too much and not too little. This goes for expressive syntaxes as well.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A --&gt; C</span><br><span class="line">    A --&gt; D</span><br><span class="line">    B --&gt; C</span><br><span class="line">    B --&gt; D</span><br></pre></td></tr></table></figure>
-
-<h3 id="Beta-New-arrow-types"><a href="#Beta-New-arrow-types" class="headerlink" title="Beta: New arrow types"></a>Beta: New arrow types</h3><p>When using flowchart instead of graph there are new types of arrows supported as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A --o B</span><br><span class="line">    B --x C</span><br></pre></td></tr></table></figure>
-
-<p>ABC</p>
-<h3 id="Beta-Multi-directional-arrows"><a href="#Beta-Multi-directional-arrows" class="headerlink" title="Beta: Multi directional arrows"></a>Beta: Multi directional arrows</h3><p>When using flowchart instead of graph there is the possibility to use multidirectional arrows.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A o--o B</span><br><span class="line">    B &lt;--&gt; C</span><br><span class="line">    C x--x D</span><br></pre></td></tr></table></figure>
-
-<p>ABCD</p>
-<h3 id="Minimum-length-of-a-link"><a href="#Minimum-length-of-a-link" class="headerlink" title="Minimum length of a link"></a>Minimum length of a link</h3><p>Each node in the flowchart is ultimately assigned to a rank in the rendered graph, i.e. to a vertical or horizontal level (depending on the flowchart orientation), based on the nodes to which it is linked. By default, links can span any number of ranks, but you can ask for any link to be longer than the others by adding extra dashes in the link definition.</p>
-<p>In the following example, two extra dashes are added in the link from node <em>B</em> to node <em>E</em>, so that it spans two more ranks than regular links:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B --&gt;|Yes| C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B ----&gt;|No| E[End];</span><br></pre></td></tr></table></figure>
-
-<p>YesNoStartIs it?OKRethinkEnd</p>
-<blockquote>
-<p><strong>Note</strong> Links may still be made longer than the requested number of ranks by the rendering engine to accommodate other requests.</p>
-</blockquote>
-<p>When the link label is written in the middle of the link, the extra dashes must be added on the right side of the link. The following example is equivalent to the previous one:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B -- Yes --&gt; C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B -- No ----&gt; E[End];</span><br></pre></td></tr></table></figure>
-
-<p>YesNoStartIs it?OKRethinkEnd</p>
-<p>For dotted or thick links, the characters to add are equals signs or dots, as summed up in the following table:</p>
-<table>
-<thead>
-<tr>
-<th>Length</th>
-<th align="center">1</th>
-<th align="center">2</th>
-<th align="center">3</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Normal</td>
-<td align="center"><code>---</code></td>
-<td align="center"><code>----</code></td>
-<td align="center"><code>-----</code></td>
-</tr>
-<tr>
-<td>Normal with arrow</td>
-<td align="center"><code>--&gt;</code></td>
-<td align="center"><code>---&gt;</code></td>
-<td align="center"><code>----&gt;</code></td>
-</tr>
-<tr>
-<td>Thick</td>
-<td align="center"><code>===</code></td>
-<td align="center"><code>====</code></td>
-<td align="center"><code>=====</code></td>
-</tr>
-<tr>
-<td>Thick with arrow</td>
-<td align="center"><code>==&gt;</code></td>
-<td align="center"><code>===&gt;</code></td>
-<td align="center"><code>====&gt;</code></td>
-</tr>
-<tr>
-<td>Dotted</td>
-<td align="center"><code>-.-</code></td>
-<td align="center"><code>-..-</code></td>
-<td align="center"><code>-...-</code></td>
-</tr>
-<tr>
-<td>Dotted with arrow</td>
-<td align="center"><code>-.-&gt;</code></td>
-<td align="center"><code>-..-&gt;</code></td>
-<td align="center"><code>-...-&gt;</code></td>
-</tr>
-</tbody></table>
-<h2 id="Special-characters-that-break-syntax"><a href="#Special-characters-that-break-syntax" class="headerlink" title="Special characters that break syntax"></a>Special characters that break syntax</h2><p>It is possible to put text within quotes in order to render more troublesome characters. As in the example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[&quot;This is the (text) in the box&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>This is the (text) in the box</p>
-<h3 id="Entity-codes-to-escape-characters"><a href="#Entity-codes-to-escape-characters" class="headerlink" title="Entity codes to escape characters"></a>Entity codes to escape characters</h3><p>It is possible to escape characters using the syntax examplified here.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[&quot;A double quote:#quot;&quot;] --&gt;B[&quot;A dec char:#9829;&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>A double quote:”A dec char:♥</p>
-<h2 id="Subgraphs"><a href="#Subgraphs" class="headerlink" title="Subgraphs"></a>Subgraphs</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subgraph title</span><br><span class="line">    graph definition</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-
-<p>An example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-
-<p>threetwoonec2c1b2b1a2a1</p>
-<p>You can also set an excplicit id for the subgraph.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph ide1 [one]</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-
-<p>onea2a1c1</p>
-<h2 id="Beta-flowcharts"><a href="#Beta-flowcharts" class="headerlink" title="Beta: flowcharts"></a>Beta: flowcharts</h2><p>With the graphtype flowcharts it is also possible to set edges to and from subgraphs as in the graph below.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br><span class="line">    one --&gt; two</span><br><span class="line">    three --&gt; two</span><br><span class="line">    two --&gt; c2</span><br></pre></td></tr></table></figure>
-
-<p>threeonec2c1twob2b1a2a1</p>
-<h2 id="Interaction"><a href="#Interaction" class="headerlink" title="Interaction"></a>Interaction</h2><p>It is possible to bind a click event to a node, the click can lead to either a javascript callback or to a link which will be opened in a new browser tab. <strong>Note</strong>: This functionality is disabled when using <code>securityLevel=&#39;strict&#39;</code> and enabled when using <code>securityLevel=&#39;loose&#39;</code>.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">click nodeId callback</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>nodeId is the id of the node</li>
-<li>callback is the name of a javascript function defined on the page displaying the graph, the function will be called with the nodeId as parameter.</li>
-</ul>
-<p>Examples of tooltip usage below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  var callback = function()&#123;</span><br><span class="line">      alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    click A callback &quot;Tooltip for a callback&quot;</span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;This is a tooltip for a link&quot;</span><br></pre></td></tr></table></figure>
-
-<p>The tooltip text is surrounded in double quotes. The styles of the tooltip are set by the class .mermaidTooltip.</p>
-<p>A<a target="_blank" rel="noopener" href="http://www.github.com/">B</a></p>
-<blockquote>
-<p><strong>Success</strong> The tooltip functionality and the ability to link to urls are available from version 0.5.2.</p>
-</blockquote>
-<p>?&gt; Due to limitations with how Docsify handles JavaScript callback functions, an alternate working demo for the above code can be viewed at <a target="_blank" rel="noopener" href="https://jsfiddle.net/s37cjoau/3/">this jsfiddle</a>.</p>
-<p>Links are opened in the same browser tab&#x2F;window by default. It is possible to change this by adding a link target to the click definition (<code>_self</code>, <code>_blank</code>, <code>_parent</code> and <code>_top</code> are supported):</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    B--&gt;C;</span><br><span class="line">    click A &quot;http://www.github.com&quot; </span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;Open this in a new tab&quot; _blank</span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="http://www.github.com/">A</a><a target="_blank" rel="noopener" href="http://www.github.com/">B</a>C</p>
-<p>Beginners tip, a full example using interactive links in a html context:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div class=&quot;mermaid&quot;&gt;</span><br><span class="line">    graph LR;</span><br><span class="line">        A--&gt;B;</span><br><span class="line">        click A callback &quot;Tooltip&quot;</span><br><span class="line">        click B &quot;http://www.github.com&quot; &quot;This is a link&quot;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    var callback = function()&#123;</span><br><span class="line">        alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    var config = &#123;</span><br><span class="line">        startOnLoad:true,</span><br><span class="line">        flowchart:&#123;</span><br><span class="line">            useMaxWidth:true,</span><br><span class="line">            htmlLabels:true,</span><br><span class="line">            curve:&#x27;cardinal&#x27;,</span><br><span class="line">        &#125;,</span><br><span class="line">        securityLevel:&#x27;loose&#x27;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    mermaid.initialize(config);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><p>Comments can be entered within a flow diagram, which will be ignored by the parser. Comments need to be on their own line, and must be prefaced with <code>%%</code> (double percent signs). Any text after the start of the comment to the next newline will be treated as a comment, including any flow syntax</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">%% this is a comment A -- text --&gt; B&#123;node&#125;</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
-
-<h2 id="Styling-and-classes"><a href="#Styling-and-classes" class="headerlink" title="Styling and classes"></a>Styling and classes</h2><h3 id="Styling-links"><a href="#Styling-links" class="headerlink" title="Styling links"></a>Styling links</h3><p>It is possible to style links. For instance you might want to style a link that is going backwards in the flow. As links have no ids in the same way as nodes, some other way of deciding what style the links should be attached to is required. Instead of ids, the order number of when the link was defined in the graph is used. In the example below the style defined in the linkStyle statement will belong to the fourth link in the graph:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linkStyle 3 stroke:#ff3,stroke-width:4px,color:red;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Styling-a-node"><a href="#Styling-a-node" class="headerlink" title="Styling a node"></a>Styling a node</h3><p>It is possible to apply specific styles such as a thicker border or a different background color to a node.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(Start)--&gt;id2(Stop)</span><br><span class="line">    style id1 fill:#f9f,stroke:#333,stroke-width:4px</span><br><span class="line">    style id2 fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5</span><br></pre></td></tr></table></figure>
-
-<p>StartStop</p>
-<h4 id="Classes"><a href="#Classes" class="headerlink" title="Classes"></a>Classes</h4><p>More convenient then defining the style every time is to define a class of styles and attach this class to the nodes that should have a different look.</p>
-<p>a class definition looks like the example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classDef className fill:#f9f,stroke:#333,stroke-width:4px;</span><br></pre></td></tr></table></figure>
-
-<p>Attachment of a class to a node is done as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class nodeId1 className;</span><br></pre></td></tr></table></figure>
-
-<p>It is also possible to attach a class to a list of nodes in one statement:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class nodeId1,nodeId2 className;</span><br></pre></td></tr></table></figure>
-
-<p>A shorter form of adding a class is to attach the classname to the node using the <code>:::</code>operator as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A:::someclass --&gt; B</span><br><span class="line">    classDef someclass fill:#f96;</span><br></pre></td></tr></table></figure>
-
-<p>AB</p>
-<h3 id="Css-classes"><a href="#Css-classes" class="headerlink" title="Css classes"></a>Css classes</h3><p>It is also possible to predefine classes in css styles that can be applied from the graph definition as in the example below:</p>
-<p><strong>Example style</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .cssClass &gt; rect&#123;</span><br><span class="line">        fill:#FF0000;</span><br><span class="line">        stroke:#FFFF00;</span><br><span class="line">        stroke-width:4px;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example definition</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B[AAA&lt;span&gt;BBB&lt;/span&gt;];</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    class A cssClass;</span><br></pre></td></tr></table></figure>
-
-<p>AAAA<span>BBB</span>D</p>
-<h3 id="Default-class"><a href="#Default-class" class="headerlink" title="Default class"></a>Default class</h3><p>If a class is named default it will be assigned to all classes without specific class definitions.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classDef default fill:#f9f,stroke:#333,stroke-width:4px;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Basic-support-for-fontawesome"><a href="#Basic-support-for-fontawesome" class="headerlink" title="Basic support for fontawesome"></a>Basic support for fontawesome</h2><p>It is possible to add icons from fontawesome.</p>
-<p>The icons are acessed via the syntax fa:#icon class name#.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[&quot;fa:fa-twitter for peace&quot;]</span><br><span class="line">    B--&gt;C[fa:fa-ban forbidden]</span><br><span class="line">    B--&gt;D(fa:fa-spinner);</span><br><span class="line">    B--&gt;E(A fa:fa-camera-retro perhaps?);</span><br></pre></td></tr></table></figure>
-
-<p> for peace forbiddenA perhaps?</p>
-<h2 id="Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon"><a href="#Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon" class="headerlink" title="Graph declarations with spaces between vertices and link and without semicolon"></a>Graph declarations with spaces between vertices and link and without semicolon</h2><ul>
-<li>In graph declarations, the statements also can now end without a semicolon. After release 0.2.16, ending a graph statement with semicolon is just optional. So the below graph declaration is also valid along with the old declarations of the graph.</li>
-<li>A single space is allowed between vertices and the link. However there should not be any space between a vertex and its text and a link and its text. The old syntax of graph declaration will also work and hence this new feature is optional and is introduce to improve readability.</li>
-</ul>
-<p>Below is the new declaration of the graph edges which is also valid along with the old declaration of the graph edges.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[Hard edge] --&gt;|Link text| B(Round edge)</span><br><span class="line">    B --&gt; C&#123;Decision&#125;</span><br><span class="line">    C --&gt;|One| D[Result one]</span><br><span class="line">    C --&gt;|Two| E[Result two]</span><br></pre></td></tr></table></figure>
-
-<p>Link textOneTwoHard edgeRound edgeDecisionResult oneResult two</p>
-<h2 id="Configuration…"><a href="#Configuration…" class="headerlink" title="Configuration…"></a>Configuration…</h2><p>Is it possible to adjust the width of the rendered flowchart.</p>
-<p>This is done by defining <strong>mermaid.flowchartConfig</strong> or by the CLI to use a json file with the configuration. How to use the CLI is described in the mermaidCLI page. mermaid.flowchartConfig can be set to a JSON string with config parameters or the corresponding object.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mermaid.flowchartConfig = &#123;</span><br><span class="line">    width: 100%</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/10/20/sonar-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2020/10/20/sonar-install/" class="post-title-link" itemprop="url">sonar install</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-20 20:57:37" itemprop="dateCreated datePublished" datetime="2020-10-20T20:57:37+08:00">2020-10-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:45:37" itemprop="dateModified" datetime="2023-03-24T21:45:37+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>SonarQube的LTS版本以6.7和7.9较为具有代表性，这篇文章整理了一下SonarQube LTS 6.7.1 + MySQL的环境搭建方式。</p>
-<h1 id="SonarQube-6-7-1"><a href="#SonarQube-6-7-1" class="headerlink" title="SonarQube 6.7.1"></a>SonarQube 6.7.1</h1><p>这里使用Alpine版本的SonarQube 6.7.1和MySQL 5.7.16进行环境搭建，docker-compose.yml如下所示</p>
-<h2 id="docker-compose-yml文件"><a href="#docker-compose-yml文件" class="headerlink" title="docker-compose.yml文件"></a>docker-compose.yml文件</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> <span class="string">cat</span> <span class="string">docker-compose.6.7.yml</span> </span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="comment"># database service: mysql</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/mysql:5.7.16</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/data/:/var/lib/mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/conf.d/:/etc/mysql/conf.d</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_ROOT_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">MYSQL_DATABASE=sonarqube</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  <span class="comment"># Security service: sonarqube</span></span><br><span class="line">  <span class="attr">sonarqube:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">liumiaocn/sonarqube:6.7.1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/data/:/opt/sonarqube/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/log/:/opt/sonarqube/log</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/extensions/:/opt/sonarqube/extensions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sonar/conf/:/opt/sonarqube/conf</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_USERNAME=root</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_PASSWORD=hello123</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonarqube?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql:mysql</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">&quot;no&quot;</span></span><br><span class="line"><span class="string">liumiaocn:sonar</span> <span class="string">liumiao$</span> </span><br><span class="line"><span class="number">1234567891011121314151617181920212223242526272829303132333435363738</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml up -d</span><br><span class="line">Creating sonar_mysql_1 ... done</span><br><span class="line">Creating sonar_sonarqube_1 ... done</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">1234</span><br></pre></td></tr></table></figure>
-
-<h2 id="结果确认"><a href="#结果确认" class="headerlink" title="结果确认"></a>结果确认</h2><p>docker容器启动之后，可以使用docker-compose ps命令确认服务运行状态</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">liumiaocn:sonar liumiao$ docker-compose -f docker-compose.6.7.yml ps</span><br><span class="line">      Name                    Command             State           Ports         </span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">sonar_mysql_1       docker-entrypoint.sh mysqld   Up      0.0.0.0:3306-&gt;3306/tcp</span><br><span class="line">sonar_sonarqube_1   ./bin/run.sh                  Up      0.0.0.0:9000-&gt;9000/tcp</span><br><span class="line">liumiaocn:sonar liumiao$ </span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://img-blog.csdnimg.cn/2019102221475894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191022214809346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9saXVtaWFvY24uYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h1 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h1><p>使用示例可参看：<br><a target="_blank" rel="noopener" href="https://liumiaocn.blog.csdn.net/article/details/102670480">Angular应用中使用SonarQube进行质量扫描</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2020/10/16/local-test-zookeeper/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="baishuanglin">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2020/10/16/local-test-zookeeper/" class="post-title-link" itemprop="url">本地部署zookeeper</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-16 21:52:55" itemprop="dateCreated datePublished" datetime="2020-10-16T21:52:55+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-27 20:49:15" itemprop="dateModified" datetime="2023-03-27T20:49:15+08:00">2023-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/ZooKeeper/" itemprop="url" rel="index"><span itemprop="name">ZooKeeper</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>$ pwd<br>&#x2F;root&#x2F;workspace&#x2F;apache-zookeeper-3.6.2-bin&#x2F;bin</p>
-<p>$ &#x2F;bin&#x2F;bash .&#x2F;zkCli.sh -timeout 5000 -server  10.4.154.137:2181</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#docker 启动服务命令</span><br><span class="line">docker run -d -e TZ=&quot;Asia/Shanghai&quot; -p 8080:2181 -v $PWD/data:/data --name zookeeper --restart always zookeeper</span><br><span class="line">#docker client 启动 zookeeper 测试    </span><br><span class="line">docker run -it --rm --link zookeeper:zookeeper zookeeper zkCli.sh -server zookeeper</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1490,7 +1454,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1501,7 +1465,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">112</span>
+        <span class="site-state-item-count">118</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
