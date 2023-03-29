@@ -392,7 +392,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2023-03-29 20:06:51 / Modified: 23:26:04" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
+              <time title="Created: 2023-03-29 20:06:51 / Modified: 23:31:47" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -435,6 +435,8 @@
 </ol>
 </li>
 </ol>
+<h3 id="sql查询去重问题答案"><a href="#sql查询去重问题答案" class="headerlink" title="sql查询去重问题答案"></a>sql查询去重问题答案</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> user_info b <span class="keyword">on</span> a.user_icon <span class="operator">=</span> b.user_icon <span class="keyword">and</span> a.id<span class="operator">!=</span>b.id <span class="keyword">WHERE</span> b.id <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">and</span> a.id<span class="operator">&lt;</span>b.id</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span> </span><br><span class="line"><span class="keyword">select</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">where</span> a.user_icon <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">SELECT</span> user_icon <span class="keyword">from</span> user_info  <span class="keyword">GROUP</span> <span class="keyword">BY</span> user_icon <span class="keyword">HAVING</span> <span class="built_in">count</span>(<span class="number">1</span>)<span class="operator">&gt;</span><span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
