@@ -17,19 +17,19 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"veysky.github.io","root":"/blogOfLin/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). 12graph TD    Start --&gt; Stop  StartSt">
+  <meta name="description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). graph TD     Start --&gt; Stop  StartSto">
 <meta property="og:type" content="website">
 <meta property="og:title" content="mermaid-flowchart-教程">
 <meta property="og:url" content="https://veysky.github.io/blogOfLin/blog/mermaid-flowchart-%E6%95%99%E7%A8%8B.html">
 <meta property="og:site_name" content="lin&#39;s blog home">
-<meta property="og:description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). 12graph TD    Start --&gt; Stop  StartSt">
+<meta property="og:description" content="Flowcharts - Basic Syntaxsource GraphThis statement declares the direction of the Flowchart. This declares the graph is oriented from top to bottom (TD or TB). graph TD     Start --&gt; Stop  StartSto">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-29T11:41:27.000Z">
 <meta property="article:modified_time" content="2020-10-29T12:11:25.141Z">
-<meta property="article:author" content="baishuanglin">
+<meta property="article:author" content="木林森">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://veysky.github.io/blogOfLin/blog/mermaid-flowchart-%E6%95%99%E7%A8%8B">
@@ -191,11 +191,13 @@
           <h1 id="Flowcharts-Basic-Syntax"><a href="#Flowcharts-Basic-Syntax" class="headerlink" title="Flowcharts - Basic Syntax"></a>Flowcharts - Basic Syntax</h1><p><a target="_blank" rel="noopener" href="https://mermaid-js.github.io/mermaid/diagrams-and-syntax-and-examples/flowchart.html">source</a></p>
 <h2 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h2><p>This statement declares the direction of the Flowchart.</p>
 <p>This declares the graph is oriented from top to bottom (<code>TD</code> or <code>TB</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TD
+    Start --&gt; Stop</code></pre>
 
 <p>StartStop</p>
 <p>This declares the graph is oriented from left to right (<code>LR</code>).</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    Start --&gt; Stop</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    Start --&gt; Stop</code></pre>
 
 <p>StartStop</p>
 <h2 id="Flowchart-Orientation"><a href="#Flowchart-Orientation" class="headerlink" title="Flowchart Orientation"></a>Flowchart Orientation</h2><p>Possible FlowChart orientations are:</p>
@@ -211,100 +213,131 @@
 <blockquote>
 <p><strong>Important note</strong> Do not type the word “end” as a Flowchart node. Capitalize all or any one the letters to keep the flowchart from breaking, i.e, “End” or “END”. Or you can apply this <a target="_blank" rel="noopener" href="https://github.com/mermaid-js/mermaid/issues/1444#issuecomment-639528897">workaround</a>.**</p>
 </blockquote>
-<h2 id="Nodes-amp-shapes"><a href="#Nodes-amp-shapes" class="headerlink" title="Nodes &amp; shapes"></a>Nodes &amp; shapes</h2><h3 id="A-node-default"><a href="#A-node-default" class="headerlink" title="A node (default)"></a>A node (default)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id</span><br></pre></td></tr></table></figure>
+<h2 id="Nodes-amp-shapes"><a href="#Nodes-amp-shapes" class="headerlink" title="Nodes &amp; shapes"></a>Nodes &amp; shapes</h2><h3 id="A-node-default"><a href="#A-node-default" class="headerlink" title="A node (default)"></a>A node (default)</h3><pre><code class="highlight mermaid">graph LR
+    id</code></pre>
 
 <p>id</p>
 <blockquote>
 <p><strong>Note</strong> The id is what is displayed in the box.</p>
 </blockquote>
 <h3 id="A-node-with-text"><a href="#A-node-with-text" class="headerlink" title="A node with text"></a>A node with text</h3><p>It is also possible to set text in the box that differs from the id. If this is done several times, it is the last text found for the node that will be used. Also if you define edges for the node later on, you can omit text definitions. The one previously defined will be used when rendering the box.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[This is the text in the box]</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    id1[This is the text in the box]</code></pre>
 
 <p>This is the text in the box</p>
-<h2 id="Node-Shapes"><a href="#Node-Shapes" class="headerlink" title="Node Shapes"></a>Node Shapes</h2><h3 id="A-node-with-round-edges"><a href="#A-node-with-round-edges" class="headerlink" title="A node with round edges"></a>A node with round edges</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(This is the text in the box)</span><br></pre></td></tr></table></figure>
+<h2 id="Node-Shapes"><a href="#Node-Shapes" class="headerlink" title="Node Shapes"></a>Node Shapes</h2><h3 id="A-node-with-round-edges"><a href="#A-node-with-round-edges" class="headerlink" title="A node with round edges"></a>A node with round edges</h3><pre><code class="highlight mermaid">graph LR
+    id1(This is the text in the box)</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="A-stadium-shaped-node"><a href="#A-stadium-shaped-node" class="headerlink" title="A stadium-shaped node"></a>A stadium-shaped node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1([This is the text in the box])</span><br></pre></td></tr></table></figure>
+<h3 id="A-stadium-shaped-node"><a href="#A-stadium-shaped-node" class="headerlink" title="A stadium-shaped node"></a>A stadium-shaped node</h3><pre><code class="highlight mermaid">graph LR
+    id1([This is the text in the box])</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="A-node-in-a-subroutine-shape"><a href="#A-node-in-a-subroutine-shape" class="headerlink" title="A node in a subroutine shape"></a>A node in a subroutine shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[[This is the text in the box]]</span><br></pre></td></tr></table></figure>
+<h3 id="A-node-in-a-subroutine-shape"><a href="#A-node-in-a-subroutine-shape" class="headerlink" title="A node in a subroutine shape"></a>A node in a subroutine shape</h3><pre><code class="highlight mermaid">graph LR
+    id1[[This is the text in the box]]</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="A-node-in-a-cylindrical-shape"><a href="#A-node-in-a-cylindrical-shape" class="headerlink" title="A node in a cylindrical shape"></a>A node in a cylindrical shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[(Database)]</span><br></pre></td></tr></table></figure>
+<h3 id="A-node-in-a-cylindrical-shape"><a href="#A-node-in-a-cylindrical-shape" class="headerlink" title="A node in a cylindrical shape"></a>A node in a cylindrical shape</h3><pre><code class="highlight mermaid">graph LR
+    id1[(Database)]</code></pre>
 
 <p>Database</p>
-<h3 id="A-node-in-the-form-of-a-circle"><a href="#A-node-in-the-form-of-a-circle" class="headerlink" title="A node in the form of a circle"></a>A node in the form of a circle</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1((This is the text in the circle))</span><br></pre></td></tr></table></figure>
+<h3 id="A-node-in-the-form-of-a-circle"><a href="#A-node-in-the-form-of-a-circle" class="headerlink" title="A node in the form of a circle"></a>A node in the form of a circle</h3><pre><code class="highlight mermaid">graph LR
+    id1((This is the text in the circle))</code></pre>
 
 <p>This is the text in the circle</p>
-<h3 id="A-node-in-an-asymetric-shape"><a href="#A-node-in-an-asymetric-shape" class="headerlink" title="A node in an asymetric shape"></a>A node in an asymetric shape</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&gt;This is the text in the box]</span><br></pre></td></tr></table></figure>
+<h3 id="A-node-in-an-asymetric-shape"><a href="#A-node-in-an-asymetric-shape" class="headerlink" title="A node in an asymetric shape"></a>A node in an asymetric shape</h3><pre><code class="highlight mermaid">graph LR
+    id1&gt;This is the text in the box]</code></pre>
 
 <p>This is the text in the box</p>
 <p>Currently only the shape above is possible and not its mirror. <em>This might change with future releases.</em></p>
-<h3 id="A-node-rhombus"><a href="#A-node-rhombus" class="headerlink" title="A node (rhombus)"></a>A node (rhombus)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;This is the text in the box&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="A-node-rhombus"><a href="#A-node-rhombus" class="headerlink" title="A node (rhombus)"></a>A node (rhombus)</h3><pre><code class="highlight mermaid">graph LR
+    id1&#123;This is the text in the box&#125;</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="A-hexagon-node"><a href="#A-hexagon-node" class="headerlink" title="A hexagon node"></a>A hexagon node</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1&#123;&#123;This is the text in the box&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="A-hexagon-node"><a href="#A-hexagon-node" class="headerlink" title="A hexagon node"></a>A hexagon node</h3><pre><code class="highlight mermaid">graph LR
+    id1&#123;&#123;This is the text in the box&#125;&#125;</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="Parallelogram"><a href="#Parallelogram" class="headerlink" title="Parallelogram"></a>Parallelogram</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[/This is the text in the box/]</span><br></pre></td></tr></table></figure>
+<h3 id="Parallelogram"><a href="#Parallelogram" class="headerlink" title="Parallelogram"></a>Parallelogram</h3><pre><code class="highlight mermaid">graph TD
+    id1[/This is the text in the box/]</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="Parallelogram-alt"><a href="#Parallelogram-alt" class="headerlink" title="Parallelogram alt"></a>Parallelogram alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    id1[\This is the text in the box\]</span><br></pre></td></tr></table></figure>
+<h3 id="Parallelogram-alt"><a href="#Parallelogram-alt" class="headerlink" title="Parallelogram alt"></a>Parallelogram alt</h3><pre><code class="highlight mermaid">graph TD
+    id1[\This is the text in the box\]</code></pre>
 
 <p>This is the text in the box</p>
-<h3 id="Trapezoid"><a href="#Trapezoid" class="headerlink" title="Trapezoid"></a>Trapezoid</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[/Christmas\]</span><br></pre></td></tr></table></figure>
+<h3 id="Trapezoid"><a href="#Trapezoid" class="headerlink" title="Trapezoid"></a>Trapezoid</h3><pre><code class="highlight mermaid">graph TD
+    A[/Christmas\]</code></pre>
 
 <p>Christmas</p>
-<h3 id="Trapezoid-alt"><a href="#Trapezoid-alt" class="headerlink" title="Trapezoid alt"></a>Trapezoid alt</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[\Go shopping/]</span><br></pre></td></tr></table></figure>
+<h3 id="Trapezoid-alt"><a href="#Trapezoid-alt" class="headerlink" title="Trapezoid alt"></a>Trapezoid alt</h3><pre><code class="highlight mermaid">graph TD
+    B[\Go shopping/]</code></pre>
 
 <p>Go shopping</p>
 <h2 id="Links-between-nodes"><a href="#Links-between-nodes" class="headerlink" title="Links between nodes"></a>Links between nodes</h2><p>Nodes can be connected with links&#x2F;edges. It is possible to have different types of links or attach a text string to a link.</p>
-<h3 id="A-link-with-arrow-head"><a href="#A-link-with-arrow-head" class="headerlink" title="A link with arrow head"></a>A link with arrow head</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;B</span><br></pre></td></tr></table></figure>
+<h3 id="A-link-with-arrow-head"><a href="#A-link-with-arrow-head" class="headerlink" title="A link with arrow head"></a>A link with arrow head</h3><pre><code class="highlight mermaid">graph LR
+    A--&gt;B</code></pre>
 
 <p>AB</p>
-<h3 id="An-open-link"><a href="#An-open-link" class="headerlink" title="An open link"></a>An open link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A --- B</span><br></pre></td></tr></table></figure>
+<h3 id="An-open-link"><a href="#An-open-link" class="headerlink" title="An open link"></a>An open link</h3><pre><code class="highlight mermaid">graph LR
+    A --- B</code></pre>
 
 <p>AB</p>
-<h3 id="Text-on-links"><a href="#Text-on-links" class="headerlink" title="Text on links"></a>Text on links</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- This is the text! ---B</span><br></pre></td></tr></table></figure>
+<h3 id="Text-on-links"><a href="#Text-on-links" class="headerlink" title="Text on links"></a>Text on links</h3><pre><code class="highlight mermaid">graph LR
+    A-- This is the text! ---B</code></pre>
 
 <p>This is the textAB</p>
 <p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A---|This is the text|B</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    A---|This is the text|B</code></pre>
 
 <p>This is the textAB</p>
-<h3 id="A-link-with-arrow-head-and-text"><a href="#A-link-with-arrow-head-and-text" class="headerlink" title="A link with arrow head and text"></a>A link with arrow head and text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A--&gt;|text|B</span><br></pre></td></tr></table></figure>
+<h3 id="A-link-with-arrow-head-and-text"><a href="#A-link-with-arrow-head-and-text" class="headerlink" title="A link with arrow head and text"></a>A link with arrow head and text</h3><pre><code class="highlight mermaid">graph LR
+    A--&gt;|text|B</code></pre>
 
 <p>textAB</p>
 <p>or</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A-- text --&gt;B</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    A-- text --&gt;B</code></pre>
 
 <p>textAB</p>
-<h3 id="Dotted-link"><a href="#Dotted-link" class="headerlink" title="Dotted link"></a>Dotted link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">   A-.-&gt;B;</span><br></pre></td></tr></table></figure>
+<h3 id="Dotted-link"><a href="#Dotted-link" class="headerlink" title="Dotted link"></a>Dotted link</h3><pre><code class="highlight mermaid">graph LR;
+   A-.-&gt;B;</code></pre>
 
 <p>AB</p>
-<h3 id="Dotted-link-with-text"><a href="#Dotted-link-with-text" class="headerlink" title="Dotted link with text"></a>Dotted link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A-. text .-&gt; B</span><br></pre></td></tr></table></figure>
+<h3 id="Dotted-link-with-text"><a href="#Dotted-link-with-text" class="headerlink" title="Dotted link with text"></a>Dotted link with text</h3><pre><code class="highlight mermaid">graph LR
+   A-. text .-&gt; B</code></pre>
 
 <p>textAB</p>
-<h3 id="Thick-link"><a href="#Thick-link" class="headerlink" title="Thick link"></a>Thick link</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A ==&gt; B</span><br></pre></td></tr></table></figure>
+<h3 id="Thick-link"><a href="#Thick-link" class="headerlink" title="Thick link"></a>Thick link</h3><pre><code class="highlight mermaid">graph LR
+   A ==&gt; B</code></pre>
 
 <p>AB</p>
-<h3 id="Thick-link-with-text"><a href="#Thick-link-with-text" class="headerlink" title="Thick link with text"></a>Thick link with text</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A == text ==&gt; B</span><br></pre></td></tr></table></figure>
+<h3 id="Thick-link-with-text"><a href="#Thick-link-with-text" class="headerlink" title="Thick link with text"></a>Thick link with text</h3><pre><code class="highlight mermaid">graph LR
+   A == text ==&gt; B</code></pre>
 
 <p>textAB</p>
 <h3 id="Chaining-of-links"><a href="#Chaining-of-links" class="headerlink" title="Chaining of links"></a>Chaining of links</h3><p>It is possible declare many links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+   A -- text --&gt; B -- text2 --&gt; C</code></pre>
 
 <p>texttext2ABC</p>
 <p>It is also possible to declare multiple nodes links in the same line as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">   a --&gt; b &amp; c--&gt; d</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+   a --&gt; b &amp; c--&gt; d</code></pre>
 
 <p>abcd</p>
 <p>You can then describe dependencies in a very expressive way. Like the one-liner below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A &amp; B--&gt; C &amp; D</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TB
+    A &amp; B--&gt; C &amp; D</code></pre>
 
 <p>ABCD</p>
 <p>If you describe the same diagram using the the basic syntax, it will take four lines. A word of warning, one could go overboard with this making the graph harder to read in markdown form. The Swedish word <code>lagom</code> comes to mind. It means, not too much and not too little. This goes for expressive syntaxes as well.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    A --&gt; C</span><br><span class="line">    A --&gt; D</span><br><span class="line">    B --&gt; C</span><br><span class="line">    B --&gt; D</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TB
+    A --&gt; C
+    A --&gt; D
+    B --&gt; C
+    B --&gt; D</code></pre>
 
 <h3 id="Beta-New-arrow-types"><a href="#Beta-New-arrow-types" class="headerlink" title="Beta: New arrow types"></a>Beta: New arrow types</h3><p>When using flowchart instead of graph there are new types of arrows supported as per below:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A --o B</span><br><span class="line">    B --x C</span><br></pre></td></tr></table></figure>
@@ -316,14 +349,24 @@
 <p>ABCD</p>
 <h3 id="Minimum-length-of-a-link"><a href="#Minimum-length-of-a-link" class="headerlink" title="Minimum length of a link"></a>Minimum length of a link</h3><p>Each node in the flowchart is ultimately assigned to a rank in the rendered graph, i.e. to a vertical or horizontal level (depending on the flowchart orientation), based on the nodes to which it is linked. By default, links can span any number of ranks, but you can ask for any link to be longer than the others by adding extra dashes in the link definition.</p>
 <p>In the following example, two extra dashes are added in the link from node <em>B</em> to node <em>E</em>, so that it spans two more ranks than regular links:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B --&gt;|Yes| C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B ----&gt;|No| E[End];</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TD
+    A[Start] --&gt; B&#123;Is it?&#125;;
+    B --&gt;|Yes| C[OK];
+    C --&gt; D[Rethink];
+    D --&gt; B;
+    B ----&gt;|No| E[End];</code></pre>
 
 <p>YesNoStartIs it?OKRethinkEnd</p>
 <blockquote>
 <p><strong>Note</strong> Links may still be made longer than the requested number of ranks by the rendering engine to accommodate other requests.</p>
 </blockquote>
 <p>When the link label is written in the middle of the link, the extra dashes must be added on the right side of the link. The following example is equivalent to the previous one:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Start] --&gt; B&#123;Is it?&#125;;</span><br><span class="line">    B -- Yes --&gt; C[OK];</span><br><span class="line">    C --&gt; D[Rethink];</span><br><span class="line">    D --&gt; B;</span><br><span class="line">    B -- No ----&gt; E[End];</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TD
+    A[Start] --&gt; B&#123;Is it?&#125;;
+    B -- Yes --&gt; C[OK];
+    C --&gt; D[Rethink];
+    D --&gt; B;
+    B -- No ----&gt; E[End];</code></pre>
 
 <p>YesNoStartIs it?OKRethinkEnd</p>
 <p>For dotted or thick links, the characters to add are equals signs or dots, as summed up in the following table:</p>
@@ -374,7 +417,8 @@
 </tr>
 </tbody></table>
 <h2 id="Special-characters-that-break-syntax"><a href="#Special-characters-that-break-syntax" class="headerlink" title="Special characters that break syntax"></a>Special characters that break syntax</h2><p>It is possible to put text within quotes in order to render more troublesome characters. As in the example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1[&quot;This is the (text) in the box&quot;]</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    id1[&quot;This is the (text) in the box&quot;]</code></pre>
 
 <p>This is the (text) in the box</p>
 <h3 id="Entity-codes-to-escape-characters"><a href="#Entity-codes-to-escape-characters" class="headerlink" title="Entity codes to escape characters"></a>Entity codes to escape characters</h3><p>It is possible to escape characters using the syntax examplified here.</p>
@@ -384,15 +428,42 @@
 <h2 id="Subgraphs"><a href="#Subgraphs" class="headerlink" title="Subgraphs"></a>Subgraphs</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subgraph title</span><br><span class="line">    graph definition</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
 
 <p>An example below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TB
+    c1--&gt;a2
+    subgraph one
+    a1--&gt;a2
+    end
+    subgraph two
+    b1--&gt;b2
+    end
+    subgraph three
+    c1--&gt;c2
+    end</code></pre>
 
 <p>threetwoonec2c1b2b1a2a1</p>
 <p>You can also set an excplicit id for the subgraph.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph ide1 [one]</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TB
+    c1--&gt;a2
+    subgraph ide1 [one]
+    a1--&gt;a2
+    end</code></pre>
 
 <p>onea2a1c1</p>
 <h2 id="Beta-flowcharts"><a href="#Beta-flowcharts" class="headerlink" title="Beta: flowcharts"></a>Beta: flowcharts</h2><p>With the graphtype flowcharts it is also possible to set edges to and from subgraphs as in the graph below.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    c1--&gt;a2</span><br><span class="line">    subgraph one</span><br><span class="line">    a1--&gt;a2</span><br><span class="line">    end</span><br><span class="line">    subgraph two</span><br><span class="line">    b1--&gt;b2</span><br><span class="line">    end</span><br><span class="line">    subgraph three</span><br><span class="line">    c1--&gt;c2</span><br><span class="line">    end</span><br><span class="line">    one --&gt; two</span><br><span class="line">    three --&gt; two</span><br><span class="line">    two --&gt; c2</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">flowchart TB
+    c1--&gt;a2
+    subgraph one
+    a1--&gt;a2
+    end
+    subgraph two
+    b1--&gt;b2
+    end
+    subgraph three
+    c1--&gt;c2
+    end
+    one --&gt; two
+    three --&gt; two
+    two --&gt; c2</code></pre>
 
 <p>threeonec2c1twob2b1a2a1</p>
 <h2 id="Interaction"><a href="#Interaction" class="headerlink" title="Interaction"></a>Interaction</h2><p>It is possible to bind a click event to a node, the click can lead to either a javascript callback or to a link which will be opened in a new browser tab. <strong>Note</strong>: This functionality is disabled when using <code>securityLevel=&#39;strict&#39;</code> and enabled when using <code>securityLevel=&#39;loose&#39;</code>.</p>
@@ -403,7 +474,15 @@
 <li>callback is the name of a javascript function defined on the page displaying the graph, the function will be called with the nodeId as parameter.</li>
 </ul>
 <p>Examples of tooltip usage below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  var callback = function()&#123;</span><br><span class="line">      alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    click A callback &quot;Tooltip for a callback&quot;</span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;This is a tooltip for a link&quot;</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">&lt;script&gt;
+  var callback = function()&#123;
+      alert(&#x27;A callback was triggered&#x27;);
+  &#125;
+&lt;/script&gt;
+graph LR;
+    A--&gt;B;
+    click A callback &quot;Tooltip for a callback&quot;
+    click B &quot;http://www.github.com&quot; &quot;This is a tooltip for a link&quot;</code></pre>
 
 <p>The tooltip text is surrounded in double quotes. The styles of the tooltip are set by the class .mermaidTooltip.</p>
 <p>A<a target="_blank" rel="noopener" href="http://www.github.com/">B</a></p>
@@ -412,20 +491,29 @@
 </blockquote>
 <p>?&gt; Due to limitations with how Docsify handles JavaScript callback functions, an alternate working demo for the above code can be viewed at <a target="_blank" rel="noopener" href="https://jsfiddle.net/s37cjoau/3/">this jsfiddle</a>.</p>
 <p>Links are opened in the same browser tab&#x2F;window by default. It is possible to change this by adding a link target to the click definition (<code>_self</code>, <code>_blank</code>, <code>_parent</code> and <code>_top</code> are supported):</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    B--&gt;C;</span><br><span class="line">    click A &quot;http://www.github.com&quot; </span><br><span class="line">    click B &quot;http://www.github.com&quot; &quot;Open this in a new tab&quot; _blank</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR;
+    A--&gt;B;
+    B--&gt;C;
+    click A &quot;http://www.github.com&quot; 
+    click B &quot;http://www.github.com&quot; &quot;Open this in a new tab&quot; _blank</code></pre>
 
 <p><a target="_blank" rel="noopener" href="http://www.github.com/">A</a><a target="_blank" rel="noopener" href="http://www.github.com/">B</a>C</p>
 <p>Beginners tip, a full example using interactive links in a html context:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div class=&quot;mermaid&quot;&gt;</span><br><span class="line">    graph LR;</span><br><span class="line">        A--&gt;B;</span><br><span class="line">        click A callback &quot;Tooltip&quot;</span><br><span class="line">        click B &quot;http://www.github.com&quot; &quot;This is a link&quot;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    var callback = function()&#123;</span><br><span class="line">        alert(&#x27;A callback was triggered&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    var config = &#123;</span><br><span class="line">        startOnLoad:true,</span><br><span class="line">        flowchart:&#123;</span><br><span class="line">            useMaxWidth:true,</span><br><span class="line">            htmlLabels:true,</span><br><span class="line">            curve:&#x27;cardinal&#x27;,</span><br><span class="line">        &#125;,</span><br><span class="line">        securityLevel:&#x27;loose&#x27;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    mermaid.initialize(config);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><p>Comments can be entered within a flow diagram, which will be ignored by the parser. Comments need to be on their own line, and must be prefaced with <code>%%</code> (double percent signs). Any text after the start of the comment to the next newline will be treated as a comment, including any flow syntax</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">%% this is a comment A -- text --&gt; B&#123;node&#125;</span><br><span class="line">   A -- text --&gt; B -- text2 --&gt; C</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+%% this is a comment A -- text --&gt; B&#123;node&#125;
+   A -- text --&gt; B -- text2 --&gt; C</code></pre>
 
 <h2 id="Styling-and-classes"><a href="#Styling-and-classes" class="headerlink" title="Styling and classes"></a>Styling and classes</h2><h3 id="Styling-links"><a href="#Styling-links" class="headerlink" title="Styling links"></a>Styling links</h3><p>It is possible to style links. For instance you might want to style a link that is going backwards in the flow. As links have no ids in the same way as nodes, some other way of deciding what style the links should be attached to is required. Instead of ids, the order number of when the link was defined in the graph is used. In the example below the style defined in the linkStyle statement will belong to the fourth link in the graph:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linkStyle 3 stroke:#ff3,stroke-width:4px,color:red;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Styling-a-node"><a href="#Styling-a-node" class="headerlink" title="Styling a node"></a>Styling a node</h3><p>It is possible to apply specific styles such as a thicker border or a different background color to a node.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(Start)--&gt;id2(Stop)</span><br><span class="line">    style id1 fill:#f9f,stroke:#333,stroke-width:4px</span><br><span class="line">    style id2 fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    id1(Start)--&gt;id2(Stop)
+    style id1 fill:#f9f,stroke:#333,stroke-width:4px
+    style id2 fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5</code></pre>
 
 <p>StartStop</p>
 <h4 id="Classes"><a href="#Classes" class="headerlink" title="Classes"></a>Classes</h4><p>More convenient then defining the style every time is to define a class of styles and attach this class to the nodes that should have a different look.</p>
@@ -439,7 +527,9 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class nodeId1,nodeId2 className;</span><br></pre></td></tr></table></figure>
 
 <p>A shorter form of adding a class is to attach the classname to the node using the <code>:::</code>operator as per below:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A:::someclass --&gt; B</span><br><span class="line">    classDef someclass fill:#f96;</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    A:::someclass --&gt; B
+    classDef someclass fill:#f96;</code></pre>
 
 <p>AB</p>
 <h3 id="Css-classes"><a href="#Css-classes" class="headerlink" title="Css classes"></a>Css classes</h3><p>It is also possible to predefine classes in css styles that can be applied from the graph definition as in the example below:</p>
@@ -447,7 +537,10 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .cssClass &gt; rect&#123;</span><br><span class="line">        fill:#FF0000;</span><br><span class="line">        stroke:#FFFF00;</span><br><span class="line">        stroke-width:4px;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
 
 <p><strong>Example definition</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR;</span><br><span class="line">    A--&gt;B[AAA&lt;span&gt;BBB&lt;/span&gt;];</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    class A cssClass;</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR;
+    A--&gt;B[AAA&lt;span&gt;BBB&lt;/span&gt;];
+    B--&gt;D;
+    class A cssClass;</code></pre>
 
 <p>AAAA<span>BBB</span>D</p>
 <h3 id="Default-class"><a href="#Default-class" class="headerlink" title="Default class"></a>Default class</h3><p>If a class is named default it will be assigned to all classes without specific class definitions.</p>
@@ -455,7 +548,11 @@
 
 <h2 id="Basic-support-for-fontawesome"><a href="#Basic-support-for-fontawesome" class="headerlink" title="Basic support for fontawesome"></a>Basic support for fontawesome</h2><p>It is possible to add icons from fontawesome.</p>
 <p>The icons are acessed via the syntax fa:#icon class name#.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    B[&quot;fa:fa-twitter for peace&quot;]</span><br><span class="line">    B--&gt;C[fa:fa-ban forbidden]</span><br><span class="line">    B--&gt;D(fa:fa-spinner);</span><br><span class="line">    B--&gt;E(A fa:fa-camera-retro perhaps?);</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph TD
+    B[&quot;fa:fa-twitter for peace&quot;]
+    B--&gt;C[fa:fa-ban forbidden]
+    B--&gt;D(fa:fa-spinner);
+    B--&gt;E(A fa:fa-camera-retro perhaps?);</code></pre>
 
 <p> for peace forbiddenA perhaps?</p>
 <h2 id="Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon"><a href="#Graph-declarations-with-spaces-between-vertices-and-link-and-without-semicolon" class="headerlink" title="Graph declarations with spaces between vertices and link and without semicolon"></a>Graph declarations with spaces between vertices and link and without semicolon</h2><ul>
@@ -463,7 +560,11 @@
 <li>A single space is allowed between vertices and the link. However there should not be any space between a vertex and its text and a link and its text. The old syntax of graph declaration will also work and hence this new feature is optional and is introduce to improve readability.</li>
 </ul>
 <p>Below is the new declaration of the graph edges which is also valid along with the old declaration of the graph edges.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[Hard edge] --&gt;|Link text| B(Round edge)</span><br><span class="line">    B --&gt; C&#123;Decision&#125;</span><br><span class="line">    C --&gt;|One| D[Result one]</span><br><span class="line">    C --&gt;|Two| E[Result two]</span><br></pre></td></tr></table></figure>
+<pre><code class="highlight mermaid">graph LR
+    A[Hard edge] --&gt;|Link text| B(Round edge)
+    B --&gt; C&#123;Decision&#125;
+    C --&gt;|One| D[Result one]
+    C --&gt;|Two| E[Result two]</code></pre>
 
 <p>Link textOneTwoHard edgeRound edgeDecisionResult oneResult two</p>
 <h2 id="Configuration…"><a href="#Configuration…" class="headerlink" title="Configuration…"></a>Configuration…</h2><p>Is it possible to adjust the width of the rendered flowchart.</p>
@@ -535,7 +636,7 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">baishuanglin</p>
+  <p class="site-author-name" itemprop="name">木林森</p>
   <div class="site-description" itemprop="description">personal blog</div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -596,9 +697,9 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">baishuanglin</span>
+  <span class="author" itemprop="copyrightHolder">木林森</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
 
         
@@ -624,7 +725,7 @@
 <script src="/blogOfLin/js/motion.js"></script>
 
 
-<script src="/blogOfLin/js/schemes/muse.js"></script>
+<script src="/blogOfLin/js/schemes/pisces.js"></script>
 
 
 <script src="/blogOfLin/js/next-boot.js"></script>
@@ -648,6 +749,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : '[object Object]',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   
