@@ -166,6 +166,133 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" class="post-title-link" itemprop="url">理解 Kafka 消费者属性的 enable.auto.commit</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-04-21 17:01:34 / Modified: 17:02:53" itemprop="dateCreated datePublished" datetime="2021-04-21T17:01:34+08:00">2021-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理解一下Kafka的读的自动提交功能。</p>
+<p>找到了一篇专门介绍这个功能的文章，选择主要的内容进行一下翻译和做笔记。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property"><a href="#Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property" class="headerlink" title="Understanding the ‘enable.auto.commit’ Kafka Consumer property"></a>Understanding the ‘enable.auto.commit’ Kafka Consumer property</h2><p><img src="https://img-blog.csdnimg.cn/20190731195532220.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<blockquote>
+<p>Kafka Consumers read messages from a Kafka topic, its not a hard concept to get your head around. But behind the scenes there’s a lot more going on than meets the eye.</p>
+<p>Say we’re consuming messages from a Topic and our Consumer crashes. Once we realise that the world isn’t ending, we recover from the crash and we start consuming again. We start receiving messages exactly where we left off from, its kinda neat.</p>
+<p>假设我们正在从一个 Topic 中消费消息，这个时候我们的这个消费者（客户端）宕机了。我们意识到这不是世界的末日，我们可以从宕机中恢复，重新开始消费。我们可以从我们上一次离开的地方重新接收消息，这非常灵巧。</p>
+<p>There’s two reasons as to why this happens. One is something referred to as the “Offset” and the other is a couple of default Consumer values.</p>
+<p>发生这样的事情是因为两个原因。一个是一个叫 “Offset” 的东西，另外一个是一些 Consumer 的默认的值。</p>
+<p>So whats an Offset?</p>
+<p>The Offset is a piece of metadata, an integer value that continually increases for each message that is received in a partition. Each message will have a unique Offset value in a partition.</p>
+<p>Offset 是一块元数据，一个整数，会针对每一个 partition 上接收到的消息而持续增长。每一个消息在一个 partition 上将会有唯一的一个Offset。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190731200310945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>I use Keys in some of my projects, some of them I don’t ;)</p>
+<p>So as you can see here, each message has a unique Offset, and that Offset represents the position of that message in that particular partition.</p>
+</blockquote>
+<p>上面介绍了一下Kafka的offset是什么，offset是记录每条消息在partition里面的位置的。</p>
+<blockquote>
+<p>When a Consumer reads the messages from the Partition it lets Kafka know the Offset of the last consumed message. This Offset is stored in a Topic named <strong>_consumer_offsets</strong>, in doing this a consumer can stop and restart without forgetting which messages it has consumed.</p>
+</blockquote>
+<p>这里讲，offset会被存在一个叫做**_consumer_offsets**的主题中，这样来帮助消费者记录处理到哪里了。</p>
+<blockquote>
+<p>When we create our Consumers, they have a set of default properties which we can override or we can just leave the default values in effect.</p>
+<p>There are two properties that are driving this behaviour.</p>
+<p>有两个属性需要关注。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">auto.commit.interval.ms</span><br></pre></td></tr></table></figure>
+
+<p>The first property <strong>enable.auto.commit</strong> has a default value of <strong>true</strong> and the second property <strong>auto.commit.interval.ms</strong> has a default value of <strong>5000</strong>. These values are correct for Blizzards node-rdkafka client and the Java KafkaConsumer client but other libraries may differ.</p>
+</blockquote>
+<p><strong>enable.auto.commit</strong> 的默认值是 true；就是默认采用自动提交的机制。</p>
+<p><strong>auto.commit.interval.ms</strong> 的默认值是 5000，单位是毫秒。</p>
+<blockquote>
+<p>So by default every 5 seconds a Consumer is going to commit its Offset to Kafka or every time data is fetched from the specified Topic it will commit the latest Offset.</p>
+<p>这样，默认5秒钟，一个 Consumer 将会提交它的 Offset 给 Kafka，或者每一次数据从指定的 Topic 取回时，将会提交最后一次的 Offset。</p>
+<p>Now in some scenarios this is the ideal behaviour but on other scenarios its not.</p>
+<p>这样，在某些场景下，这是理想的表现，但是在其他场景下，并不是。</p>
+<p>Say our Consumer is processing a message with an Offset of 100 and whilst processing it the Consumer fetches some more data, the Offset is commit and then the Consumer crashes. Upon coming back up it will start consuming messages from the most recent committed Offset, but how can we safely say that we haven’t lost messages and the Offset of the new message isn’t later then the one of the message been processed?</p>
+<p>这么说，我们的 Consumer 正在消费一个 Offset 是100的消息，同时这个 Consumer 取回了一些数据，这个 Offset 提交了，然后 Consumer 崩溃了。在我们回来的时候，我们会重新从最新提交的 Offset 去进行消息的消费，但是我们如何能安全地说，我们没有丢失消息，并且这个新消息的 Offset 不会比刚刚被处理的那个消息靠后呢？</p>
+<p>What we can do is commit the Offset of messages manually after processing them. This give us full control over when we consider a message dealt with, processed and ready to let Kafka know that.</p>
+<p>解决这个问题的方案就是我们手动地提交这个 Offset，在处理完这些消息之后。这给与了我们完全的控制，什么时候去处理一个消息，什么时候去让 Kafka 知道这个。</p>
+<p>Firstly we have to change the value of the <strong>enable.auto.commit</strong> property.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit: false</span><br></pre></td></tr></table></figure>
+
+<p>When we change this property the <strong>auto.commit.interval.ms</strong> value isnt taken into consideration.</p>
+<p>So now we can commit our Offset manually after the processing has taken place and if the Consumer crashes whilst processing a message it will start consuming from that same Offset, no messages lost.</p>
+<p>我们把这个参数设置为 false ，就会由我们自己手动地来处理这个事情。</p>
+<p>Both the clients mentioned earlier in this article have methods exposed to commit the Offset.</p>
+<p>For further reading on the clients check out the links below.</p>
+</blockquote>
+<p>如果 <strong>enable.auto.commit</strong> 设置成 false，那么 <strong>auto.commit.interval.ms</strong> 也就不被再考虑了<strong>。</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blizzard.github.io/node-rdkafka/current/KafkaConsumer.html"><strong>JSDoc: Class: KafkaConsumer</strong><br><em>KafkaConsumer class for reading messages from Kafka This is the main entry point for reading data from Kafka. You…</em>blizzard.github.io</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html"><strong>KafkaConsumer (kafka 0.10.2.1 API)</strong><br><em>To avoid this, we will manually commit the offsets only after the corresponding records have been inserted into the…</em>kafka.apache.org</a></p>
+<p>If anyone wants any more information on Kafka or Consumers get in touch on Twitter.</p>
+<p>Cheers,</p>
+<p>Danny</p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/danieljameskay">https://twitter.com/danieljameskay</a></p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65">https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65</a></p>
+<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html">https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html</a> 这里是官网介绍如何使用consumer</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/21/Kafka%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1177,103 +1304,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/02/10/pure-ftp%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">pure-ftp安装和配置</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-02-10 15:26:55" itemprop="dateCreated datePublished" datetime="2021-02-10T15:26:55+08:00">2021-02-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:39:56" itemprop="dateModified" datetime="2023-03-24T21:39:56+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">服务器</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://www.pureftpd.org/project/pure-ftpd/">Pure-FTPd </a>是免费的FTP服务器，提供了一个轻量级、快速、多语言、具备基本功能特性的FTPServer配置方案，重点关注软件安全性。本文介绍如何在<a target="_blank" rel="noopener" href="https://www.cco.xyz/archives/tag/centos">CentOS</a>中安装与使用Pure-FTPd。</p>
-<h2 id="1-安装Pure-FTPd"><a href="#1-安装Pure-FTPd" class="headerlink" title="1.安装Pure-FTPd"></a>1.安装Pure-FTPd</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install pure-ftpd</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-配置Pure-FTPd"><a href="#2-配置Pure-FTPd" class="headerlink" title="2.配置Pure-FTPd"></a>2.配置Pure-FTPd</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/pure-ftpd/pure-ftpd.conf</span><br></pre></td></tr></table></figure>
-
-<p>根据以下内容修改：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ChrootEveryone               yes</span><br><span class="line">BrokenClientsCompatibility   no</span><br><span class="line">MaxClientsNumber             50</span><br><span class="line">Daemonize                    yes</span><br><span class="line">MaxClientsPerIP              8</span><br><span class="line">VerboseLog                   no</span><br><span class="line">DisplayDotFiles              yes</span><br><span class="line">AnonymousOnly                no</span><br><span class="line">NoAnonymous                  no</span><br><span class="line">SyslogFacility               ftp</span><br><span class="line">DontResolve                  yes</span><br><span class="line">MaxIdleTime                  15</span><br><span class="line">PureDB                        /etc/pure-ftpd/pureftpd.pdb</span><br><span class="line">PAMAuthentication             yes</span><br><span class="line">LimitRecursion               10000 8</span><br><span class="line">AnonymousCanCreateDirs       no</span><br><span class="line">MaxLoad                      4</span><br><span class="line">AntiWarez                    yes</span><br><span class="line">Umask                        133:022</span><br><span class="line">MinUID                      1000</span><br><span class="line">AllowUserFXP                 no</span><br><span class="line">AllowAnonymousFXP            no</span><br><span class="line">ProhibitDotFilesWrite        no</span><br><span class="line">ProhibitDotFilesRead         no</span><br><span class="line">AutoRename                   no</span><br><span class="line">AnonymousCantUpload         yes</span><br><span class="line">AltLog                     clf:/var/log/pureftpd.log</span><br><span class="line">PIDFile                     /var/run/pure-ftpd.pid</span><br><span class="line">MaxDiskUsage                   99</span><br><span class="line">CustomerProof                yes</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-新增系统用户"><a href="#3-新增系统用户" class="headerlink" title="3.新增系统用户"></a>3.新增系统用户</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd www</span><br><span class="line">useradd -g www www</span><br></pre></td></tr></table></figure>
-
-<p>创建FTP的根目录，并赋予权限</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mdkir -p /data/wwwroot</span><br><span class="line">chown www:www -R /data/wwwroot</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-虚拟用户管理"><a href="#4-虚拟用户管理" class="headerlink" title="4.虚拟用户管理"></a>4.虚拟用户管理</h2><h3 id="4-1-创建虚拟用户"><a href="#4-1-创建虚拟用户" class="headerlink" title="4.1 创建虚拟用户"></a>4.1 创建虚拟用户</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw useradd wwwuser -u www -g www -d /data/wwwroot</span><br></pre></td></tr></table></figure>
-
-<p>创建FTP用户<code>wwwuser</code>, 将该虚拟用户关联到系统用户的<code>www和www用户组</code>，指定FTP的根目录为<code>/data/wwwroot</code>，按下回车，输入密码即可创建。<br>创建完虚拟FTP用户后，需要重新生成用户数据库文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw mkdb</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-2-查看虚拟用户"><a href="#4-2-查看虚拟用户" class="headerlink" title="4.2 查看虚拟用户"></a>4.2 查看虚拟用户</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pure-pw list  # 查看用户列表</span><br><span class="line"></span><br><span class="line">pure-pw show wwwuser  # 查看wwwuser用户</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-2-修改虚拟用户信息"><a href="#4-2-修改虚拟用户信息" class="headerlink" title="4.2 修改虚拟用户信息"></a>4.2 修改虚拟用户信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pure-pw passwd wwwuser   #修改密码</span><br><span class="line">pure-pw usermod wwwuser -d /data/wwwroot1  # 修改根目录</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-4-删除虚拟用户"><a href="#4-4-删除虚拟用户" class="headerlink" title="4.4 删除虚拟用户"></a>4.4 删除虚拟用户</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pure-pw userdel wwwuser</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1343,7 +1373,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1354,7 +1384,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">119</span>
+        <span class="site-state-item-count">120</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

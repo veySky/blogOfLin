@@ -166,6 +166,88 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/07/20/linux%E8%A7%A3%E5%8E%8Bgz%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/07/20/linux%E8%A7%A3%E5%8E%8Bgz%E6%96%87%E4%BB%B6/" class="post-title-link" itemprop="url">linux解压gz文件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-07-20 09:50:44" itemprop="dateCreated datePublished" datetime="2021-07-20T09:50:44+08:00">2021-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 20:49:47" itemprop="dateModified" datetime="2023-03-27T20:49:47+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">服务器</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="命令："><a href="#命令：" class="headerlink" title="命令："></a>命令：</h3><p>gunzip archive.gz</p>
+<h2 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h2><p>.gz 是文件在Linux中进行<strong>gzip</strong>压缩。 要提取的文件名为.gz的文件，我们用<strong>gunzip</strong>命令。 首先使用下面的命令，创建 gzip access.log文件的（.gz ）存档。请记住，下面的命令将删除原始文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># gzip access.log</span><br></pre></td></tr></table></figure>
+
+<p>上面的命令将在当前目录中产生名为access.log.gz 一个存档文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ls -l access.log.gz</span><br><span class="line">-rw-r--r-- 1 root root 37 Sep 14 04:02 access.log.gz</span><br></pre></td></tr></table></figure>
+
+<p>现在用gunzip命令解压access.log.gz文件。这将从存档中提取文件，并自动删除.GZ文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># gunzip access.log.gz</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/07/18/python%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -780,8 +862,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#x40;&#110;&#x6f;&#x64;&#101;&#49;&#x30;&#x38;&#46;&#121;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#x69;&#101;&#46;&#x6f;&#114;&#103;&#x2e;&#x63;&#x6e;">&#x72;&#111;&#111;&#116;&#x40;&#110;&#x6f;&#x64;&#101;&#49;&#x30;&#x38;&#46;&#121;&#105;&#110;&#x7a;&#104;&#101;&#110;&#103;&#106;&#x69;&#101;&#46;&#x6f;&#114;&#103;&#x2e;&#x63;&#x6e;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#111;&#116;&#x40;&#110;&#x6f;&#100;&#x65;&#x31;&#48;&#x38;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#x72;&#x67;&#x2e;&#99;&#x6e;">&#x72;&#x6f;&#111;&#116;&#x40;&#110;&#x6f;&#100;&#x65;&#x31;&#48;&#x38;&#46;&#x79;&#x69;&#x6e;&#x7a;&#x68;&#x65;&#110;&#103;&#106;&#105;&#x65;&#46;&#111;&#x72;&#x67;&#x2e;&#99;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#110;&#111;&#100;&#101;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#122;&#x68;&#101;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#111;&#114;&#103;&#46;&#99;&#x6e;">&#x72;&#111;&#111;&#116;&#64;&#110;&#111;&#100;&#101;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#122;&#x68;&#101;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#111;&#114;&#103;&#46;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#104;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#x6e;">&#x72;&#x6f;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#104;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 /home/softwares/kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll /home/softwares/kafka-manager/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -1049,133 +1131,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/04/21/%E7%90%86%E8%A7%A3-Kafka-%E6%B6%88%E8%B4%B9%E8%80%85%E5%B1%9E%E6%80%A7%E7%9A%84-enable-auto-commit/" class="post-title-link" itemprop="url">理解 Kafka 消费者属性的 enable.auto.commit</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-04-21 17:01:34 / Modified: 17:02:53" itemprop="dateCreated datePublished" datetime="2021-04-21T17:01:34+08:00">2021-04-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理解一下Kafka的读的自动提交功能。</p>
-<p>找到了一篇专门介绍这个功能的文章，选择主要的内容进行一下翻译和做笔记。</p>
-<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property"><a href="#Understanding-the-‘enable-auto-commit’-Kafka-Consumer-property" class="headerlink" title="Understanding the ‘enable.auto.commit’ Kafka Consumer property"></a>Understanding the ‘enable.auto.commit’ Kafka Consumer property</h2><p><img src="https://img-blog.csdnimg.cn/20190731195532220.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
-<blockquote>
-<p>Kafka Consumers read messages from a Kafka topic, its not a hard concept to get your head around. But behind the scenes there’s a lot more going on than meets the eye.</p>
-<p>Say we’re consuming messages from a Topic and our Consumer crashes. Once we realise that the world isn’t ending, we recover from the crash and we start consuming again. We start receiving messages exactly where we left off from, its kinda neat.</p>
-<p>假设我们正在从一个 Topic 中消费消息，这个时候我们的这个消费者（客户端）宕机了。我们意识到这不是世界的末日，我们可以从宕机中恢复，重新开始消费。我们可以从我们上一次离开的地方重新接收消息，这非常灵巧。</p>
-<p>There’s two reasons as to why this happens. One is something referred to as the “Offset” and the other is a couple of default Consumer values.</p>
-<p>发生这样的事情是因为两个原因。一个是一个叫 “Offset” 的东西，另外一个是一些 Consumer 的默认的值。</p>
-<p>So whats an Offset?</p>
-<p>The Offset is a piece of metadata, an integer value that continually increases for each message that is received in a partition. Each message will have a unique Offset value in a partition.</p>
-<p>Offset 是一块元数据，一个整数，会针对每一个 partition 上接收到的消息而持续增长。每一个消息在一个 partition 上将会有唯一的一个Offset。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190731200310945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NoYWl5dTIwMDI=,size_16,color_FFFFFF,t_70" alt="img"></p>
-<p>I use Keys in some of my projects, some of them I don’t ;)</p>
-<p>So as you can see here, each message has a unique Offset, and that Offset represents the position of that message in that particular partition.</p>
-</blockquote>
-<p>上面介绍了一下Kafka的offset是什么，offset是记录每条消息在partition里面的位置的。</p>
-<blockquote>
-<p>When a Consumer reads the messages from the Partition it lets Kafka know the Offset of the last consumed message. This Offset is stored in a Topic named <strong>_consumer_offsets</strong>, in doing this a consumer can stop and restart without forgetting which messages it has consumed.</p>
-</blockquote>
-<p>这里讲，offset会被存在一个叫做**_consumer_offsets**的主题中，这样来帮助消费者记录处理到哪里了。</p>
-<blockquote>
-<p>When we create our Consumers, they have a set of default properties which we can override or we can just leave the default values in effect.</p>
-<p>There are two properties that are driving this behaviour.</p>
-<p>有两个属性需要关注。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">auto.commit.interval.ms</span><br></pre></td></tr></table></figure>
-
-<p>The first property <strong>enable.auto.commit</strong> has a default value of <strong>true</strong> and the second property <strong>auto.commit.interval.ms</strong> has a default value of <strong>5000</strong>. These values are correct for Blizzards node-rdkafka client and the Java KafkaConsumer client but other libraries may differ.</p>
-</blockquote>
-<p><strong>enable.auto.commit</strong> 的默认值是 true；就是默认采用自动提交的机制。</p>
-<p><strong>auto.commit.interval.ms</strong> 的默认值是 5000，单位是毫秒。</p>
-<blockquote>
-<p>So by default every 5 seconds a Consumer is going to commit its Offset to Kafka or every time data is fetched from the specified Topic it will commit the latest Offset.</p>
-<p>这样，默认5秒钟，一个 Consumer 将会提交它的 Offset 给 Kafka，或者每一次数据从指定的 Topic 取回时，将会提交最后一次的 Offset。</p>
-<p>Now in some scenarios this is the ideal behaviour but on other scenarios its not.</p>
-<p>这样，在某些场景下，这是理想的表现，但是在其他场景下，并不是。</p>
-<p>Say our Consumer is processing a message with an Offset of 100 and whilst processing it the Consumer fetches some more data, the Offset is commit and then the Consumer crashes. Upon coming back up it will start consuming messages from the most recent committed Offset, but how can we safely say that we haven’t lost messages and the Offset of the new message isn’t later then the one of the message been processed?</p>
-<p>这么说，我们的 Consumer 正在消费一个 Offset 是100的消息，同时这个 Consumer 取回了一些数据，这个 Offset 提交了，然后 Consumer 崩溃了。在我们回来的时候，我们会重新从最新提交的 Offset 去进行消息的消费，但是我们如何能安全地说，我们没有丢失消息，并且这个新消息的 Offset 不会比刚刚被处理的那个消息靠后呢？</p>
-<p>What we can do is commit the Offset of messages manually after processing them. This give us full control over when we consider a message dealt with, processed and ready to let Kafka know that.</p>
-<p>解决这个问题的方案就是我们手动地提交这个 Offset，在处理完这些消息之后。这给与了我们完全的控制，什么时候去处理一个消息，什么时候去让 Kafka 知道这个。</p>
-<p>Firstly we have to change the value of the <strong>enable.auto.commit</strong> property.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable.auto.commit: false</span><br></pre></td></tr></table></figure>
-
-<p>When we change this property the <strong>auto.commit.interval.ms</strong> value isnt taken into consideration.</p>
-<p>So now we can commit our Offset manually after the processing has taken place and if the Consumer crashes whilst processing a message it will start consuming from that same Offset, no messages lost.</p>
-<p>我们把这个参数设置为 false ，就会由我们自己手动地来处理这个事情。</p>
-<p>Both the clients mentioned earlier in this article have methods exposed to commit the Offset.</p>
-<p>For further reading on the clients check out the links below.</p>
-</blockquote>
-<p>如果 <strong>enable.auto.commit</strong> 设置成 false，那么 <strong>auto.commit.interval.ms</strong> 也就不被再考虑了<strong>。</strong></p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://blizzard.github.io/node-rdkafka/current/KafkaConsumer.html"><strong>JSDoc: Class: KafkaConsumer</strong><br><em>KafkaConsumer class for reading messages from Kafka This is the main entry point for reading data from Kafka. You…</em>blizzard.github.io</a></p>
-<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html"><strong>KafkaConsumer (kafka 0.10.2.1 API)</strong><br><em>To avoid this, we will manually commit the offsets only after the corresponding records have been inserted into the…</em>kafka.apache.org</a></p>
-<p>If anyone wants any more information on Kafka or Consumers get in touch on Twitter.</p>
-<p>Cheers,</p>
-<p>Danny</p>
-<p><a target="_blank" rel="noopener" href="https://twitter.com/danieljameskay">https://twitter.com/danieljameskay</a></p>
-</blockquote>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65">https://medium.com/@danieljameskay/understanding-the-enable-auto-commit-kafka-consumer-property-12fa0ade7b65</a></p>
-<p><a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html">https://kafka.apache.org/0102/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html</a> 这里是官网介绍如何使用consumer</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1245,7 +1200,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1256,7 +1211,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">119</span>
+        <span class="site-state-item-count">120</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
