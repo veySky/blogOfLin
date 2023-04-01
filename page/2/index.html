@@ -166,6 +166,130 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2022/08/22/mysql%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%E5%91%A8%E6%97%A5%E6%9C%88%E5%AD%A3%E5%BA%A6%E8%B5%B7%E6%AD%A2%E6%97%B6%E9%97%B4/" class="post-title-link" itemprop="url">mysql时间获取周日月季度起止时间</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-22 15:35:44" itemprop="dateCreated datePublished" datetime="2022-08-22T15:35:44+08:00">2022-08-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:39:19" itemprop="dateModified" datetime="2023-03-24T21:39:19+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <ul>
+<li>获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天）</li>
+<li>获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天）</li>
+<li>获取当前周的第一天日期</li>
+<li>获取当前周的最后一天日期</li>
+<li>获取指定某年某一周的起止日期</li>
+<li>获取当前月份第一天日期</li>
+<li>获取当前月份最后一天日期</li>
+<li>获取指定年份月份的起止日期</li>
+<li>获取现在是今年的第几个季度</li>
+<li>获取当前季度的第一天日期</li>
+<li>获取当前季度的最后一天日期</li>
+<li>获取指定季度的起止日期</li>
+</ul>
+<p>获取当前时间在这一年是第几周（国外计算方式，周日为一周的第一天）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* 获取指定时间在这一年是第几周 可以把 CURDATE() 函数替换成你的指定时间 */</span><br><span class="line"></span><br><span class="line">SELECT WEEK(CURDATE());</span><br><span class="line"></span><br><span class="line">SELECT YEARWEEK(CURDATE());</span><br></pre></td></tr></table></figure>
+
+<p>获取当前时间在这一年是第几周（中国计算方式，周一为一周的第一天）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* 获取指定时间在这一年是第几周 可以把 CURDATE() 函数替换成你的指定时间 */</span><br><span class="line"></span><br><span class="line">SELECT WEEK(CURDATE(),1);</span><br><span class="line"></span><br><span class="line">SELECT WEEKOFYEAR(CURDATE());</span><br></pre></td></tr></table></figure>
+
+<p>周起止时间获取</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 获取当前周的第一天日期</span></span><br><span class="line"><span class="keyword">SELECT</span> DATE_SUB(CURDATE(),<span class="type">INTERVAL</span> WEEKDAY(CURDATE()) <span class="operator">+</span> <span class="number">0</span> <span class="keyword">DAY</span>);</span><br><span class="line"><span class="comment">-- 获取当前周的最后一天日期</span></span><br><span class="line"><span class="keyword">SELECT</span> DATE_SUB(CURDATE(),<span class="type">INTERVAL</span> WEEKDAY(CURDATE()) <span class="operator">-</span> <span class="number">6</span> <span class="keyword">DAY</span>);</span><br><span class="line"><span class="comment">-- 上周周一日期</span></span><br><span class="line"><span class="keyword">select</span> DATE_SUB( DATE_SUB(CURDATE(),<span class="type">interval</span> <span class="number">7</span> <span class="keyword">day</span>),<span class="type">interval</span>  weekday(DATE_SUB(CURDATE(),<span class="type">interval</span> <span class="number">7</span> <span class="keyword">day</span>)) <span class="operator">+</span><span class="number">0</span> <span class="keyword">Day</span>) <span class="keyword">as</span> preWeekStartDay</span><br><span class="line"><span class="comment">-- 上周周日日期</span></span><br><span class="line"><span class="keyword">SELECT</span> DATE_SUB( DATE_SUB(CURDATE(),<span class="type">interval</span> <span class="number">7</span> <span class="keyword">day</span>),<span class="type">interval</span>  weekday(DATE_SUB(CURDATE(),<span class="type">interval</span> <span class="number">7</span> <span class="keyword">day</span>)) <span class="number">-6</span> <span class="keyword">Day</span>) <span class="keyword">as</span> preWeekEndDay</span><br></pre></td></tr></table></figure>
+
+<p>获取指定某年某一周的起止日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* 指定某年某一周的第一天日期 */</span><br><span class="line">SELECT DATE_SUB((DATE_SUB(CONCAT(指定年份,&#x27;-01-01&#x27;), INTERVAL -(指定第几周-1) WEEK)),INTERVAL WEEKDAY((DATE_SUB(CONCAT(指定年份,&#x27;-01-01&#x27;), INTERVAL -(指定第几周-1) WEEK))) + 0 DAY)</span><br><span class="line">/* 指定某年某一周的最后一天日期 */</span><br><span class="line">SELECT DATE_SUB((DATE_SUB(CONCAT(指定年份,&#x27;-01-01&#x27;), INTERVAL -(指定第几周-1) WEEK)),INTERVAL WEEKDAY((DATE_SUB(CONCAT(指定年份,&#x27;-01-01&#x27;), INTERVAL -(指定第几周-1) WEEK))) - 6 DAY)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取当前月份第一天日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(CURRENT_DATE()),&#x27;%Y-%m-&#x27;),&#x27;01&#x27;); </span><br></pre></td></tr></table></figure>
+
+<p>获取当前月份最后一天日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT LAST_DAY(CURRENT_DATE()); </span><br></pre></td></tr></table></figure>
+
+
+
+<p>获取指定年份月份的起止日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/* 指定年份月份的第一天日期 */</span><br><span class="line"></span><br><span class="line">SELECT CONCAT_WS(&#x27;-&#x27;,指定年份,指定月份,&#x27;01&#x27;);</span><br><span class="line"></span><br><span class="line">/* 指定年份月份的最后一天日期 */</span><br><span class="line"></span><br><span class="line">SELECT LAST_DAY(指定时间);</span><br></pre></td></tr></table></figure>
+
+<p>获取现在是今年的第几个季度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT QUARTER(CURRENT_DATE());</span><br></pre></td></tr></table></figure>
+
+<p>获取当前季度的第一天日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(MAKEDATE(EXTRACT(YEAR FROM  CURDATE()),1) + INTERVAL QUARTER(CURDATE())*3-3 MONTH),&#x27;%Y-%m-&#x27;),&#x27;01&#x27;);   </span><br></pre></td></tr></table></figure>
+
+<p>获取当前季度的最后一天日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT LAST_DAY(MAKEDATE(EXTRACT(YEAR  FROM CURDATE()),1) + INTERVAL QUARTER(CURDATE())*3-1 MONTH);  </span><br></pre></td></tr></table></figure>
+
+<p>获取指定季度的起止日期</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/* 指定季度的第一天日期 */</span><br><span class="line"></span><br><span class="line">SELECT CONCAT(DATE_FORMAT(LAST_DAY(MAKEDATE(指定年份,1) + INTERVAL 指定季度*3-3 MONTH),&#x27;%Y-%m-&#x27;),&#x27;01&#x27;); </span><br><span class="line"></span><br><span class="line">/* 指定季度的最后一天日期 */</span><br><span class="line"></span><br><span class="line">SELECT LAST_DAY(MAKEDATE(指定年份,1) + INTERVAL 指定季度*3-1 MONTH);  </span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/06/07/%E4%BD%BF%E7%94%A8java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3-see/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -966,85 +1090,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" class="post-title-link" itemprop="url">git导出干净代码</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-15 10:45:06" itemprop="dateCreated datePublished" datetime="2021-09-15T10:45:06+08:00">2021-09-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-02 10:56:23" itemprop="dateModified" datetime="2022-05-02T10:56:23+08:00">2022-05-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>使用 git archive 可以导出干净的代码，具体可以看 git</p>
-<p>help archive，简单使用如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$git archive --format zip --output &quot;./output.zip&quot; master -0</span><br></pre></td></tr></table></figure>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1114,7 +1159,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1125,7 +1170,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">120</span>
+        <span class="site-state-item-count">122</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

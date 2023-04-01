@@ -166,6 +166,85 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/09/15/git%E5%AF%BC%E5%87%BA%E5%B9%B2%E5%87%80%E4%BB%A3%E7%A0%81/" class="post-title-link" itemprop="url">git导出干净代码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-15 10:45:06" itemprop="dateCreated datePublished" datetime="2021-09-15T10:45:06+08:00">2021-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-02 10:56:23" itemprop="dateModified" datetime="2022-05-02T10:56:23+08:00">2022-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>使用 git archive 可以导出干净的代码，具体可以看 git</p>
+<p>help archive，简单使用如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$git archive --format zip --output &quot;./output.zip&quot; master -0</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/07/20/linux%E8%A7%A3%E5%8E%8Bgz%E6%96%87%E4%BB%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -862,8 +941,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
 
 <p><strong>2&gt;.解压kafka-manager</strong></p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#111;&#116;&#64;&#110;&#111;&#100;&#101;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#122;&#x68;&#101;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#111;&#114;&#103;&#46;&#99;&#x6e;">&#x72;&#111;&#111;&#116;&#64;&#110;&#111;&#100;&#101;&#49;&#48;&#56;&#46;&#x79;&#x69;&#x6e;&#122;&#x68;&#101;&#x6e;&#103;&#x6a;&#x69;&#101;&#x2e;&#111;&#114;&#103;&#46;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
-<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#104;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#x6e;">&#x72;&#x6f;&#111;&#116;&#64;&#110;&#x6f;&#x64;&#x65;&#49;&#48;&#56;&#x2e;&#x79;&#105;&#x6e;&#x7a;&#104;&#101;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#x6f;&#x72;&#x67;&#x2e;&#x63;&#x6e;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#111;&#x6f;&#116;&#64;&#110;&#111;&#x64;&#101;&#49;&#x30;&#56;&#46;&#121;&#x69;&#x6e;&#x7a;&#104;&#x65;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#111;&#x72;&#103;&#46;&#99;&#x6e;">&#114;&#111;&#x6f;&#116;&#64;&#110;&#111;&#x64;&#101;&#49;&#x30;&#56;&#46;&#121;&#x69;&#x6e;&#x7a;&#104;&#x65;&#x6e;&#103;&#106;&#x69;&#101;&#x2e;&#111;&#x72;&#103;&#46;&#99;&#x6e;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#46;&#x79;&#105;&#110;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#x69;&#x65;&#46;&#x6f;&#114;&#x67;&#46;&#x63;&#110;">&#x72;&#111;&#x6f;&#116;&#x40;&#110;&#111;&#x64;&#x65;&#x31;&#48;&#x38;&#46;&#x79;&#105;&#110;&#x7a;&#x68;&#101;&#x6e;&#103;&#106;&#x69;&#x65;&#46;&#x6f;&#114;&#x67;&#46;&#x63;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
 <p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 /home/softwares/kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll /home/softwares/kafka-manager/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
 
@@ -1056,81 +1135,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">idea多Module出现依赖循环问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-04-25 20:02:40 / Modified: 20:03:46" itemprop="dateCreated datePublished" datetime="2021-04-25T20:02:40+08:00">2021-04-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>idea循环依赖aAnnotation processing is not supported for module cycles. </p>
-<ol>
-<li>错误现象<br>Error:java: Annotation processing is not supported for module cycles. Please ensure that all modules from cycle [book-rpc,book-api] are excluded from annotation processing</li>
-</ol>
-<p>通过Analyze-&gt;Analyze Module Dependencies…发现是循环依赖。  </p>
-<p> 2.解决办法<br>先是找到这个依赖，删掉相关的（右击第一个module选中open module setting–&gt;Dependencies） </p>
-<p>然后在book-api中的pom.xml找到第二个这个依赖，删掉，重新import Changes need to be imported </p>
-<p>如果仅仅删除module中的Dependencies中的相关依赖，有可能没有解决根本性的问题，所以要看一下pom.xml中是否已经存在了相关依赖</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1200,7 +1204,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1211,7 +1215,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">120</span>
+        <span class="site-state-item-count">122</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
