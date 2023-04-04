@@ -28,12 +28,12 @@
 <meta property="og:description" content="问题：如何保证本地缓存和redis缓存数据的一致性这个问题日常工作中应当比较常遇到，通用解决方案： 方案一：​	业务逻辑确定本地缓存有效期。就是给本地缓存添加一个相对短的过期时间。 适用与一些非重点数据，例如用户头像等可以接受短时间数据不一致情况。  方案二：采用Redis的发布&#x2F;订阅机制（或者Rocketmq等） 分布式集群的所有阶段订阅删除。  方案三：通过调用接口方式删除。 实际操">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-04-01T14:54:58.000Z">
-<meta property="article:modified_time" content="2023-04-01T15:21:04.830Z">
+<meta property="article:modified_time" content="2023-04-03T12:29:04.178Z">
 <meta property="article:author" content="木林森">
 <meta property="article:tag" content="mysql">
-<meta property="article:tag" content="redis">
 <meta property="article:tag" content="面试问题">
 <meta property="article:tag" content="数据一致性问题">
+<meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://veysky.github.io/blogOfLin/2023/04/01/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
@@ -195,10 +195,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-04-01 22:54:58 / Modified: 23:21:04" itemprop="dateCreated datePublished" datetime="2023-04-01T22:54:58+08:00">2023-04-01</time>
+              <time title="Created: 2023-04-01 22:54:58" itemprop="dateCreated datePublished" datetime="2023-04-01T22:54:58+08:00">2023-04-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-03 20:29:04" itemprop="dateModified" datetime="2023-04-03T20:29:04+08:00">2023-04-03</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -225,7 +231,33 @@
 <h4 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h4><p>采用Redis的发布&#x2F;订阅机制（或者Rocketmq等） 分布式集群的所有阶段订阅删除。 </p>
 <h4 id="方案三："><a href="#方案三：" class="headerlink" title="方案三："></a>方案三：</h4><p>通过调用接口方式删除。 实际操作是在数据变更发生是，触发接口调用所有容器删除本地缓存接口。 这样做的情况 需要在每个容器启动时注册当前容器ip和端口信息。 方案优点： 响应快，稳定性好。 缺点： 实现复杂度高。 </p>
 <h4 id="方案四："><a href="#方案四：" class="headerlink" title="方案四："></a>方案四：</h4><p>通过Zookeeper中间件方式： 实现单个容器操作数据变更时 其他容器接收到数据变更消息删除本地缓存重新拉取。 </p>
-<h2 id="问题：-如何保证redis缓存和mysql数据的一致性"><a href="#问题：-如何保证redis缓存和mysql数据的一致性" class="headerlink" title="问题： 如何保证redis缓存和mysql数据的一致性"></a>问题： 如何保证redis缓存和mysql数据的一致性</h2><p>这个问题遇到的应当是最多的。 </p>
+<h2 id="问题：-如何保证redis缓存和mysql数据的一致性"><a href="#问题：-如何保证redis缓存和mysql数据的一致性" class="headerlink" title="问题： 如何保证redis缓存和mysql数据的一致性"></a>问题： 如何保证redis缓存和mysql数据的一致性</h2><p><strong>网上资料的解决方案：</strong></p>
+<h4 id="选择合适的缓存更新策略"><a href="#选择合适的缓存更新策略" class="headerlink" title="选择合适的缓存更新策略"></a>选择合适的缓存更新策略</h4><ol>
+<li><p>删除缓存而不是更新缓存</p>
+<p>当一个线程对缓存的key进行写操作的时候，如果其他线程进来读数据库的时候，读到的就是脏数据。 产生了数据不一致问题。 </p>
+<p>相比较而言： 删除缓存的速度，比更新缓存的速度快很多。 所以用时相对小很多。 读脏数据的概率也小很多。 </p>
+</li>
+<li><p>先更新数据后删除缓存</p>
+<p>更新数据耗时是在删除缓存的百倍以上 。 如果先删缓存，在数据更新成功之前，其他线程获取数据会把脏数据写入到缓存。 </p>
+<p>目前最流行的缓存读写策略就是采用先更新数据库，再删缓存的方式。</p>
+</li>
+</ol>
+<h4 id="缓存不一致的处理"><a href="#缓存不一致的处理" class="headerlink" title="缓存不一致的处理"></a>缓存不一致的处理</h4><p>如果不是并发特别高，对缓存依赖性很强，其实一定程度的不一致是可以接受的。 </p>
+<p>缓存和数据库数据不一致常见的原因： </p>
+<ul>
+<li>缓存key删除失败</li>
+<li>并发导致写入脏数据</li>
+</ul>
+<p>解决方案： </p>
+<p><strong>通过消息队列保证key被删除</strong>。 把要删除或者删除失败的key写入消息队列，利用消息队列的重试机制，重试删除对应key。 </p>
+<p>缺点： 代码侵入</p>
+<p><strong>数据库订阅+消息队列保证key被删除</strong> 可以用一个服务监听数据库的binlog 获取需要操作的数据。 然后用一个公共服务获取订阅程序传来的信息，进行缓存删除操作。 这种方式降低了对业务代码侵入，但是复杂度提升了。 适合基建完善的大厂。 </p>
+<p><strong>延时双删防止脏数据</strong> 在缓存不存在的情况，写入了脏数据，这种情况先删缓存，再更新数据库的缓存更新策略下发生比较多。 解决方案： 延时双删</p>
+<p>操作： 在第一次删除缓存后过了一段时间再次删除缓存。 这种方式的延时时间需要仔细斟酌。</p>
+<p><strong>设置缓存过期时间兜底</strong></p>
+<p>这个是朴素但是有用的方案，给缓存设置一个过期时间，即使发生数据不一致问题，它也不会永远不一致下去。  </p>
+<p>**下面是我自己整理的解决方案： **</p>
+<p>这个问题遇到的应当是最多的。 </p>
 <p>常规解决方案： </p>
 <h3 id="方案一：-1"><a href="#方案一：-1" class="headerlink" title="方案一："></a>方案一：</h3><p>先删除缓存数据，然后执行mysql的数据更新。 这种方案 如果缓存没有有效期的情况 可能存在脏读。 就是缓存了 更新前的数据。 </p>
 <p>解决方案：mysql 数据更新后 再次删除缓存。 也就是二次删除。 这样可以保证redis的数据 跟db数据一致。 这里有个前提，redis数据读取的需要是主库数据，如果是从库数据，可能存在主从同步延迟，导致重新读取的数据还是旧数据情况。 </p>
@@ -260,9 +292,9 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/blogOfLin/tags/mysql/" rel="tag"># mysql</a>
-              <a href="/blogOfLin/tags/redis/" rel="tag"># redis</a>
               <a href="/blogOfLin/tags/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98/" rel="tag"># 面试问题</a>
               <a href="/blogOfLin/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" rel="tag"># 数据一致性问题</a>
+              <a href="/blogOfLin/tags/redis/" rel="tag"># redis</a>
           </div>
 
         
@@ -274,7 +306,10 @@
     <a href="/blogOfLin/2023/03/31/mybatis%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" rel="prev" title="mybatis源码学习（一）">
       <i class="fa fa-chevron-left"></i> mybatis源码学习（一）
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/blogOfLin/2023/04/03/redis%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/" rel="next" title="redis面试八股文">
+      redis面试八股文 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -333,7 +368,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E5%92%8Credis%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">问题：如何保证本地缓存和redis缓存数据的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">方案一：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">方案二：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A"><span class="nav-number">1.0.3.</span> <span class="nav-text">方案三：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%EF%BC%9A"><span class="nav-number">1.0.4.</span> <span class="nav-text">方案四：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81redis%E7%BC%93%E5%AD%98%E5%92%8Cmysql%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">问题： 如何保证redis缓存和mysql数据的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A-1"><span class="nav-number">2.1.</span> <span class="nav-text">方案一：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A-1"><span class="nav-number">2.2.</span> <span class="nav-text">方案二：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A-1"><span class="nav-number">2.3.</span> <span class="nav-text">方案三：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E5%92%8Credis%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">问题：如何保证本地缓存和redis缓存数据的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">方案一：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">方案二：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A"><span class="nav-number">1.0.3.</span> <span class="nav-text">方案三：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%EF%BC%9A"><span class="nav-number">1.0.4.</span> <span class="nav-text">方案四：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81redis%E7%BC%93%E5%AD%98%E5%92%8Cmysql%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">问题： 如何保证redis缓存和mysql数据的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%AD%96%E7%95%A5"><span class="nav-number">2.0.1.</span> <span class="nav-text">选择合适的缓存更新策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">2.0.2.</span> <span class="nav-text">缓存不一致的处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A-1"><span class="nav-number">2.1.</span> <span class="nav-text">方案一：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A-1"><span class="nav-number">2.2.</span> <span class="nav-text">方案二：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A-1"><span class="nav-number">2.3.</span> <span class="nav-text">方案三：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -347,7 +382,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">68</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -358,7 +393,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">122</span>
+        <span class="site-state-item-count">125</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

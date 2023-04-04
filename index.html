@@ -166,6 +166,121 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/04/03/redis%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2023/04/03/redis%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1%E6%96%87/" class="post-title-link" itemprop="url">redis面试八股文</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-04-03 19:36:02 / Modified: 19:57:20" itemprop="dateCreated datePublished" datetime="2023-04-03T19:36:02+08:00">2023-04-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><code>redis的常见面试问题</code></p>
+<h3 id="什么是缓存击穿"><a href="#什么是缓存击穿" class="headerlink" title="什么是缓存击穿"></a>什么是缓存击穿</h3><p>一个访问量比较大的key，缓存过期，导致所有请求直接打到DB上。 </p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><pre><code>1. 加锁更新: 就是写缓存逻辑加排它锁，只有一个线程去访问db获取缓存内容写缓存。 
+1. 将过期时间组合写到value中，通过异步方式不断更新缓存内容刷新过期时间，防止此类现象。 （线上一般很少使用这种方式） 
+</code></pre>
+<h3 id="什么是缓存穿透"><a href="#什么是缓存穿透" class="headerlink" title="什么是缓存穿透"></a>什么是缓存穿透</h3><p>缓存穿透是指：查询缓存和数据库中都不存在的数据。 这样每次请求都直接打到数据库。 就好像缓存不存在</p>
+<p>导致问题： 不存在的数据每次请求都要到存储层查询，失去了缓存保护后端存储的意义。 </p>
+<h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><ol>
+<li><p>业务代码有问题</p>
+<pre><code> 2. 恶意攻击，爬虫造成空命中。
+</code></pre>
+</li>
+</ol>
+<h4 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h4><ol>
+<li><p>缓存空值&#x2F;默认值</p>
+<ol>
+<li>这种方式是在数据库不命中情况把一个空值，或者默认值保存到缓存，之后再访问这个数据就会从缓存中获取，保护了数据库</li>
+</ol>
+<p>缓存空值会造成的问题： </p>
+<pre><code>1. 空值被缓存，意味这缓存层需要更多的内存空间，有效解决办法： 这类缓存设置一个较短的过期时间，让其自行删除。 
+2. 缓存层和db层数据会有一段时间的不一致，可能对业务有一定影响。 解决方案： 利用消息队列或者其他异步方式清理缓存中的空对象。 
+</code></pre>
+</li>
+<li><p>布隆过滤器方案：</p>
+<ol>
+<li>可以在存储和缓存之前加一个布隆过滤器，做一层过滤。 布隆过滤器会保存数据是否存在，如果判断是不不存在直接返回，就不会访问存储</li>
+</ol>
+</li>
+</ol>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>在某一时刻 发生大规模的缓存失效情况。 例如缓存服务宕机，大量key在同一时间过期。 这样的后果就是大量请求进来直接打到db上，可能导致整个系统的崩溃。 称为雪崩。 </p>
+<p>缓存雪崩是三大缓存问题中最严重的</p>
+<h4 id="预防和处理："><a href="#预防和处理：" class="headerlink" title="预防和处理："></a>预防和处理：</h4><ul>
+<li>提高缓存可用性<ol>
+<li>集群部署：通过集群提升缓存的可用性</li>
+<li>多级缓存：设置多级缓存。 第一级缓存失效的情况下访问第二级缓存，每一级缓存失效时间都不同。</li>
+</ol>
+</li>
+<li>过期时间调整<ol>
+<li>均匀过期： 为了避免大量缓存同一时间过期，可以把不同key的过期时间随机生成，避免过期时间太过集中。 </li>
+<li>热点数据永不过期。</li>
+</ol>
+</li>
+<li>熔断降级 <ol>
+<li>服务熔断： 当缓存服务宕机或者响应超时，为了防止整个系统出现雪崩，暂时停止业务服务访问缓存系统。 </li>
+<li>服务降级： 当出现大量缓存失效，而且处于高并发高负荷的情况下，在业务逻辑内部舍弃一些非核心接口和数据的请求。 直接返回一个提前准备好的 fallback(退路) 错误处理信息</li>
+</ol>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2023/04/01/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -189,10 +304,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-04-01 22:54:58 / Modified: 23:21:04" itemprop="dateCreated datePublished" datetime="2023-04-01T22:54:58+08:00">2023-04-01</time>
+              <time title="Created: 2023-04-01 22:54:58" itemprop="dateCreated datePublished" datetime="2023-04-01T22:54:58+08:00">2023-04-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-03 20:29:04" itemprop="dateModified" datetime="2023-04-03T20:29:04+08:00">2023-04-03</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -219,7 +340,33 @@
 <h4 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h4><p>采用Redis的发布&#x2F;订阅机制（或者Rocketmq等） 分布式集群的所有阶段订阅删除。 </p>
 <h4 id="方案三："><a href="#方案三：" class="headerlink" title="方案三："></a>方案三：</h4><p>通过调用接口方式删除。 实际操作是在数据变更发生是，触发接口调用所有容器删除本地缓存接口。 这样做的情况 需要在每个容器启动时注册当前容器ip和端口信息。 方案优点： 响应快，稳定性好。 缺点： 实现复杂度高。 </p>
 <h4 id="方案四："><a href="#方案四：" class="headerlink" title="方案四："></a>方案四：</h4><p>通过Zookeeper中间件方式： 实现单个容器操作数据变更时 其他容器接收到数据变更消息删除本地缓存重新拉取。 </p>
-<h2 id="问题：-如何保证redis缓存和mysql数据的一致性"><a href="#问题：-如何保证redis缓存和mysql数据的一致性" class="headerlink" title="问题： 如何保证redis缓存和mysql数据的一致性"></a>问题： 如何保证redis缓存和mysql数据的一致性</h2><p>这个问题遇到的应当是最多的。 </p>
+<h2 id="问题：-如何保证redis缓存和mysql数据的一致性"><a href="#问题：-如何保证redis缓存和mysql数据的一致性" class="headerlink" title="问题： 如何保证redis缓存和mysql数据的一致性"></a>问题： 如何保证redis缓存和mysql数据的一致性</h2><p><strong>网上资料的解决方案：</strong></p>
+<h4 id="选择合适的缓存更新策略"><a href="#选择合适的缓存更新策略" class="headerlink" title="选择合适的缓存更新策略"></a>选择合适的缓存更新策略</h4><ol>
+<li><p>删除缓存而不是更新缓存</p>
+<p>当一个线程对缓存的key进行写操作的时候，如果其他线程进来读数据库的时候，读到的就是脏数据。 产生了数据不一致问题。 </p>
+<p>相比较而言： 删除缓存的速度，比更新缓存的速度快很多。 所以用时相对小很多。 读脏数据的概率也小很多。 </p>
+</li>
+<li><p>先更新数据后删除缓存</p>
+<p>更新数据耗时是在删除缓存的百倍以上 。 如果先删缓存，在数据更新成功之前，其他线程获取数据会把脏数据写入到缓存。 </p>
+<p>目前最流行的缓存读写策略就是采用先更新数据库，再删缓存的方式。</p>
+</li>
+</ol>
+<h4 id="缓存不一致的处理"><a href="#缓存不一致的处理" class="headerlink" title="缓存不一致的处理"></a>缓存不一致的处理</h4><p>如果不是并发特别高，对缓存依赖性很强，其实一定程度的不一致是可以接受的。 </p>
+<p>缓存和数据库数据不一致常见的原因： </p>
+<ul>
+<li>缓存key删除失败</li>
+<li>并发导致写入脏数据</li>
+</ul>
+<p>解决方案： </p>
+<p><strong>通过消息队列保证key被删除</strong>。 把要删除或者删除失败的key写入消息队列，利用消息队列的重试机制，重试删除对应key。 </p>
+<p>缺点： 代码侵入</p>
+<p><strong>数据库订阅+消息队列保证key被删除</strong> 可以用一个服务监听数据库的binlog 获取需要操作的数据。 然后用一个公共服务获取订阅程序传来的信息，进行缓存删除操作。 这种方式降低了对业务代码侵入，但是复杂度提升了。 适合基建完善的大厂。 </p>
+<p><strong>延时双删防止脏数据</strong> 在缓存不存在的情况，写入了脏数据，这种情况先删缓存，再更新数据库的缓存更新策略下发生比较多。 解决方案： 延时双删</p>
+<p>操作： 在第一次删除缓存后过了一段时间再次删除缓存。 这种方式的延时时间需要仔细斟酌。</p>
+<p><strong>设置缓存过期时间兜底</strong></p>
+<p>这个是朴素但是有用的方案，给缓存设置一个过期时间，即使发生数据不一致问题，它也不会永远不一致下去。  </p>
+<p>**下面是我自己整理的解决方案： **</p>
+<p>这个问题遇到的应当是最多的。 </p>
 <p>常规解决方案： </p>
 <h3 id="方案一：-1"><a href="#方案一：-1" class="headerlink" title="方案一："></a>方案一：</h3><p>先删除缓存数据，然后执行mysql的数据更新。 这种方案 如果缓存没有有效期的情况 可能存在脏读。 就是缓存了 更新前的数据。 </p>
 <p>解决方案：mysql 数据更新后 再次删除缓存。 也就是二次删除。 这样可以保证redis的数据 跟db数据一致。 这里有个前提，redis数据读取的需要是主库数据，如果是从库数据，可能存在主从同步延迟，导致重新读取的数据还是旧数据情况。 </p>
@@ -661,10 +808,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-03-29 20:06:51 / Modified: 23:31:47" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
+              <time title="Created: 2023-03-29 20:06:51" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-03 19:21:43" itemprop="dateModified" datetime="2023-04-03T19:21:43+08:00">2023-04-03</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -708,6 +861,46 @@
 </ol>
 <h3 id="sql查询去重问题答案"><a href="#sql查询去重问题答案" class="headerlink" title="sql查询去重问题答案"></a>sql查询去重问题答案</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> user_info b <span class="keyword">on</span> a.user_icon <span class="operator">=</span> b.user_icon <span class="keyword">and</span> a.id<span class="operator">!=</span>b.id <span class="keyword">WHERE</span> b.id <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">and</span> a.id<span class="operator">&lt;</span>b.id</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span> </span><br><span class="line"><span class="keyword">select</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">where</span> a.user_icon <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">SELECT</span> user_icon <span class="keyword">from</span> user_info  <span class="keyword">GROUP</span> <span class="keyword">BY</span> user_icon <span class="keyword">HAVING</span> <span class="built_in">count</span>(<span class="number">1</span>)<span class="operator">&gt;</span><span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="美的面试问题整理"><a href="#美的面试问题整理" class="headerlink" title="美的面试问题整理"></a>美的面试问题整理</h2><ol>
+<li><p>spring的事务问题</p>
+<ol>
+<li>事务的隔离级别 5种： ISOLATION_DEFAULT 默认，使用后端数据库的默认隔离级别，Mysql的默认是可重复读</li>
+<li>ISOLATION_READ_UNCOMMITTED 读未提交</li>
+<li>ISOLATION_READ_COMMITTED 读已提交</li>
+<li>ISOLATION_REPEATABLE_READ 可重复读</li>
+<li>ISOLATION_SERIALIZABLE 串行化</li>
+</ol>
+<p>事务的传播机制，就是当多个事务同事存在的情况 Spring 如何处理这些事务的行为</p>
+<ol>
+<li>Required  默认，如果没有当前事务，就创建一个事务，如果存在一个事务，就加入到这个事务中</li>
+<li>SUPPORTS 支持当前事务，如果没有当前事务，就以非事务方法执行</li>
+<li>Mandatory 使用当前事务，如果没有当前事务，就抛出异常。 </li>
+<li>Required_new 新建事务，如果存在当前事务，就把当前事务挂起</li>
+<li>Not_supported 以非事务方式执行操作，如果当前事务存在则抛出异常</li>
+<li>Nested 如果当前存在事务，则在事务内执行，如果当前没有事务，则执行与Required 类型的操作。 </li>
+<li>默认的传播机制： PROPAFATION_REQUIRED</li>
+</ol>
+</li>
+<li><p>声明式事务失效情况</p>
+<ol>
+<li>@Transactional 应用在非Public 修饰的方法上。</li>
+<li>@Transactional 注解属性propagation 设置错误</li>
+<li>@Transactional 注解属性rollbackFor 设置错误</li>
+<li>同一个类中方法调用，导致@Transactional 失效。</li>
+</ol>
+</li>
+<li><p>Redis的持久化</p>
+</li>
+<li><p>mysql的事务 间隙锁问题</p>
+</li>
+</ol>
+<h3 id="美的电话面试问题："><a href="#美的电话面试问题：" class="headerlink" title="美的电话面试问题："></a>美的电话面试问题：</h3><ol>
+<li>分布式锁原理</li>
+<li>分布式事务问题</li>
+<li>分页组件是什么</li>
+</ol>
 
       
     </div>
@@ -1024,90 +1217,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">javaList随机取值方法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-09-09 16:20:37 / Modified: 16:22:38" itemprop="dateCreated datePublished" datetime="2022-09-09T16:20:37+08:00">2022-09-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Java List 随机取值的多种方法</p>
-<p>为了从列表中获取随机元素，需要生成一个随机索引号，然后使用list.get()方法通过生成的索引编号获取元素。</p>
-<p>这里关键是要记住，不得使用超过列表大小的索引。</p>
-<h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法 1"></a>方法 1</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
- int index = (int) (Math.random()* list.size());
- System.out.println(list.get(index));
-</code></pre>
-<h2 id="方法-2"><a href="#方法-2" class="headerlink" title="方法 2"></a>方法 2</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
- int index = new Random().nextInt(list.size());
- System.out.println(list.get(index));
-</code></pre>
-<h2 id="方法-3"><a href="#方法-3" class="headerlink" title="方法 3"></a>方法 3</h2><pre><code> List&lt;String&gt; list = Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
-
- // shuffle 打乱顺序 
- Collections.shuffle(list);
- System.out.println(list.get(0));
-</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1177,7 +1286,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">68</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1188,7 +1297,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">122</span>
+        <span class="site-state-item-count">125</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

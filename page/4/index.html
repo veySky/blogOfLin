@@ -166,6 +166,132 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">开发中常见的redis异常总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-27 09:52:38" itemprop="dateCreated datePublished" datetime="2021-04-27T09:52:38+08:00">2021-04-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:17:12" itemprop="dateModified" datetime="2023-03-24T21:17:12+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>使用redis也有端时间了，现在讲开发中遇到的几个常见异常总结如下：</p>
+<h2 id="一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。"><a href="#一、通过JedisPool类实例获取getResource-时抛出can’t-get-a-resource异常。" class="headerlink" title="一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。"></a>一、通过JedisPool类实例获取getResource()时抛出can’t get a resource异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool</p>
+<p>at redis.clients.util.Pool.getResource(Pool.java:22)</p>
+<p>分析：</p>
+<p>redis.clients.util.Pool.getResource会从JedisPool实例池中返回一个可用的redis连接。分析源码可知JedisPool extends redis.clients.util.Pool .而Pool是通过</p>
+<p>commons-pool开源工具包中的org.apache.commons.pool2.impl.GenericObjectPool来实现对Jedis实例的管理的。所以我们分析一下GenericObjectPool或许能找到答案。</p>
+<p>其中三个重要个几个属性是：</p>
+<p><strong>MaxActive</strong>: 最大连接数。</p>
+<p><strong>MaxIdle</strong>: 最大空闲数。</p>
+<p><strong>MaxWait</strong>: 最大等待时间，单位毫秒（million seconds）。</p>
+<p>当连接池中无可用连接时会会进行等待maxWait时间，若超出泽抛Could not get a resource from the pool异常。</p>
+<p>所以应根据程序实际情况合理设置这三个参数的值，尽量避免这个异常。</p>
+<h2 id="二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。"><a href="#二、对redis进行操作时，抛出redis-clients-jedis-exceptions-JedisConnectionException-java-net-SocketTimeoutException-Read-timed-out异常。" class="headerlink" title="二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。"></a>二、对redis进行操作时，抛出redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out异常。</h2><p>异常代码如下：</p>
+<p>redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out</p>
+<p>at redis.clients.jedis.Protocol.process(Protocol.java:79)</p>
+<p>at redis.clients.jedis.Protocol.read(Protocol.java:131)</p>
+<p>at redis.clients.jedis.Connection.getIntegerReply(Connection.java:188)</p>
+<p>at redis.clients.jedis.Jedis.sismember(Jedis.java:1266)</p>
+<p>分析：</p>
+<p>Redis是对内存进行操作，速度应该都在毫秒级，这是我们通常的认识，</p>
+<p>那么Redis操作怎么会出现几秒的超时时间？</p>
+<p>我们还是先分析一下Jedis的源代码吧，以sadd操作为例：</p>
+<p><em>public Long sadd(final String key, final String… members) {</em></p>
+<p><em>checkIsInMulti();</em></p>
+<p><em>client.sadd(key, members);</em></p>
+<p><em>return client.getIntegerReply();</em></p>
+<p><em>}</em></p>
+<p>client是redis.clients.jedis.Client.java的实例，继承关系如下：</p>
+<p>public class Client extends BinaryClient implements Commands；</p>
+<p>public class BinaryClient extends Connection；</p>
+<p>Connection包装了对Redis server的socket操作，命令写操作通过socket.getOutputStream()输出流将命令信息发送到redis server，当写完命令后要通过socket.getInputStream()的到的输入流将</p>
+<p>命令执行结果返回，这中间必然会有一个命令执行到结果返回的延时时间，这就是一个Jedis调用redis命令操作所用的时间。</p>
+<p>需要说明的是，Redis server是单线程执行所有连接发送过来的命令的，也就是说不管并发中有多少个client在发送命令，redis-server端是单线程处理的，并按照默认的FIFO方式处理请求，</p>
+<p>这个可在redis.conf配置文件中配置。关于redis server的详细运行机制参见：<a target="_blank" rel="noopener" href="http://redis.io/documentation">http://redis.io/documentation</a></p>
+<p>所以client.sadd(key, members);调用完后只是将命令信息发送到了redis server端，具体有没有执行要看redis server的负载情况。然后，通过client.getIntegerReply();等待（time out)返回结果。</p>
+<p>Connection初始化socket时有多种选择，其中设置socket time out 的方法如下：</p>
+<p>public void rollbackTimeout() {</p>
+<p>​      try {</p>
+<p>​       socket.setSoTimeout(timeout);</p>
+<p>​       socket.setKeepAlive(false);</p>
+<p>​      } catch (SocketException ex) {</p>
+<p>​       throw new JedisException(ex);</p>
+<p>​      }</p>
+<p>​    }</p>
+<p>由redis.clients.jedis.Protocol.DEFAULT_TIMEOUT &#x3D; 2000 我们知道默认的超时时间是2秒，这个时间相对于redis操作内存毫秒级的速度来说已经很长，那我们为什么还会遇到</p>
+<p>ava.net.SocketTimeoutException: Read timed out异常呢？redis操作内存虽然平均毫秒级的，但当数据量很大时未必都如此快速。在我的开发过程中就遇到过一个集合到了</p>
+<p>千万级数据量，一次操作超时时间在秒级是很正常的，而且机器性能很好的情况下已经如此。</p>
+<p>所以在初始化JedisPool时应该根据实际</p>
+<p>情况通过redis.clients.jedis.JedisPoolConfig合理设置连接池参数，通过edisPool构造方法，合理设置socket读取输入InputStream的超时时间。</p>
+<p>pool &#x3D; new JedisPool(config, host, port, 100000);</p>
+<p>注意第四个参数time out，设置成我们能容忍的超时时间，单位是毫秒。</p>
+<p>设置第四个参数后，问题基本解决。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/25/idea%E5%A4%9AModule%E5%87%BA%E7%8E%B0%E4%BE%9D%E8%B5%96%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1170,118 +1296,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/03/03/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E7%95%AA%E5%A4%96-%E5%88%86%E6%9E%90RejectedExecutionException%E5%BC%82%E5%B8%B8/" class="post-title-link" itemprop="url">线程池使用番外-分析RejectedExecutionException异常</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-03-03 14:36:03 / Modified: 14:39:24" itemprop="dateCreated datePublished" datetime="2021-03-03T14:36:03+08:00">2021-03-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>　　一、入门示例</p>
-<p>　　二、异常场景1</p>
-<p>　　三、异常场景2</p>
-<p>　　四、解决方法</p>
-<p>之前在使用线程池的时候，出现了 java.util.concurrent.RejectedExecutionException ，原因是线程池配置不合理，导致提交的任务来不及处理。接下来用一个简单的例子来复现异常。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.util.concurrent.RejectedExecutionException: Task org.cellphone.common.pool.Worker@f6f4d33 rejected from java.util.concurrent.ThreadPoolExecutor@23fc625e[Running, pool size = 3, active threads = 3, queued tasks = 15, completed tasks = 0]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)</span><br><span class="line">    at org.cellphone.common.pool.RejectedExecutionExceptionExample.main(RejectedExecutionExceptionExample.java:22)</span><br></pre></td></tr></table></figure>
-
-<h2 id="一、入门示例"><a href="#一、入门示例" class="headerlink" title="一、入门示例"></a>一、入门示例</h2><p>下面的测试程序使用 ThreadPoolExecutor 类来创建线程池执行任务，代表任务 Worker 类代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Created by on 2019/4/20.</span><br><span class="line"> */</span><br><span class="line">public class Worker implements Runnable &#123;</span><br><span class="line"></span><br><span class="line">    private int id;</span><br><span class="line"></span><br><span class="line">    public Worker(int id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + &quot; 执行任务 &quot; + id);</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + &quot; 完成任务 &quot; + id);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> 执行 Worker 任务的代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by on 2019/4/20.</span><br><span class="line"> */</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor = new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        Worker tasks[] = new Worker[10];</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] = new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();    // 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> 运行一下，看到如下输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">主线程结束</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-1 执行任务 3</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-2 执行任务 4</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-3 执行任务 5</span><br><span class="line">pool-1-thread-2 完成任务 4</span><br><span class="line">pool-1-thread-2 执行任务 6</span><br><span class="line">pool-1-thread-3 完成任务 5</span><br><span class="line">pool-1-thread-1 完成任务 3</span><br><span class="line">pool-1-thread-3 执行任务 7</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">pool-1-thread-3 完成任务 7</span><br><span class="line">pool-1-thread-2 完成任务 6</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-2 执行任务 9</span><br><span class="line">pool-1-thread-2 完成任务 9</span><br></pre></td></tr></table></figure>
-
-<p> 在 RejectedExecutionExceptionExample 类里，我们使用 ThreadPoolExecutor 类创建了一个数量为3的线程池来执行任务，在这3个线程执行任务被占用期间，如果有新任务提交给线程池，那么这些新任务会被保存在 BlockingQueue 阻塞队列里，以等待被空闲线程取出并执行。在这里我们使用一个大小为15的 ArrayBlockingQueue 队列来保存待执行的任务，然后我们创建了10个任务提交给 ThreadPoolExecutor 线程池。</p>
-<h2 id="二、异常场景1"><a href="#二、异常场景1" class="headerlink" title="二、异常场景1"></a>二、异常场景1</h2><p>产生 RejectedExecutionException 异常的第一个原因：</p>
-<p>调用 shutdown() 方法关闭了 ThreadPoolExecutor 线程池，又提交新任务给 ThreadPoolExecutor 线程池执行。一般调用 shutdown() 方法之后，JVM会得到一个关闭线程池的信号，并不会立即关闭线程池，原来线程池里未执行完的任务仍然在执行，等到任务都执行完后才关闭线程池，但是JVM不允许再提交新任务给线程池。</p>
-<p>让我们用以下例子来重现该异常：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by on 2019/4/20.</span><br><span class="line"> */</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor = new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        Worker tasks[] = new Worker[10];</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] = new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();// 关闭线程池</span><br><span class="line">        executor.execute(tasks[0]);// 关闭线程池之后提交新任务，运行之后抛异常</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行一下，看到如下输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">主线程结束</span><br><span class="line">Exception in thread &quot;main&quot; java.util.concurrent.RejectedExecutionException: Task org.cellphone.common.pool.Worker@36baf30c rejected from java.util.concurrent.ThreadPoolExecutor@5caf905d[Shutting down, pool size = 3, active threads = 3, queued tasks = 7, completed tasks = 0]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)</span><br><span class="line">    at org.cellphone.common.pool.RejectedExecutionExceptionExample.main(RejectedExecutionExceptionExample.java:26)</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-1 执行任务 3</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-2 执行任务 4</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-3 执行任务 5</span><br><span class="line">pool-1-thread-3 完成任务 5</span><br><span class="line">pool-1-thread-3 执行任务 6</span><br><span class="line">pool-1-thread-2 完成任务 4</span><br><span class="line">pool-1-thread-2 执行任务 7</span><br><span class="line">pool-1-thread-1 完成任务 3</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">pool-1-thread-3 完成任务 6</span><br><span class="line">pool-1-thread-2 完成任务 7</span><br><span class="line">pool-1-thread-3 执行任务 9</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-3 完成任务 9</span><br></pre></td></tr></table></figure>
-
-<p>从以上例子可以看出，在调用 shutdown() 方法之后，由于JVM不允许再提交新任务给线程池，于是抛出了 RejectedExecutionException 异常。</p>
-<h2 id="三、异常场景2"><a href="#三、异常场景2" class="headerlink" title="三、异常场景2"></a>三、异常场景2</h2><p>产生 RejectedExecutionException 异常第二个原因：</p>
-<p>要提交给阻塞队列的任务超出了该队列的最大容量。当线程池里的线程都繁忙的时候，新任务会被提交给阻塞队列保存，这个阻塞队列一旦饱和，线程池就会拒绝接收新任务，随即抛出异常。</p>
-<p>示例代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by on 2019/4/20.</span><br><span class="line"> */</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor = new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        // 提交20个任务给线程池</span><br><span class="line">        Worker tasks[] = new Worker[20];</span><br><span class="line">        for (int i = 0; i &lt; 20; i++) &#123;</span><br><span class="line">            tasks[i] = new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();// 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在上面的例子中，我们使用了一个大小为15的 ArrayBlockingQueue 阻塞队列来保存等待执行的任务。接着我们提交了20个任务给线程池，由于每个线程执行任务的时候会睡眠1秒，因此当3个线程繁忙的时候，其他任务不会立即得到执行，我们提交的新任务会被保存在队列里。当等待任务的数量超过线程池阻塞队列的最大容量时，抛出了 RejectedExecutionException 异常。</p>
-<h2 id="四、解决方法"><a href="#四、解决方法" class="headerlink" title="四、解决方法"></a>四、解决方法</h2><p>要解决 RejectedExecutionException 异常，首先我们要注意两种情况：</p>
-<ol>
-<li>当调用了线程池的<code>shutdown()</code>方法以后，不要提交新任务给线程池</li>
-<li>不要提交大量超过线程池处理能力的任务，这时可能会导致队列饱和，抛出异常</li>
-</ol>
-<p>对于第二种情况，我们很容易解决。我们可以选择一种不需要设置大小限制的数据结构，比如 LinkedBlockingQueue 阻塞队列。因此在使用 LinkedBlockingQueue 队列以后，如果还出现 RejectedExecutionException 异常，就要将问题的重点放在第一种情况上。如果第一种情况不是产生问题的原因，那么我们还需要寻找更复杂的原因。比如，由于线程死锁和 LinkedBlockingQueue 饱和，导致内存占用过大，这个时候我们就需要考虑JVM可用内存的问题了。</p>
-<p>对于第二种情况，通常有一些隐藏的信息被我们忽略。其实我们可以给使用 ArrayBlockingQueue 作为阻塞队列的 ThreadPoolExecutor 线程池提交超过15个的任务，只要我们在提交新任务前设置一个完成原来任务的等待时间，这时3个线程就会逐渐消费 ArrayBlockingQueue 阻塞队列里的任务，而不会使它堵塞。示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.ArrayBlockingQueue;</span><br><span class="line">import java.util.concurrent.ExecutorService;</span><br><span class="line">import java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by on 2019/4/20.</span><br><span class="line"> */</span><br><span class="line">public class RejectedExecutionExceptionExample &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        ExecutorService executor = new ThreadPoolExecutor(3, 3, 0L,</span><br><span class="line">                TimeUnit.MILLISECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span><br><span class="line"></span><br><span class="line">        // 提交20个任务给线程池</span><br><span class="line">        Worker tasks[] = new Worker[20];</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">            tasks[i] = new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Thread.sleep(3000);// 让主线程睡眠三秒</span><br><span class="line">        for (int i = 10; i &lt; 20; i++) &#123;</span><br><span class="line">            tasks[i] = new Worker(i);</span><br><span class="line">            System.out.println(&quot;提交任务: &quot; + tasks[i] + &quot;, &quot; + i);</span><br><span class="line">            executor.execute(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;主线程结束&quot;);</span><br><span class="line">        executor.shutdown();// 关闭线程池</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行一下，看到如下输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">提交任务: org.cellphone.common.pool.Worker@36baf30c, 0</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5ca881b5, 1</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4517d9a3, 2</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2f92e0f4, 3</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@28a418fc, 4</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5305068a, 5</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@1f32e575, 6</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@279f2327, 7</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2ff4acd0, 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@54bedef2, 9</span><br><span class="line">pool-1-thread-1 执行任务 0</span><br><span class="line">pool-1-thread-2 执行任务 1</span><br><span class="line">pool-1-thread-3 执行任务 2</span><br><span class="line">pool-1-thread-2 完成任务 1</span><br><span class="line">pool-1-thread-3 完成任务 2</span><br><span class="line">pool-1-thread-1 完成任务 0</span><br><span class="line">pool-1-thread-3 执行任务 4</span><br><span class="line">pool-1-thread-2 执行任务 3</span><br><span class="line">pool-1-thread-1 执行任务 5</span><br><span class="line">pool-1-thread-3 完成任务 4</span><br><span class="line">pool-1-thread-3 执行任务 6</span><br><span class="line">pool-1-thread-2 完成任务 3</span><br><span class="line">pool-1-thread-2 执行任务 7</span><br><span class="line">pool-1-thread-1 完成任务 5</span><br><span class="line">pool-1-thread-1 执行任务 8</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@5caf905d, 10</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@27716f4, 11</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@8efb846, 12</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@2a84aee7, 13</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@a09ee92, 14</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@30f39991, 15</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@452b3a41, 16</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@4a574795, 17</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@f6f4d33, 18</span><br><span class="line">pool-1-thread-3 完成任务 6</span><br><span class="line">pool-1-thread-2 完成任务 7</span><br><span class="line">pool-1-thread-1 完成任务 8</span><br><span class="line">pool-1-thread-2 执行任务 10</span><br><span class="line">pool-1-thread-3 执行任务 9</span><br><span class="line">提交任务: org.cellphone.common.pool.Worker@23fc625e, 19</span><br><span class="line">pool-1-thread-1 执行任务 11</span><br><span class="line">主线程结束</span><br><span class="line">pool-1-thread-2 完成任务 10</span><br><span class="line">pool-1-thread-2 执行任务 12</span><br><span class="line">pool-1-thread-1 完成任务 11</span><br><span class="line">pool-1-thread-1 执行任务 13</span><br><span class="line">pool-1-thread-3 完成任务 9</span><br><span class="line">pool-1-thread-3 执行任务 14</span><br><span class="line">pool-1-thread-2 完成任务 12</span><br><span class="line">pool-1-thread-2 执行任务 15</span><br><span class="line">pool-1-thread-3 完成任务 14</span><br><span class="line">pool-1-thread-3 执行任务 16</span><br><span class="line">pool-1-thread-1 完成任务 13</span><br><span class="line">pool-1-thread-1 执行任务 17</span><br><span class="line">pool-1-thread-2 完成任务 15</span><br><span class="line">pool-1-thread-2 执行任务 18</span><br><span class="line">pool-1-thread-3 完成任务 16</span><br><span class="line">pool-1-thread-1 完成任务 17</span><br><span class="line">pool-1-thread-3 执行任务 19</span><br><span class="line">pool-1-thread-2 完成任务 18</span><br><span class="line">pool-1-thread-3 完成任务 19</span><br></pre></td></tr></table></figure>
-
-<p>当然上面这种设置等待时间来分隔旧任务和新任务的方式，在高并发情况下效率并不高，一方面由于我们无法准确预估等待时间，一方面由于 ArrayBlockingQueue 内部只使用了一个锁来隔离读和写的操作，因此效率没有使用了两个锁来隔离读写操作的 LinkedBlockingQueue 高，故而不推荐使用这种方式。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1351,7 +1365,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">68</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1362,7 +1376,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">122</span>
+        <span class="site-state-item-count">125</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>

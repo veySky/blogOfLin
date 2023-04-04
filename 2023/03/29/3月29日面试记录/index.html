@@ -28,7 +28,7 @@
 <meta property="og:description" content="面试过程： 做题 7道   string reverse 字符串反转 从文件中读取最大长度word sql查询 去重取id最小记录 验证ip 检测string中的重复字符 通过命令行输入表达式进行计算 检测一个数字是否基本类型 ？   问题：  如何使用@Controller 注解实现返回@RestController json结构 数据库连接池配置参数有那些 redis使用的数据接口有那些，以及">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-03-29T12:06:51.000Z">
-<meta property="article:modified_time" content="2023-03-29T15:31:47.011Z">
+<meta property="article:modified_time" content="2023-04-03T11:21:43.173Z">
 <meta property="article:author" content="木林森">
 <meta name="twitter:card" content="summary">
 
@@ -191,10 +191,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-03-29 20:06:51 / Modified: 23:31:47" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
+              <time title="Created: 2023-03-29 20:06:51" itemprop="dateCreated datePublished" datetime="2023-03-29T20:06:51+08:00">2023-03-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-03 19:21:43" itemprop="dateModified" datetime="2023-04-03T19:21:43+08:00">2023-04-03</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -238,6 +244,46 @@
 </ol>
 <h3 id="sql查询去重问题答案"><a href="#sql查询去重问题答案" class="headerlink" title="sql查询去重问题答案"></a>sql查询去重问题答案</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> user_info b <span class="keyword">on</span> a.user_icon <span class="operator">=</span> b.user_icon <span class="keyword">and</span> a.id<span class="operator">!=</span>b.id <span class="keyword">WHERE</span> b.id <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">and</span> a.id<span class="operator">&lt;</span>b.id</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span> </span><br><span class="line"><span class="keyword">select</span> a.id,a.user_icon <span class="keyword">from</span> user_info a <span class="keyword">where</span> a.user_icon <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">SELECT</span> user_icon <span class="keyword">from</span> user_info  <span class="keyword">GROUP</span> <span class="keyword">BY</span> user_icon <span class="keyword">HAVING</span> <span class="built_in">count</span>(<span class="number">1</span>)<span class="operator">&gt;</span><span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="美的面试问题整理"><a href="#美的面试问题整理" class="headerlink" title="美的面试问题整理"></a>美的面试问题整理</h2><ol>
+<li><p>spring的事务问题</p>
+<ol>
+<li>事务的隔离级别 5种： ISOLATION_DEFAULT 默认，使用后端数据库的默认隔离级别，Mysql的默认是可重复读</li>
+<li>ISOLATION_READ_UNCOMMITTED 读未提交</li>
+<li>ISOLATION_READ_COMMITTED 读已提交</li>
+<li>ISOLATION_REPEATABLE_READ 可重复读</li>
+<li>ISOLATION_SERIALIZABLE 串行化</li>
+</ol>
+<p>事务的传播机制，就是当多个事务同事存在的情况 Spring 如何处理这些事务的行为</p>
+<ol>
+<li>Required  默认，如果没有当前事务，就创建一个事务，如果存在一个事务，就加入到这个事务中</li>
+<li>SUPPORTS 支持当前事务，如果没有当前事务，就以非事务方法执行</li>
+<li>Mandatory 使用当前事务，如果没有当前事务，就抛出异常。 </li>
+<li>Required_new 新建事务，如果存在当前事务，就把当前事务挂起</li>
+<li>Not_supported 以非事务方式执行操作，如果当前事务存在则抛出异常</li>
+<li>Nested 如果当前存在事务，则在事务内执行，如果当前没有事务，则执行与Required 类型的操作。 </li>
+<li>默认的传播机制： PROPAFATION_REQUIRED</li>
+</ol>
+</li>
+<li><p>声明式事务失效情况</p>
+<ol>
+<li>@Transactional 应用在非Public 修饰的方法上。</li>
+<li>@Transactional 注解属性propagation 设置错误</li>
+<li>@Transactional 注解属性rollbackFor 设置错误</li>
+<li>同一个类中方法调用，导致@Transactional 失效。</li>
+</ol>
+</li>
+<li><p>Redis的持久化</p>
+</li>
+<li><p>mysql的事务 间隙锁问题</p>
+</li>
+</ol>
+<h3 id="美的电话面试问题："><a href="#美的电话面试问题：" class="headerlink" title="美的电话面试问题："></a>美的电话面试问题：</h3><ol>
+<li>分布式锁原理</li>
+<li>分布式事务问题</li>
+<li>分页组件是什么</li>
+</ol>
 
     </div>
 
@@ -337,7 +383,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">面试过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sql%E6%9F%A5%E8%AF%A2%E5%8E%BB%E9%87%8D%E9%97%AE%E9%A2%98%E7%AD%94%E6%A1%88"><span class="nav-number">1.1.</span> <span class="nav-text">sql查询去重问题答案</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">面试过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sql%E6%9F%A5%E8%AF%A2%E5%8E%BB%E9%87%8D%E9%97%AE%E9%A2%98%E7%AD%94%E6%A1%88"><span class="nav-number">1.1.</span> <span class="nav-text">sql查询去重问题答案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BE%8E%E7%9A%84%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">美的面试问题整理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BE%8E%E7%9A%84%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">美的电话面试问题：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -351,7 +397,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">68</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -362,7 +408,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">122</span>
+        <span class="site-state-item-count">125</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
