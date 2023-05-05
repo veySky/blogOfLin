@@ -166,6 +166,141 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2021/04/27/kafka%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E4%B9%8Bkafka-manager%E9%83%A8%E7%BD%B2-ProdServerStart/" class="post-title-link" itemprop="url">kafka集群监控之kafka-manager部署(ProdServerStart)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-04-27 14:47:17 / Modified: 14:49:48" itemprop="dateCreated datePublished" datetime="2021-04-27T14:47:17+08:00">2021-04-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>一.*<em>kafka manager简介*</em></strong></p>
+<p><strong>1&gt;.什么是Kafka Manager</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">KafkaManager是一个用于管理Kafka的web工具，由yahoo开发并开源。</span><br><span class="line"></span><br><span class="line">雅虎官网GitHub项目：https://github.com/yahoo/kafka-manager。需要安装jdk1.8版本。</span><br><span class="line"></span><br><span class="line">我们可以参考官方的文档进行编译和简单配置即可使用。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184455823-506984235.png" alt="img"></p>
+<p><strong>2&gt;.kafka manager支持功能</strong></p>
+<p>![复制代码](<a target="_blank" rel="noopener" href="https://common.cnblogs.com/images/copycode.gif">https://common.cnblogs.com/images/copycode.gif</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">　　其提供了如下管理和监控能力：</span><br><span class="line">　　　　管理多集群</span><br><span class="line">　　　　查看集群状态（topics,consumers,offsets,brokers等）</span><br><span class="line">　　　　执行倾向副本选举</span><br><span class="line">　　　　生成分区重分布计划（自动和手动）</span><br><span class="line">　　　　执行分区重分布</span><br><span class="line">　　　　多topic批量生成分区重分布计划，执行分区重分布</span><br><span class="line">　　　　使用指定参数创建topic</span><br><span class="line">　　　　删除topic（需要集群参数开启）</span><br><span class="line">　　　　现有topic增加分区</span><br><span class="line">　　　　通过JMX获取broker层面和topic层面指标</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713184636385-1156560940.png" alt="img"></p>
+<p><strong>二.部署kafka manager</strong></p>
+<p>**1&gt;.**<strong>下载kafka-manager</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip　　　　　　　　#这里提供编译好了的包，下载后可以直接使用，可以不用去sbt编译。</span><br><span class="line"> [root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+<p><strong>2&gt;.解压kafka-manager</strong></p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#114;&#x6f;&#111;&#116;&#64;&#110;&#111;&#x64;&#101;&#x31;&#x30;&#x38;&#x2e;&#121;&#x69;&#110;&#122;&#104;&#x65;&#110;&#103;&#x6a;&#105;&#x65;&#46;&#x6f;&#114;&#x67;&#x2e;&#99;&#110;">&#114;&#x6f;&#111;&#116;&#64;&#110;&#111;&#x64;&#101;&#x31;&#x30;&#x38;&#x2e;&#121;&#x69;&#110;&#122;&#104;&#x65;&#110;&#103;&#x6a;&#105;&#x65;&#46;&#x6f;&#114;&#x67;&#x2e;&#99;&#110;</a> ~]# yum -y install unzip zip</p>
+<p><img src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="img"> [<a href="mailto:&#x72;&#x6f;&#111;&#116;&#x40;&#x6e;&#x6f;&#x64;&#x65;&#x31;&#x30;&#x38;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#x65;&#x6e;&#x67;&#106;&#105;&#101;&#46;&#111;&#114;&#103;&#46;&#99;&#110;">&#x72;&#x6f;&#111;&#116;&#x40;&#x6e;&#x6f;&#x64;&#x65;&#x31;&#x30;&#x38;&#46;&#121;&#x69;&#110;&#x7a;&#x68;&#x65;&#x6e;&#x67;&#106;&#105;&#101;&#46;&#111;&#114;&#103;&#46;&#99;&#110;</a> ~]# unzip kafka-manager-1.3.0.7.zip</p>
+<p><strong>3&gt;.将解压后的文件放入到你存放软件目录的位置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">drwxr-xr-x 6 root root       70 Jul 13 22:11 kafka-manager-1.3.0.7</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# mv kafka-manager-1.3.0.7 /home/softwares/kafka-manager</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll /home/softwares/kafka-manager/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x 2 root root   52 Jul 13 22:11 bin</span><br><span class="line">drwxr-xr-x 2 root root   81 Jul 13 22:11 conf</span><br><span class="line">drwxr-xr-x 2 root root 8192 Jul 13 22:11 lib</span><br><span class="line">-rw-r--r-- 1 root root 6323 Apr  5  2016 README.md</span><br><span class="line">drwxr-xr-x 3 root root   17 Jul 13 22:11 share</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# ll</span><br><span class="line">total 67092</span><br><span class="line">-rw-r--r-- 1 root root 68699247 Jul 13 22:08 kafka-manager-1.3.0.7.zip</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+<p><strong>4&gt;.修改kafka的配置文件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep kafka-manager.zkhosts /home/softwares/kafka-manager/conf/application.conf  | head -1</span><br><span class="line">kafka-manager.zkhosts=&quot;node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181/kafka01&quot;</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# grep port /home/softwares/kafka-manager/conf/application.conf  | head -1</span><br><span class="line">http.port=8888</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+<p><strong>5&gt;.每个kafka broker都需要开启JMX（想要看到kafka集群的读取河写入速度就必须开启JMX,），需要编辑kafka启动脚本</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node106.yinzhengjie.org.cn ~]# vi /home/softwares/kafka_2.11-0.10.2.1/bin/kafka-server-start.sh </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp /home/softwares/kafka_2.11-0.10.2.1/bin/kafka-server-start.sh node107.yinzhengjie.org.cn:/home/softwares/kafka_2.11-0.10.2.1/bin/kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     1.3MB/s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# scp /home/softwares/kafka_2.11-0.10.2.1/bin/kafka-server-start.sh node108.yinzhengjie.org.cn:/home/softwares/kafka_2.11-0.10.2.1/bin/kafka-server-start.sh</span><br><span class="line">kafka-server-start.sh                                                                                                                                                                          100% 1627     2.0MB/s   00:00    </span><br><span class="line">[root@node106.yinzhengjie.org.cn ~]# </span><br></pre></td></tr></table></figure>
+
+<p><strong>6&gt;.启动kafka-manager（kafka和zookeeper也需要启动起来哟~尤其是zookeeper必须是得运行的）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# nohup /home/softwares/kafka-manager/bin/kafka-manager -java-home /home/softwares/jdk1.8.0_201 -Dconfig.file=/home/softwares/kafka-manager/conf/application.conf &gt;&gt; /home/softwares/kafka-manager/kafka_manager.log 2&gt;&amp;1 &amp;</span><br><span class="line">[1] 3753</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# </span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# jps</span><br><span class="line">3826 Jps</span><br><span class="line">3753 ProdServerStart</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br><span class="line"></span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]# tail -100f /home/softwares/kafka-manager/kafka_manager.log</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.io.tmpdir=/tmp</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:java.compiler=&lt;NA&gt;</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.name=Linux</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.arch=amd64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:os.version=3.10.0-957.el7.x86_64</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.name=root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.home=/root</span><br><span class="line">[info] o.a.z.ZooKeeper - Client environment:user.dir=/home/softwares/kafka-manager</span><br><span class="line">[info] o.a.z.ZooKeeper - Initiating client connection, connectString=node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181/kafka01 sessionTimeout=60000 watcher=org.apache.curator.ConnectionState@65e0186a</span><br><span class="line">[info] o.a.z.ClientCnxn - Opening socket connection to server node106.yinzhengjie.org.cn/172.30.1.106:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">[info] o.a.z.ClientCnxn - Socket connection established to node106.yinzhengjie.org.cn/172.30.1.106:2181, initiating session</span><br><span class="line">[info] o.a.z.ClientCnxn - Session establishment complete on server node106.yinzhengjie.org.cn/172.30.1.106:2181, sessionid = 0x6a00001622cf0000, negotiated timeout = 40000</span><br><span class="line">[info] k.m.a.KafkaManagerActor - zk=node106.yinzhengjie.org.cn:2181,node107.yinzhengjie.org.cn:2181,node108.yinzhengjie.org.cn:2181/kafka01</span><br><span class="line">[info] k.m.a.KafkaManagerActor - baseZkPath=/kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Started actor akka://kafka-manager-system/user/kafka-manager</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Started actor akka://kafka-manager-system/user/kafka-manager/delete-cluster</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Starting delete clusters path cache...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Starting kafka manager path cache...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] k.m.a.DeleteClusterActor - Scheduling updater for 10 seconds</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Adding kafka manager path cache listener...</span><br><span class="line">[info] play.api.Play - Application started (Prod)</span><br><span class="line">[info] p.c.s.NettyServer - Listening for HTTP on /0.0.0.0:8888　　　　　　#说明我们的kafka_manager服务端口已经监听啦，我们可以直接去访问啦</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">[info] k.m.a.KafkaManagerActor - Updating internal state...</span><br><span class="line">^C</span><br><span class="line">[root@node108.yinzhengjie.org.cn ~]#</span><br></pre></td></tr></table></figure>
+
+<p><strong>7&gt;.登陆webUI查看相应的信息，如果出现以下界面说明你部署成功啦！</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222634167-980310777.png" alt="img"></p>
+<p>**三.**<strong>WEB端配置kafka-manager</strong></p>
+<p><strong>1&gt;.点击添加集群</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713222751230-306893281.png" alt="img"></p>
+<p><strong>2&gt;.配置集群（集群名称不支持中文，只支持ASSCI编码）</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223615520-1365827720.png" alt="img"></p>
+<p> <strong>3&gt;.其他参数保持默认，点击保存即可</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713223813438-381974165.png" alt="img"></p>
+<p> <strong>4&gt;.配置成功</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224012573-8104355.png" alt="img"></p>
+<p><strong>5&gt;.点击”yinzhengjie-kafka”</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224155959-1238933143.png" alt="img"></strong></p>
+<p><strong>6&gt;.查看自定义的集群信息</strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713224454334-2089082832.png" alt="img"></strong></p>
+<p><strong>7&gt;.*<em>查看broker信息*</em></strong></p>
+<p><strong><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225800565-1207963224.png" alt="img"></strong></p>
+<p><strong>8&gt;.*<em>查看topic信息*</em></strong></p>
+<p><em><strong>*<img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713225909158-1472664287.png" alt="img">*</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">以上输出信息关键参数说如下：</span><br><span class="line">Operations列表参数说明：</span><br><span class="line">Generate Partition Assignments:</span><br><span class="line">　　对多个topic来进行分区重分布计划的生成，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Run Partition Assignments:</span><br><span class="line">　　对多个topic分区执行重分布计划，知道就好，不推荐使用。</span><br><span class="line"></span><br><span class="line">Add Partitions：</span><br><span class="line">　　对多个topic来进行添加分区操作，生成环境并不建议大家这样搞，避免误操作。</span><br><span class="line"></span><br><span class="line">Topics列表参数说明：</span><br><span class="line">Topic:</span><br><span class="line">    表示topic名称。</span><br><span class="line">    __consumer_offsets是kafka内置保存consumer offset的topic.</span><br><span class="line"></span><br><span class="line">Partitions:</span><br><span class="line">    topic对应的分区数</span><br><span class="line"></span><br><span class="line">Brokers:</span><br><span class="line">    topic对应的broker数</span><br><span class="line"></span><br><span class="line">Brokers Spread%:</span><br><span class="line">    指broker的分布比例，计算公式:用topic的分区分布的broker数/总的broker数量。</span><br><span class="line"></span><br><span class="line">Brokers Skew %:</span><br><span class="line">    Brokers的偏斜比例，计算公式:(Broker最多的分区数/Brokers最少的分区数) -1</span><br><span class="line">    </span><br><span class="line">Brokers Leader Skew%:</span><br><span class="line">    Brokers的leader偏斜比例，计算公式:(Broker最多的leader分区数/Brokers最少leader的分区数) -1</span><br><span class="line">    </span><br><span class="line">Replicas:</span><br><span class="line">    副本因子，即副本数。</span><br><span class="line"></span><br><span class="line">Under Replicated %:</span><br><span class="line">    副本不足的比例，计算公式:副本不足的分区数/总分区数</span><br><span class="line"></span><br><span class="line">Producer Message/Sec:</span><br><span class="line">    每秒产生的消息数量。</span><br><span class="line"></span><br><span class="line">Summed Recent Offsets:</span><br><span class="line">    当前总计的消费偏移量。</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>*9&gt;.创建topic*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230336053-574631330.png" alt="img"></p>
+<p><em><strong>*10&gt;.topic创建完成*</strong></em></p>
+<p><em><strong>*<img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713230422197-928459022.png" alt="img">*</strong></em></p>
+<p><em><strong>*11&gt;.topic操作*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713233502120-1813806895.png" alt="img"></p>
+<p><em><strong>*12&gt;.点击”Reassign Partitions”,查看分区重分布的进度*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234331026-440696449.png" alt="img"></p>
+<p><em><strong>*13&gt;.点击”Preferred Replica Election”可以执行倾向副本选举，一般我们在配置文件配置好了就不需要在这里手动触发啦！*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713234528486-1009939226.png" alt="img"></p>
+<p><em><strong>*14&gt;.查看消费者组信息*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235320245-629365248.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Consumer:</span><br><span class="line">    表示的是消费者组。</span><br><span class="line"></span><br><span class="line">Type:</span><br><span class="line">    ZK表示offset信息保存在zookeeper中。</span><br><span class="line">    KF表示offset信息保存在kafka中。</span><br><span class="line"></span><br><span class="line">Topic it consumes from:</span><br><span class="line">    已经消费的分区的coverage:</span><br><span class="line">        消费的覆盖率。</span><br><span class="line">    已经消费的lag:</span><br><span class="line">        消费的延迟大小。有可能会看到负值，</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>*15&gt;.查看已经消费者的详细信息*</strong></em></p>
+<p><img src="https://img2018.cnblogs.com/blog/795254/201907/795254-20190713235429468-198969850.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Partition    </span><br><span class="line">    分区编号。</span><br><span class="line">    </span><br><span class="line">LogSize    </span><br><span class="line">    分区大小</span><br><span class="line">    </span><br><span class="line">Consumer Offset    </span><br><span class="line">    消费的偏移量。</span><br><span class="line">    </span><br><span class="line">Lag    </span><br><span class="line">    延迟大小，改值可能是负数。</span><br><span class="line"></span><br><span class="line">Consumer Instance Owner</span><br><span class="line">    消费者实例拥有者。</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/04/27/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84redis%E5%BC%82%E5%B8%B8%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1148,154 +1283,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/03/05/%E4%BA%86%E8%A7%A3Docker%E5%AE%B9%E5%99%A8%E9%80%80%E5%87%BA%E4%BB%A3%E7%A0%81/" class="post-title-link" itemprop="url">了解Docker容器退出代码</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-03-05 11:43:59" itemprop="dateCreated datePublished" datetime="2021-03-05T11:43:59+08:00">2021-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-24 21:45:01" itemprop="dateModified" datetime="2023-03-24T21:45:01+08:00">2023-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="最常见的退出代码，它们的含义以及导致它们的原因"><a href="#最常见的退出代码，它们的含义以及导致它们的原因" class="headerlink" title="最常见的退出代码，它们的含义以及导致它们的原因"></a>最常见的退出代码，它们的含义以及导致它们的原因</h2><p>Docker容器退出代码-如何使用它们进行故障排除？</p>
-<p>这是我遇到的最常见的问题之一：“为什么我的容器没有运行？”</p>
-<p>码头集装箱出口代码可以帮助解决此问题吗？</p>
-<p>回答此问题的第一步是识别Docker容器的退出代码。退出代码可以提示停止容器运行的情况。本文列出了使用Docker容器时最常见的退出代码，旨在回答两个重要问题：</p>
-<ul>
-<li>这个特定的退出代码是什么意思？</li>
-<li>导致此退出代码的动作是什么？</li>
-</ul>
-<p>这最终将有助于回答最初的问题：“为什么我的容器没有运行？”</p>
-<h1 id="如何查找退出代码"><a href="#如何查找退出代码" class="headerlink" title="如何查找退出代码"></a>如何查找退出代码</h1><h2 id="选项1：列出所有退出的容器"><a href="#选项1：列出所有退出的容器" class="headerlink" title="选项1：列出所有退出的容器"></a>选项1：列出所有退出的容器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps --filter“状态=退出”</span><br></pre></td></tr></table></figure>
-
-<h2 id="选项2：按容器名称进行的Grep"><a href="#选项2：按容器名称进行的Grep" class="headerlink" title="选项2：按容器名称进行的Grep"></a>选项2：按容器名称进行的Grep</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a grep &lt;容器名称&gt;示例：docker ps -a | grep hello-world</span><br></pre></td></tr></table></figure>
-
-<h2 id="选项3：按容器ID检查"><a href="#选项3：按容器ID检查" class="headerlink" title="选项3：按容器ID检查"></a>选项3：按容器ID检查</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">码头工人检查&lt;container-id&gt; --format =&#x27;&#123;&#123;。State.ExitCode&#125;&#125;&#x27;示例：码头工人检查ca6cbb290468 --format =&#x27;&#123;&#123;。State.ExitCode&#125;&#125;&#x27;</span><br></pre></td></tr></table></figure>
-
-<h1 id="退出码"><a href="#退出码" class="headerlink" title="退出码"></a>退出码</h1><p>与Docker容器关联的常见退出代码为：</p>
-<ul>
-<li><strong>退出代码0</strong>：缺少附加的前台进程</li>
-<li><strong>退出代码1</strong>：指示由于应用程序错误而导致的失败</li>
-<li><strong>退出代码137</strong>：指示由于容器收到SIGKILL而失败（手动干预或“ oom-killer” [OUT-OF-MEMORY]）</li>
-<li><strong>退出代码139</strong>：指示由于收到容器SIGSEGV而失败</li>
-<li><strong>退出代码143</strong>：指示由于收到容器而失败SIGTERM</li>
-</ul>
-<h2 id="退出码0"><a href="#退出码0" class="headerlink" title="退出码0"></a>退出码0</h2><ul>
-<li>退出代码0指示特定的容器没有附加的前台进程。</li>
-<li>此退出代码是所有其他后续退出代码的例外。这并不一定意味着发生了不好的事情。</li>
-<li>如果开发人员想要在容器完成其工作后自动停止其容器，则使用此退出代码。</li>
-</ul>
-<p>这是一个使用公共docker容器的示例-“ hello-world”。如果在系统或VM实例上安装了docker，请运行以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker运行hello-world</span><br></pre></td></tr></table></figure>
-
-<p>您将收到一条消息，“您好，码头工人！” 但尝试使用以下代码查找容器：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">泊坞窗ps -a | grep hello-world</span><br></pre></td></tr></table></figure>
-
-<p>您会注意到该容器已退出，并且退出代码为0。这是因为该容器没有附加任何前台进程，例如Java进程或运行直到发生SIGTERM事件的Shell进程。</p>
-<p><img src="https://miro.medium.com/max/60/1*onZujADMgDc3KvsDt8k0BA.png?q=20" alt="图片发布"></p>
-<p><img src="https://miro.medium.com/max/3868/1*onZujADMgDc3KvsDt8k0BA.png" alt="图片发布"></p>
-<p>退出码0</p>
-<h2 id="退出代码1"><a href="#退出代码1" class="headerlink" title="退出代码1"></a>退出代码1</h2><ul>
-<li>指示容器由于应用程序错误或Dockerfile中对容器中不存在的文件的错误引用而停止。</li>
-<li>应用程序错误可能很简单，例如“除以0”，也可能很复杂，例如“引用与相同名称和类的现有不兼容Bean定义冲突的Bean名称”。</li>
-<li>Dockerfile中对容器中不存在的文件的错误引用可以像错字一样简单（下面的示例使用<code>sample.ja</code>代替<code>sample.jar</code>）</li>
-</ul>
-<p><img src="https://miro.medium.com/max/60/1*0C1noFKfmrj5FVnhpbO53w.png?q=20" alt="图片发布"></p>
-<p><img src="https://miro.medium.com/max/1756/1*0C1noFKfmrj5FVnhpbO53w.png" alt="图片发布"></p>
-<p>退出代码1</p>
-<h2 id="退出代码137"><a href="#退出代码137" class="headerlink" title="退出代码137"></a>退出代码137</h2><ul>
-<li>这表明容器收到了SIGKILL</li>
-<li>引发SIGKILL的常见事件是docker kill。这可以由用户或由docker守护程序手动启动：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">码头工人杀死&lt;container-id&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>docker kill</code>可以由用户或主机手动启动。如果由主机启动，则通常是由于内存不足。要确认容器是否由于内存不足而退出，请<code>docker inspect</code>针对以下部分的容器ID进行验证，并检查其是否<code>OOMKilled</code>为true（这表明容器内存不足）：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">“状态”：&#123; </span><br><span class="line">“状态”：“退出”，</span><br><span class="line">“运行”：假，</span><br><span class="line">“暂停”：假，</span><br><span class="line">“重启”：假，</span><br><span class="line">“ OOMKilled”：真，</span><br><span class="line">“死”：假，</span><br><span class="line">“ Pid”：0，</span><br><span class="line">“ ExitCode“：137，</span><br><span class="line">”错误“：”“，</span><br><span class="line">” StartedAt“：” 2019-10-21T01：13：51.7340288Z“，</span><br><span class="line">” FinishedAt“：” 2019-10-21T01：13：51.7961614Z“ </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="退出代码139"><a href="#退出代码139" class="headerlink" title="退出代码139"></a>退出代码139</h2><ul>
-<li>这表明该容器收到了SIGSEGV</li>
-<li>SIGSEGV指示分段错误。当程序尝试访问不允许访问的存储位置或试图以不允许的方式访问<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Computer_memory">存储</a>位置时，会发生这种情况。</li>
-<li>从Docker容器的角度来看，这要么表明应用程序代码有问题，要么有时表明容器使用的基本映像有问题。</li>
-</ul>
-<h2 id="退出代码143"><a href="#退出代码143" class="headerlink" title="退出代码143"></a>退出代码143</h2><ul>
-<li>这表明该容器收到了SIGTERM。</li>
-<li>发起SIGTERM的常见事件是<code>docker stop</code>或<code>docker-compose stop</code>。在这种情况下，有一个手动终止操作迫使容器退出：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker stop &lt;container-id&gt;</span><br><span class="line">或</span><br><span class="line">docker-compose down &lt;container-id&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>注意：</strong>有时<code>docker stop</code>还会导致退出代码137。通常，如果绑定到容器的应用程序无法处理SIGTERM，则通常会发生这种情况-docker守护程序等待十秒钟，然后发出SIGKILL</li>
-</ul>
-<h2 id="Docker容器的一些不常见的退出代码（通常使用shell脚本）"><a href="#Docker容器的一些不常见的退出代码（通常使用shell脚本）" class="headerlink" title="Docker容器的一些不常见的退出代码（通常使用shell脚本）"></a><strong>Docker容器的一些不常见的退出代码（通常使用shell脚本）</strong></h2><ul>
-<li><strong>退出代码126</strong>：权限问题或命令不可执行</li>
-<li><strong>退出代码127</strong>：shell脚本中可能出现拼写错误且字符无法识别的情况</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1365,7 +1352,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

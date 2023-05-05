@@ -166,6 +166,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
+      <meta itemprop="name" content="木林森">
+      <meta itemprop="description" content="personal blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lin's blog home">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blogOfLin/2022/11/11/mac-%E8%BD%AF%E8%BF%9E%E6%8E%A5/" class="post-title-link" itemprop="url">mac 软连接</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-11 17:03:21" itemprop="dateCreated datePublished" datetime="2022-11-11T17:03:21+08:00">2022-11-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-24 21:35:43" itemprop="dateModified" datetime="2023-03-24T21:35:43+08:00">2023-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blogOfLin/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Mac-创建软链和删除软链"><a href="#Mac-创建软链和删除软链" class="headerlink" title="Mac 创建软链和删除软链"></a>Mac 创建软链和删除软链</h1><h2 id="创建软链接"><a href="#创建软链接" class="headerlink" title="创建软链接"></a>创建软链接</h2><p>ln -s [源文件或目标] [目标文件或目录]</p>
+<p>如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s /Users/xxx/settings.xml ~/.m2/settings.xml</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<h2 id="删除软链接"><a href="#删除软链接" class="headerlink" title="删除软链接"></a>删除软链接</h2><p>rm -rf [目标文件]</p>
+<p>如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf settings.xml</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>注意：settings.xml 后面不要加 “&#x2F;”，否则会把原文件也删除调</p>
+<h2 id="修改软链接"><a href="#修改软链接" class="headerlink" title="修改软链接"></a>修改软链接</h2><p>ln -snf [源文件或目录] [目标文件或目录]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -snf /Users/xxx/settings.xml ~/.m2/settings.xml</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2022/09/09/javaList%E9%9A%8F%E6%9C%BA%E5%8F%96%E5%80%BC%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -980,112 +1064,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://veysky.github.io/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blogOfLin/images/avatar.gif">
-      <meta itemprop="name" content="木林森">
-      <meta itemprop="description" content="personal blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lin's blog home">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/blogOfLin/2021/10/28/%E5%85%B3%E4%BA%8ErockteMq%E6%B6%88%E6%81%AF%E5%B9%B6%E5%8F%91%E6%B6%88%E8%B4%B9%E5%86%99db%E7%9A%84%E5%B0%8F%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">关于rockteMq消息并发消费写db的小技巧</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-28 11:17:21" itemprop="dateCreated datePublished" datetime="2021-10-28T11:17:21+08:00">2021-10-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-09 17:45:43" itemprop="dateModified" datetime="2021-12-09T17:45:43+08:00">2021-12-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blogOfLin/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>关于rocketMq消息消费，一般使用的是并发消费模式。 </p>
-<p>消息消费时要考虑的问题主要有以下几个</p>
-<ol>
-<li>消息处理耗时 如果耗时过长，会导致消息积压。</li>
-<li>幂等性，一般rocketMq消息不会重复，但是还是存在这种可能性。 所以需要对重复消息进行幂等处理<ol>
-<li>幂等的处理逻辑： 需要保证重复消息只处理一次，或者处理效果等效。 一般的处理方案是丢弃重复消息。 </li>
-<li>消息消费是记录消息的唯一id，每次消费消息时检查以下是否已经消费过，是的话直接标记消息已消费。</li>
-</ol>
-</li>
-<li>并发问题的控制。 <ol>
-<li>一般方案：通过加锁，消息处理中唯一键要保证唯一性。 </li>
-<li>进行线程安全控制。 </li>
-<li>通过  insert on duplicate key update 方式： 此方式有个缺陷： db表的自增主键会在每次唯一键冲突时 增加。 </li>
-<li>例子： 通过消费支付消息，统计用户月度累计消费金额。 <ol>
-<li>更新数据，基于用户id和月份，如果更新结果是0，表示记录不存在</li>
-<li>进行数据插入操作。 如果插入失败，则说明由于并发其他线程已经插入数据。直接返回失败，待后续消息重新消费。 </li>
-<li>如果插入成功则直接继续后续流程。</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<p>最佳实践： </p>
-<p>​	新增&amp;更新记录防并发策略：</p>
-<ol>
-<li>先更新<ol>
-<li>成功直接返回</li>
-<li>失败，则走 insert on duplicate key update  方式。（改方式存在db表自增主键不连续问题）</li>
-</ol>
-</li>
-</ol>
-<p>参考资料：</p>
-<p><a target="_blank" rel="noopener" href="https://www.sevenyuan.cn/2020/11/18/jms/2020-11-18-RocketMQ-Learning-Client/">https://www.sevenyuan.cn/2020/11/18/jms/2020-11-18-RocketMQ-Learning-Client/</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1155,7 +1133,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/blogOfLin/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
